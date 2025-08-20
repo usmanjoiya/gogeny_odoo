@@ -1,0 +1,22 @@
+<odoo>
+    <template id="cookpay_template" name="CookPay Page">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2>CookPay</h2>
+                <form action="/cookpay/search" method="post" class="mt-3">
+                    <div class="form-group">
+                        <label for="customer_reference">Enter Customer Reference</label>
+                        <input type="text" id="customer_reference" name="customer_reference"
+                               class="form-control" required="required"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Search for unpaid Invoice</button>
+                </form>
+                <t t-if="error_message">
+                    <div class="alert alert-danger mt-3">
+                        <t t-esc="error_message"/>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

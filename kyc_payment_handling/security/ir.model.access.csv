@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kyc_payment_handling_kyc_payment_handling,kyc_payment_handling.kyc_payment_handling,model_kyc_payment_handling_kyc_payment_handling,base.group_user,1,1,1,1
