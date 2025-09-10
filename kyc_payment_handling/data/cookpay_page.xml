@@ -11,9 +11,47 @@
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Search for unpaid Invoice</button>
                 </form>
+
                 <t t-if="error_message">
                     <div class="alert alert-danger mt-3">
                         <t t-esc="error_message"/>
+                    </div>
+                </t>
+
+                <t t-if="partner_name">
+                    <div class="mt-5">
+                        <h4>Customer Name: <t t-esc="partner_name"/></h4>
+                        <t t-if="invoices">
+                            <table class="table table-bordered mt-3">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="invoices" t-as="inv">
+                                        <tr>
+                                            <td><t t-esc="inv['name']"/></td>
+                                            <td><t t-esc="inv['amount']"/></td>
+                                            <td><t t-esc="inv['state']"/></td>
+                                            <td>
+                                                <a t-att-href="inv['url']" class="btn btn-sm btn-info">
+                                                    View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                        <t t-if="not invoices">
+                            <div class="alert alert-info mt-3">
+                                No unpaid invoices found for this customer.
+                            </div>
+                        </t>
                     </div>
                 </t>
             </div>
