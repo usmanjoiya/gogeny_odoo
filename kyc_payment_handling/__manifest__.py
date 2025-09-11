@@ -11,7 +11,7 @@
     'depends': ['base', 'website', 'account'],
     'data': [
         # 'security/ir.model.access.csv',
-        'data/cookpay_page.xml',
+        'data/quickpay_page.xml',
 
         'views/res_partner.xml'
     ],

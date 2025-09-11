@@ -2,14 +2,14 @@ from odoo import http
 from odoo.http import request
 
 
-class CookPayController(http.Controller):
+class QuickPayController(http.Controller):
 
-    @http.route('/cookpay', type='http', auth='public', website=True)
-    def cookpay_page(self, **kw):
-        return request.render('kyc_payment_handling.cookpay_template', {})
+    @http.route('/quickpay', type='http', auth='public', website=True)
+    def quickpay_page(self, **kw):
+        return request.render('kyc_payment_handling.quickpay_template', {})
 
-    @http.route('/cookpay/search', type='http', auth='public', website=True, methods=['POST'], csrf=False)
-    def cookpay_search(self, **post):
+    @http.route('/quickpay/search', type='http', auth='public', website=True, methods=['POST'], csrf=False)
+    def quickpay_search(self, **post):
         reference = post.get('customer_reference')
 
         if reference:
@@ -40,15 +40,15 @@ class CookPayController(http.Controller):
                         'url': '/my/invoices/%s?access_token=%s' % (inv.id, inv._portal_ensure_token())
                     })
 
-                return request.render('kyc_payment_handling.cookpay_template', {
+                return request.render('kyc_payment_handling.quickpay_template', {
                     'partner_name': partner.name,
                     'invoices': invoice_list
                 })
 
-            return request.render('kyc_payment_handling.cookpay_template', {
+            return request.render('kyc_payment_handling.quickpay_template', {
                 'error_message': "Customer with this reference not found."
             })
 
-        return request.render('kyc_payment_handling.cookpay_template', {
+        return request.render('kyc_payment_handling.quickpay_template', {
             'error_message': "Please provide a valid customer reference or invoice ID."
         })

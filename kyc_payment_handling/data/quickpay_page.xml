@@ -1,9 +1,9 @@
 <odoo>
-    <template id="cookpay_template" name="CookPay Page">
+    <template id="quickpay_template" name="QuickPay Page">
         <t t-call="website.layout">
             <div class="container mt-5">
-                <h2>CookPay</h2>
-                <form action="/cookpay/search" method="post" class="mt-3">
+                <h2>QuickPay</h2>
+                <form action="/quickpay/search" method="post" class="mt-3">
                     <div class="form-group">
                         <label for="customer_reference">Enter Customer Reference</label>
                         <input type="text" id="customer_reference" name="customer_reference"
