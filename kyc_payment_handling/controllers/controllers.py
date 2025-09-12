@@ -52,3 +52,5 @@ class QuickPayController(http.Controller):
         return request.render('kyc_payment_handling.quickpay_template', {
             'error_message': "Please provide a valid customer reference or invoice ID."
         })
+
+    

@@ -1,0 +1,130 @@
+<odoo>
+    <data>
+        <template inherit_id="website_sale.product" id="product_payment_terms_carousel" name="Payment Terms Carousel">
+            <xpath expr="//section[@id='product_detail']" position="after">
+                <hr class="my-4"/>
+                <section class="s_comparisons pt48 o_colored_level pb96" data-vxml="001" data-vcss="001"
+                         data-snippet="s_comparisons" data-name="Comparisons">
+                    <div class="container">
+                        <div class="row gap-4 gap-lg-0 o_grid_mode" data-row-count="12">
+                            <div class="o_grid_item g-col-lg-11 g-height-4 col-lg-11"
+                                 style="z-index: 1; grid-area: 1 / 2 / 5 / 13;">
+                                <div class="mb-4">
+                                    <h3>Competitive installment pricing</h3>
+                                    <p>
+                                        Looking to own the latest iPhone without the full upfront cost? All iPhones
+                                        offered are <strong>TRDA certified</strong>, ensuring top quality and
+                                        authenticity. We offer <strong>easy installment plans</strong> tailored to fit
+                                        your budget. Best of all, the <strong>advance payment is collected only upon
+                                        delivery</strong>, giving you peace of mind and flexibility. Choose the plan
+                                        that suits you best and enjoy your new device with confidence!
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel wrapper -->
+                        <div id="paymentTermsCarousel" class="carousel slide" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                <!-- Break payment_terms into chunks of 3 -->
+                                <t t-set="chunks" t-value="[]"/>
+                                <t t-foreach="range(0, len(payment_terms), 3)" t-as="i">
+                                    <t t-set="chunks" t-value="chunks + [payment_terms[i:i+3]]"/>
+                                </t>
+                                <!-- Iterate over each chunk -->
+                                <t t-foreach="enumerate(chunks)" t-as="chunk_data">
+                                    <t t-set="chunk_index" t-value="chunk_data[0]"/>
+                                    <t t-set="chunk" t-value="chunk_data[1]"/>
+                                    <div t-att-class="'carousel-item' + (' active' if chunk_index == 0 else '')">
+                                        <div class="row d-flex justify-content-center">
+                                            <t t-foreach="chunk" t-as="term">
+                                                <div class="col-12 col-sm-6 col-md-4 mb-3">
+                                                    <div class="s_card card o_cc o_cc1 h-100 my-0 o_colored_level"
+                                                         data-vxml="001" data-snippet="s_card" data-name="Card">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">
+                                                                <t t-esc="term.name"/>
+                                                            </h5>
+                                                            <div class="my-2">
+                                                                <t t-set="line" t-value="term.line_ids[1:2]"/>
+                                                                <t t-if="line">
+                                                                    <t t-set="installment"
+                                                                       t-value="(product_price / 100.0) * line.value_amount"/>
+                                                                    <strong class="h2-fs">
+                                                                        <t t-esc="'%.2f' % installment"/>
+                                                                    </strong>
+                                                                </t>
+                                                                <span class="h4-fs">
+                                                                    <strong>
+                                                                        <t t-esc="currency_symbol"/>
+                                                                    </strong>
+                                                                </span>
+                                                                <small class="text-muted o_default_snippet_text">/
+                                                                    month
+                                                                </small>
+                                                            </div>
+                                                            <p class="card-text small">
+                                                                Ideal for newcomers. Essential features to kickstart
+                                                                sales and marketing. Perfect for small teams.
+                                                            </p>
+                                                            <p class="card-text small">
+                                                                <a aria-describedby="popover573039"
+                                                                   data-scroll-zone-end="100"
+                                                                   data-scroll-zone-start="0"
+                                                                   style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                   class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                   t-att-href="'/iphone-16-pro-max-256gb-' + str(term.id) + '#top'">
+                                                                    Start Now
+                                                                </a>
+                                                            </p>
+                                                            <ul class="list-group list-group-flush text-start">
+                                                                <li class="list-group-item px-0 bg-transparent text-reset">
+                                                                    <i class="fa fa-check text-success" role="img"></i>
+                                                                    <t t-set="first_line" t-value="term.line_ids[:1]"/>
+                                                                    <t t-if="first_line">
+                                                                        <t t-set="downpayment"
+                                                                           t-value="(product_price / 100.0) * first_line.value_amount"/>
+                                                                        &#160;Downpayment
+                                                                        <t t-esc="'%.2f' % downpayment"/>
+                                                                        <t t-esc="currency_symbol"/>
+                                                                    </t>
+                                                                </li>
+                                                                <li class="list-group-item px-0 bg-transparent text-reset o_default_snippet_text">
+                                                                    <i class="fa fa-check text-success" role="img"></i>
+                                                                    Account management
+                                                                </li>
+                                                                <li class="list-group-item px-0 bg-transparent text-reset">
+                                                                    <i role="img" class="fa fa-check text-success"></i>&#160;24/7
+                                                                    toll-free support&#160;
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="card-footer text-center">
+                                                            <p>
+                                                                <b>Setup in minutes. Love it or get reimbursed</b>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <!-- Carousel controls (always visible, carousel stopped automatically) -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#paymentTermsCarousel"
+                                    data-bs-slide="prev" style="margin-left:-10%; opacity:1; filter: invert(1);">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#paymentTermsCarousel"
+                                    data-bs-slide="next" style="margin-right:-10%; opacity:1; filter: invert(1);">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </xpath>
+        </template>
+    </data>
+</odoo>

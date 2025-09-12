@@ -8,10 +8,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'account'],
+    'depends': ['base', 'website', 'account', 'website_sale'],
     'data': [
         # 'security/ir.model.access.csv',
         'data/quickpay_page.xml',
+        'views/website_sale_controller_view_inherit.xml',
 
         'views/res_partner.xml'
     ],
