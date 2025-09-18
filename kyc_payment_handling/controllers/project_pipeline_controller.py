@@ -7,6 +7,8 @@ class ProjectApplication(http.Controller):
     # ===== Start Now Button - Installments Cart =====
     @http.route(['/apply/<int:term_id>/<int:product_id>'], type='http', auth="public", website=True)
     def apply_project(self, term_id, product_id, **kw):
+        if request.env.user._is_public():
+            return request.redirect('/web/login')
         term = request.env['account.payment.term'].sudo().browse(term_id)
         product = request.env['product.template'].sudo().browse(product_id)
         countries = request.env['res.country'].sudo().search([])

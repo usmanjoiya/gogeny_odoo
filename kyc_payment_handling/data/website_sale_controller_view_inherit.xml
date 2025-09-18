@@ -89,8 +89,45 @@
                                                                 Ideal for newcomers. Essential features to kickstart
                                                                 sales and marketing. Perfect for small teams.
                                                             </p>
-                                                            <t t-if="not request.env.user._is_public()">
-                                                                <t t-if="term.id != partner_payment_term">
+
+                                                            <t t-if="term.id != partner_payment_term">
+                                                                <p class="card-text small">
+                                                                    <a aria-describedby="popover573039"
+                                                                    data-scroll-zone-end="100"
+                                                                    data-scroll-zone-start="0"
+                                                                    style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                    class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                    t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
+                                                                        Start Now
+                                                                    </a>
+                                                                </p>
+                                                            </t>
+                                                            <t t-if="partner_payment_term and term.id == partner_payment_term">
+                                                                <t t-if="partner_project_state == 'pending' or partner_project_state == 'in_review'">
+                                                                    <p class="card-text small">
+                                                                        <a aria-describedby="popover573039"
+                                                                        data-scroll-zone-end="100"
+                                                                        data-scroll-zone-start="0"
+                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                        t-att-href="'/shop/' + str(product.id)">
+                                                                            Application Processing
+                                                                        </a>
+                                                                    </p>
+                                                                </t>
+                                                                <t t-if="partner_project_state == 'approved'">
+                                                                    <p class="card-text small">
+                                                                        <a aria-describedby="popover573039"
+                                                                        data-scroll-zone-end="100"
+                                                                        data-scroll-zone-start="0"
+                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                        t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
+                                                                            Proceed to Checkout
+                                                                        </a>
+                                                                    </p>
+                                                                </t>
+                                                                <t t-if="partner_project_state == 'cancel'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                         data-scroll-zone-end="100"
@@ -98,49 +135,12 @@
                                                                         style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
                                                                         class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
                                                                         t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
-                                                                            Start Now
+                                                                            Submit Application Again
                                                                         </a>
                                                                     </p>
                                                                 </t>
-                                                                <t t-if="partner_payment_term and term.id == partner_payment_term">
-                                                                    <t t-if="partner_project_state == 'pending' or partner_project_state == 'in_review'">
-                                                                        <p class="card-text small">
-                                                                            <a aria-describedby="popover573039"
-                                                                            data-scroll-zone-end="100"
-                                                                            data-scroll-zone-start="0"
-                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                            t-att-href="'/shop/' + str(product.id)">
-                                                                                Application Processing
-                                                                            </a>
-                                                                        </p>
-                                                                    </t>
-                                                                    <t t-if="partner_project_state == 'approved'">
-                                                                        <p class="card-text small">
-                                                                            <a aria-describedby="popover573039"
-                                                                            data-scroll-zone-end="100"
-                                                                            data-scroll-zone-start="0"
-                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                            t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
-                                                                                Proceed to Checkout
-                                                                            </a>
-                                                                        </p>
-                                                                    </t>
-                                                                    <t t-if="partner_project_state == 'cancel'">
-                                                                        <p class="card-text small">
-                                                                            <a aria-describedby="popover573039"
-                                                                            data-scroll-zone-end="100"
-                                                                            data-scroll-zone-start="0"
-                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                            t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
-                                                                                Submit Application Again
-                                                                            </a>
-                                                                        </p>
-                                                                    </t>
-                                                                </t>
                                                             </t>
+
                                                             <ul class="list-group list-group-flush text-start">
                                                                 <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
