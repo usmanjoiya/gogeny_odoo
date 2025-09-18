@@ -1,0 +1,68 @@
+<odoo>
+    <record id="inherit_edit_project_form" model="ir.ui.view">
+        <field name="name">inherit.project.project.form</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header/button[@name='action_open_share_project_wizard']" position="after">
+                <button name="action_state_pending" string="Reset to Pending" type="object" class="oe_highlight"
+                    invisible="state in ['pending', 'approved']"/>
+                <button name="action_state_in_review" string="Send for Review" type="object" class="oe_highlight"
+                    invisible="state in ['in_review']"/>
+                <button name="action_state_approved" string="Approved" type="object" class="oe_highlight"
+                    invisible="state in ['approved', 'cancel', 'pending']"/>
+                <button name="action_state_cancel" string="Cancel" type="object" class="oe_highlight"
+                    invisible="state in ['cancel']"/>
+            </xpath>
+            <xpath expr="//form/header/field[@name='stage_id']" position="after">
+                <field name="state" widget="statusbar" readonly="1" nolabel="1"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[1]/field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[1]/field[@name='partner_id']" position="after">
+                <field name="partner_id" widget="res_partner_many2one"/>
+                <field name="phone" widget="phone"/>
+                <field name="emergency_phone" widget="phone"/>
+                <field name="email" widget="email"/>
+                <field name="place_of_work"/>
+                <field name="uae_id_number"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[2]/field[@name='user_id']" position="after">
+                <field name="payment_term_id"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[2]/field[@name='date']" position="after">
+                <div class="o_address_format">
+                    <field name="street" placeholder="Street..." class="o_address_street"/>
+                    <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                    <field name="city" placeholder="City" class="o_address_city"/>
+                    <field name="state_id" class="o_address_state" placeholder="State" options="{'no_open': True, 'no_quick_create': True}"/>
+                    <field name="zip_code" placeholder="ZIP" class="o_address_zip"/>
+                    <div name="partner_address_country" class="d-flex justify-content-between">
+                        <field name="country_id" placeholder="Country" class="o_address_country" options="{'no_open': True, 'no_create': True}"/>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='description']" position="before">
+                <page string="Documents">
+                    <group>
+                        <group>
+                            <field name="id_photo_front" filename="id_photo_front_filename" widget="binary"/>
+                        </group>
+                        <group>
+                            <field name="id_photo_back" filename="id_photo_back_filename" widget="binary"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="bank_statement" filename="bank_statement_filename" widget="binary"/>
+                        </group>
+                        <group>
+                            <field name="salary_certificate" filename="salary_certificate_filename" widget="binary"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

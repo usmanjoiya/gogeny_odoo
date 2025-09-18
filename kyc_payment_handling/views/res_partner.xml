@@ -4,10 +4,21 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='category_id']" position="after">
-                <field name="customer_reference"/>
+            <xpath expr="//field[@name='vat']" position="before">
+                <field name="customer_reference" string="ID Number"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="Projects &amp; Payment Plans">
+                    <field name="project_line_ids" context="{'default_partner_id': id}">
+                        <list editable="bottom" readonly="1">
+                            <field name="project_id"/>
+                            <field name="product_id"/>
+                            <field name="payment_term_id"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
             </xpath>
         </field>
     </record>
-
 </odoo>

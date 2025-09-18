@@ -1,0 +1,132 @@
+<odoo>
+    <!-- KYC Application form -->
+    <template id="project_application_template" name="Project Application">
+        <t t-call="website.layout">
+            <div class="container py-5">
+                <h2 class="mb-4">Applying for <t t-esc="product.name"/> on <t t-esc="payment_term.name"/></h2>
+                <form id="applicationForm" action="/apply/submit" method="post" enctype="multipart/form-data" class="o_website_form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input type="hidden" name="product_id" t-att-value="product.id"/>
+                    <input type="hidden" name="term_id" t-att-value="payment_term.id"/>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <div class="row g-2">
+                            <t t-set="full_name" t-value="request.env.user.partner_id.name or ''"/>
+                            <t t-set="name_parts" t-value="full_name.split(' ')"/>
+                            <div class="col-md-4">
+                                <input type="text" name="first_name" required="True" class="form-control" placeholder="First Name"
+                                    t-att-value="name_parts[0] if len(name_parts) > 0 else ''"/>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="middle_name" class="form-control" placeholder="Middle Name"
+                                    t-att-value="name_parts[1] if len(name_parts) == 3 or len(name_parts) > 3 else ''"/>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="last_name" class="form-control" placeholder="Last Name"
+                                    t-att-value="' '.join(name_parts[2:]) if len(name_parts) > 2 else (name_parts[1] if len(name_parts) == 2 else '')"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" name="phone_number" required="True" class="form-control"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Emergency Phone Number</label>
+                                <input type="text" name="emergency_phone_number" required="True" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" required="True" class="form-control" t-att-value="request.env.user.partner_id.email or ''"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Place of Work</label>
+                                <input type="text" name="place_of_work" required="True" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" name="street" required="True" class="form-control mb-2" placeholder="Street"/>
+                        <input type="text" name="street2" class="form-control mb-2" placeholder="Street 2"/>
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-4">
+                                <input type="text" name="city" required="True" class="form-control" placeholder="City"/>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="state_id" class="form-select" required="True">
+                                    <option value="">Select State</option>
+                                    <t t-foreach="states" t-as="st">
+                                        <option t-att-value="st.id"><t t-esc="st.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="zip" required="True" class="form-control" placeholder="Zip"/>
+                            </div>
+                        </div>
+                        <select name="country_id" class="form-select" required="True">
+                            <option value="">Select Country</option>
+                            <t t-foreach="countries" t-as="ct">
+                                <option t-att-value="ct.id"><t t-esc="ct.name"/></option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">UAE ID Number</label>
+                        <input type="text" name="uae_id_number" required="True" class="form-control"/>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">ID Photo Front</label>
+                                <input type="file" name="id_photo_front" required="True" class="form-control"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">ID Photo Back</label>
+                                <input type="file" name="id_photo_back" required="True" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">3M Bank Statement</label>
+                                <input type="file" name="3m_bank_statement" required="True" class="form-control"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Salary Certificate</label>
+                                <input type="file" name="salary_certificate" required="True" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Show Installment details in cart under product -->
+    <template id="cart_lines" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines with Payment Terms">
+        <xpath expr="//div[@id='cart_products']/div/t/div[2]" position="inside">
+            <!-- Load all session terms -->
+            <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
+            <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
+            <!-- Extract ids -->
+            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <!-- Show payment term if exists -->
+            <t t-if="term_id">
+                <li class="list-group-item px-0 bg-transparent text-reset">
+                    Payment Term: <t t-esc="request.env['account.payment.term'].browse(term_id).name"/>
+                </li>
+            </t>
+        </xpath>
+    </template>
+</odoo>

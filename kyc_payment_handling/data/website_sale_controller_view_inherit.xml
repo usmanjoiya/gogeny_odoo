@@ -1,5 +1,6 @@
 <odoo>
     <data>
+<!--        Installments Cart-->
         <template inherit_id="website_sale.product" id="product_payment_terms_carousel" name="Payment Terms Carousel">
             <xpath expr="//section[@id='product_detail']" position="after">
                 <hr class="my-4"/>
@@ -44,6 +45,28 @@
                                                             <h5 class="card-title">
                                                                 <t t-esc="term.name"/>
                                                             </h5>
+                                                            <t t-if="partner_payment_term and term.id == partner_payment_term">
+                                                                <t t-if="partner_project_state == 'pending'">
+                                                                    <span class="badge bg-info">
+                                                                        Pending
+                                                                    </span>
+                                                                </t>
+                                                                <t t-if="partner_project_state == 'in_review'">
+                                                                    <span class="badge bg-info">
+                                                                        In Review
+                                                                    </span>
+                                                                </t>
+                                                                <t t-if="partner_project_state == 'approved'">
+                                                                    <span class="badge bg-info">
+                                                                        Approved
+                                                                    </span>
+                                                                </t>
+                                                                <t t-if="partner_project_state == 'cancel'">
+                                                                    <span class="badge bg-info">
+                                                                        Cancelled
+                                                                    </span>
+                                                                </t>
+                                                            </t>
                                                             <div class="my-2">
                                                                 <t t-set="line" t-value="term.line_ids[1:2]"/>
                                                                 <t t-if="line">
@@ -66,16 +89,58 @@
                                                                 Ideal for newcomers. Essential features to kickstart
                                                                 sales and marketing. Perfect for small teams.
                                                             </p>
-                                                            <p class="card-text small">
-                                                                <a aria-describedby="popover573039"
-                                                                   data-scroll-zone-end="100"
-                                                                   data-scroll-zone-start="0"
-                                                                   style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                   class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                   t-att-href="'/iphone-16-pro-max-256gb-' + str(term.id) + '#top'">
-                                                                    Start Now
-                                                                </a>
-                                                            </p>
+                                                            <t t-if="not request.env.user._is_public()">
+                                                                <t t-if="term.id != partner_payment_term">
+                                                                    <p class="card-text small">
+                                                                        <a aria-describedby="popover573039"
+                                                                        data-scroll-zone-end="100"
+                                                                        data-scroll-zone-start="0"
+                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                        t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
+                                                                            Start Now
+                                                                        </a>
+                                                                    </p>
+                                                                </t>
+                                                                <t t-if="partner_payment_term and term.id == partner_payment_term">
+                                                                    <t t-if="partner_project_state == 'pending' or partner_project_state == 'in_review'">
+                                                                        <p class="card-text small">
+                                                                            <a aria-describedby="popover573039"
+                                                                            data-scroll-zone-end="100"
+                                                                            data-scroll-zone-start="0"
+                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                            t-att-href="'/shop/' + str(product.id)">
+                                                                                Application Processing
+                                                                            </a>
+                                                                        </p>
+                                                                    </t>
+                                                                    <t t-if="partner_project_state == 'approved'">
+                                                                        <p class="card-text small">
+                                                                            <a aria-describedby="popover573039"
+                                                                            data-scroll-zone-end="100"
+                                                                            data-scroll-zone-start="0"
+                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                            t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
+                                                                                Proceed to Checkout
+                                                                            </a>
+                                                                        </p>
+                                                                    </t>
+                                                                    <t t-if="partner_project_state == 'cancel'">
+                                                                        <p class="card-text small">
+                                                                            <a aria-describedby="popover573039"
+                                                                            data-scroll-zone-end="100"
+                                                                            data-scroll-zone-start="0"
+                                                                            style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                            class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                            t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
+                                                                                Submit Application Again
+                                                                            </a>
+                                                                        </p>
+                                                                    </t>
+                                                                </t>
+                                                            </t>
                                                             <ul class="list-group list-group-flush text-start">
                                                                 <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
@@ -126,5 +191,26 @@
                 </section>
             </xpath>
         </template>
+
+<!--        Payment Now CLick - Show Downpayment-->
+        <template inherit_id="website_sale.confirmation" id="website_sale_confirmation_downpayment">
+            <!-- Replace the Total cell -->
+            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[@t-field='tx_sudo.amount']" position="replace">
+                <strong>
+                    <t t-if="downpayment_amount">
+                        <t t-esc="currency_symbol"/> <t t-esc="'%.2f' % downpayment_amount"/>
+                    </t>
+                    <t t-else="">
+                        <t t-esc="currency_symbol"/> <t t-esc="'%.2f' % order.amount_total"/>
+                    </t>
+                </strong>
+            </xpath>
+
+            <!-- Also replace the label "Total:" -->
+            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']" position="replace">
+                <strong>Downpayment:</strong>
+            </xpath>
+        </template>
+
     </data>
 </odoo>
