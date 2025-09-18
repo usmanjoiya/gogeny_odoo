@@ -212,5 +212,12 @@
             </xpath>
         </template>
 
+<!--        Removing Downpayment notification error-->
+        <template inherit_id="website_sale.payment_confirmation_status" id="payment_confirmation_status_inherited">
+            <xpath expr="//div/div/div/t[3]" position="replace">
+                <span></span>
+            </xpath>
+        </template>
+
     </data>
 </odoo>
