@@ -217,7 +217,61 @@
             <xpath expr="//div/div/div/t[3]" position="replace">
                 <span></span>
             </xpath>
+            <xpath expr="//div/div/div/t[2]" position="replace">
+                <t t-if="tx_sudo.state == 'done'">
+                    <!-- compute downpayment -->
+                    <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
+                        <t t-set="down_percent"
+                            t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                        <t t-set="downpayment_amount"
+                            t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                        <!-- check if current transaction amount equals downpayment -->
+                        <t t-if="downpayment_amount != tx_sudo.sale_order_ids[0].amount_untaxed">
+                            <span>Your downpayment has been successfully processed.</span>
+                        </t>
+                        <t t-else="">
+                            <span t-if="tx_sudo.provider_id.sudo().done_msg"
+                                t-out="tx_sudo.provider_id.sudo().done_msg"/>
+                        </t>
+                    </t>
+                    <!-- fallback if no payment term -->
+                    <t t-else="">
+                        <span t-if="tx_sudo.provider_id.sudo().done_msg"
+                            t-out="tx_sudo.provider_id.sudo().done_msg"/>
+                    </t>
+                </t>
+            </xpath>
         </template>
 
+<!--        Note Customise on Payment Page-->
+        <template inherit_id="payment.state_header" id="payment_payment_state_header">
+            <xpath expr="///t[5]" position="replace">
+                <t t-elif="tx.state == 'done'">
+                    <t t-set="alert_style" t-value="'success'"/>
+                    <t t-if="not is_processing" t-set="status_heading">
+                        <p>Thank you!</p>
+                    </t>
+                    <t t-if="tx.operation == 'validation'" t-set="status_message">
+                        <p>Your payment method has been saved.</p>
+                    </t>
+                    <t t-else="">
+                        <!-- Compute downpayment -->
+                        <t t-if="tx.sale_order_ids and tx.sale_order_ids[0].payment_term_id.line_ids">
+                            <t t-set="down_percent"
+                                t-value="tx.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                            <t t-set="downpayment_amount"
+                                t-value="(tx.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                            <!-- If paid = downpayment -->
+                            <t t-if="downpayment_amount != tx.sale_order_ids[0].amount_untaxed"
+                                t-set="status_message">
+                                <p>Your downpayment has been successfully processed.</p>
+                            </t>
+                            <t t-else="" t-set="status_message" t-value="tx.provider_id.sudo().done_msg"/>
+                        </t>
+                        <t t-else="" t-set="status_message" t-value="tx.provider_id.sudo().done_msg"/>
+                    </t>
+                </t>
+            </xpath>
+        </template>
     </data>
 </odoo>

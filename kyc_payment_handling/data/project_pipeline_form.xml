@@ -129,4 +129,57 @@
             </t>
         </xpath>
     </template>
+
+    <!-- Show down-payment in cart under Total -->
+    <template id="total" inherit_id="website_sale.total" name="Shopping Cart Total with Down Payment">
+        <xpath expr="//div[@id='cart_total']/table/tr[@id='order_total']" position="after">
+            <t t-if="website_sale_order.payment_term_id and website_sale_order.payment_term_id.line_ids">
+                <t t-if="request.httprequest.path in ['/shop/confirmation', '/shop/payment']">
+                    <t t-set="down_percent" t-value="website_sale_order.payment_term_id.line_ids[0].value_amount"/>
+                    <t t-set="downpayment_amount" t-value="(website_sale_order.amount_untaxed * down_percent) / 100"/>
+                    <tr id="down_payment" class="border-top">
+                        <td colspan="2" class="border-0 ps-0 pt-3">
+                            <strong>Downpayment</strong>
+                        </td>
+                        <td class="text-end border-0 px-0 pt-3">
+                            <strong t-esc="downpayment_amount"
+                                    t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+                                    class="monetary_field text-end p-0"/>
+                        </td>
+                    </tr>
+                </t>
+                <t t-if="request.httprequest.path in ['/shop/payment']">
+                    <tr id="downpayment_note" class="border-top">
+                        <td colspan="4" style="font-size:13px" class="border-0 ps-0 pt-3">
+                            <strong>Click on "Pay Now" to pay "Downpayment" Amount Only.</strong>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+<!--    Show Downpayment Label-->
+    <template id="payment_status_with_downpayment" inherit_id="payment.payment_status">
+        <xpath expr="//t/div/div/div/div/div[2]/div/t[1]/t[2]" position="replace">
+            <t t-set="label">Total Amount</t>
+        </xpath>
+        <xpath expr="//t/div/div/div/div/div[2]/div/t[1]" position="after">
+            <t t-if="tx.sale_order_ids and tx.sale_order_ids[0].payment_term_id and tx.sale_order_ids[0].payment_term_id.line_ids">
+                <t t-set="down_percent" t-value="tx.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                <t t-set="downpayment_amount" t-value="(tx.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                <t t-call="payment.summary_item">
+                    <t t-set="name" t-value="'downpayment'"/>
+                    <t t-set="label">Downpayment</t>
+                    <t t-set="value" t-value="downpayment_amount"/>
+                    <t t-set="options"
+                    t-value="{
+                            'widget': 'monetary',
+                            'display_currency': tx.currency_id,
+                    }"
+                    />
+                </t>
+            </t>
+        </xpath>
+    </template>
 </odoo>

@@ -62,29 +62,27 @@ class WebsiteSaleInherit(WebsiteSale):
         downpayment_amount = order.amount_total
         payment_term = order.payment_term_id
         print("---------------->>>>> Order Payment Term", payment_term.name if payment_term else "None")
+        check_adv_payment = request.env['sale.advance.payment.inv'].sudo().search([('id', '=', order.id)])
+        print("---------------->>>>> Order State: ", order.state)
+        print("---------------->>>>> Got check_adv_payment: ", check_adv_payment)
         if payment_term and payment_term.line_ids:
             first_line = payment_term.line_ids[:1]
             percentage_value = first_line.value_amount
             downpayment_amount = (order.amount_total / 100.0) * percentage_value
-            # --- Auto-create downpayment invoice silently ---
-            advance_wizard = request.env['sale.advance.payment.inv'].sudo().create({
-                'advance_payment_method': 'delivered',
-                'sale_order_ids': [(6, 0, [order.id])],  # link to order
-            })
-            advance_wizard.with_context(
-                active_ids=order.ids, active_model='sale.order'
-            ).create_invoices()
-            # --- Post and pay the downpayment invoice ---
-            invoice_id = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
-            if invoice_id:
-                invoice_id.action_post()
-                payment_register = request.env['account.payment.register'].sudo().with_context(
-                    active_model='account.move',
-                    active_ids=invoice_id.ids
-                ).create({
-                    'payment_date': fields.Date.context_today(request.env.user),
-                })
-                payment_register.action_create_payments()
+            if not order.invoice_ids:
+                invoice = order._create_invoices()
+            else:
+                invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
+            if invoice and invoice.state == 'draft':
+                invoice.action_post()
+                if invoice.amount_residual > 0:
+                    payment_register = request.env['account.payment.register'].sudo().with_context(
+                        active_model='account.move',
+                        active_ids=invoice.ids
+                    ).create({
+                        'payment_date': fields.Date.context_today(request.env.user),
+                    })
+                    payment_register.action_create_payments()
         # --- Remove matching partner product line if approved ---
         if order.partner_id and order.partner_id.project_line_ids:
             print("-------------------->>>>> Order Partner:", order.partner_id.name)
@@ -143,3 +141,5 @@ class WebsiteSaleInherit(WebsiteSale):
         if tx_sudo and tx_sudo.state == 'draft':
             return request.redirect('/shop')
         return request.redirect('/shop/confirmation')
+
+
