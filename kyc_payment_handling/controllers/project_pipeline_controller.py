@@ -24,6 +24,7 @@ class ProjectApplication(http.Controller):
     # ===== KYC Details Submit - Button =====
     @http.route(['/apply/submit'], type='http', auth="public", website=True, csrf=False)
     def apply_submit(self, **post):
+        print("\n\n\n------------->>>>>KYC SUBMIT<<<<<-----------------")
         files = request.httprequest.files
         id_photo_front_file = files.get('id_photo_front')
         id_photo_back_file = files.get('id_photo_back')
@@ -74,6 +75,16 @@ class ProjectApplication(http.Controller):
             'uae_id_number': post.get('uae_id_number'),
             'payment_term_id': term.id,
         }
+
+        partner_vals = {
+            'phone': post.get('phone_number'),
+            'street': post.get('street'),
+            'street2': post.get('street2'),
+            'city': post.get('city'),
+            'zip': post.get('zip'),
+            'customer_reference': post.get('uae_id_number'),
+        }
+        
         if post.get('country_id'):
             project_vals['country_id'] = int(post.get('country_id'))
         if post.get('state_id'):
@@ -91,6 +102,11 @@ class ProjectApplication(http.Controller):
             project_vals['salary_certificate'] = base64.b64encode(salary_certificate_file.read())
             project_vals['salary_certificate_filename'] = salary_certificate_file.filename
         project = request.env['project.project'].sudo().create(project_vals)
+        
+        print("------->>>>> Printing partner Before Update: ", partner.customer_reference)
+        partner.sudo().write(partner_vals)
+        print("------->>>>> Printing partner After Update: ", partner.customer_reference)
+
         for line in partner.project_line_ids:
             if line.product_id.id == product.id and line.payment_term_id.id == term.id and line.state == 'cancel':
                 print(f"---------------------------->>>>> Removing project line: {line}")

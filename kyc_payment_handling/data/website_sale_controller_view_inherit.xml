@@ -192,23 +192,22 @@
             </xpath>
         </template>
 
-<!--        Payment Now CLick - Show Downpayment-->
         <template inherit_id="website_sale.confirmation" id="website_sale_confirmation_downpayment">
-            <!-- Replace the Total cell -->
-            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[@t-field='tx_sudo.amount']" position="replace">
-                <strong>
-                    <t t-if="downpayment_amount">
-                        <t t-esc="currency_symbol"/> <t t-esc="'%.2f' % downpayment_amount"/>
-                    </t>
-                    <t t-else="">
-                        <t t-esc="currency_symbol"/> <t t-esc="'%.2f' % order.amount_total"/>
-                    </t>
-                </strong>
-            </xpath>
 
-            <!-- Also replace the label "Total:" -->
             <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']" position="replace">
-                <strong>Downpayment:</strong>
+                 <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
+                        <t t-set="down_percent"
+                            t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                        <t t-set="downpayment_amount"
+                            t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                        <!-- check if current transaction amount equals downpayment -->
+                        <t t-if="downpayment_amount != tx_sudo.sale_order_ids[0].amount_untaxed">
+                            <strong>Downpayment:</strong>
+                        </t>
+                        <t t-else="">
+                            <strong>Amount:</strong>
+                        </t>
+                    </t>
             </xpath>
         </template>
 
@@ -243,35 +242,44 @@
             </xpath>
         </template>
 
-<!--        Note Customise on Payment Page-->
-        <template inherit_id="payment.state_header" id="payment_payment_state_header">
-            <xpath expr="///t[5]" position="replace">
-                <t t-elif="tx.state == 'done'">
-                    <t t-set="alert_style" t-value="'success'"/>
-                    <t t-if="not is_processing" t-set="status_heading">
-                        <p>Thank you!</p>
-                    </t>
-                    <t t-if="tx.operation == 'validation'" t-set="status_message">
-                        <p>Your payment method has been saved.</p>
-                    </t>
-                    <t t-else="">
-                        <!-- Compute downpayment -->
-                        <t t-if="tx.sale_order_ids and tx.sale_order_ids[0].payment_term_id.line_ids">
-                            <t t-set="down_percent"
-                                t-value="tx.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
-                            <t t-set="downpayment_amount"
-                                t-value="(tx.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
-                            <!-- If paid = downpayment -->
-                            <t t-if="downpayment_amount != tx.sale_order_ids[0].amount_untaxed"
-                                t-set="status_message">
-                                <p>Your downpayment has been successfully processed.</p>
-                            </t>
-                            <t t-else="" t-set="status_message" t-value="tx.provider_id.sudo().done_msg"/>
-                        </t>
-                        <t t-else="" t-set="status_message" t-value="tx.provider_id.sudo().done_msg"/>
-                    </t>
-                </t>
+        <template id="address_kanban_inherit" inherit_id="website_sale.address_kanban" name="Kanban address with Payment Term">
+            <xpath expr="//div/div/t/a" position="replace">
+                <a
+                    t-att-href="new_address_href 
+                        + '&amp;partner_id=' + str(contact.id) 
+                        + (website_sale_order.payment_term_id and '&amp;payment_term_id=' + str(website_sale_order.payment_term_id.id) or '')"
+                    class="js_edit_address btn btn-link p-0 mt-auto"
+                    role="button"
+                    title="Edit this address"
+                    aria-label="Edit this address">
+                    <i class="fa fa-pencil me-1"/>Edit
+                </a>
             </xpath>
         </template>
+
+        <template id="address_row_inherit" inherit_id="website_sale.address_row" name="Address Row with Payment Term">
+            <xpath expr="//div/div[2]/a" position="replace">
+                <a
+                    role="button"
+                    t-att-href="new_address_href 
+                                + (order.payment_term_id and '&amp;payment_term_id=' + str(order.payment_term_id.id) or '')"
+                    t-att-data-address-type="is_invoice and 'billing' or 'delivery'"
+                    class="o_wsale_add_address d-flex align-items-center justify-content-center h-100 px-4 border rounded mx-auto no-decoration"
+                >
+                    <i class="fa fa-plus me-md-2"/>
+                    <span class="d-none d-md-inline">Add address</span>
+                </a>
+            </xpath>
+        </template>
+
+        <template id="address_form_inherit_payment_term" inherit_id="website_sale.address" name="Address form with Payment Term">
+            <xpath expr="//form" position="inside">
+                <!-- Preserve payment_term_id when submitting the form -->
+                <input type="hidden" name="payment_term_id"
+                    t-att-value="request.params.get('payment_term_id') or website_sale_order.payment_term_id.id or ''"/>
+            </xpath>
+        </template>
+
+
     </data>
 </odoo>

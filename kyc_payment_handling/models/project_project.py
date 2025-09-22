@@ -57,3 +57,9 @@ class ProjectProject(models.Model):
     def action_state_cancel(self):
         self.ensure_one()
         self.state = 'cancel'
+
+    @api.onchange('uae_id_number')
+    def onchange_uae_id_number(self):
+        for rec in self:
+            if rec.partner_id and not rec.partner_id.customer_reference:
+                rec.partner_id.customer_reference = rec.uae_id_number

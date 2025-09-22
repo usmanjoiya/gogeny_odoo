@@ -1,6 +1,9 @@
 from odoo import http, fields
 from odoo.http import request
 from odoo.exceptions import ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 try:
@@ -52,50 +55,94 @@ class WebsiteSaleInherit(WebsiteSale):
         sale_order_id = request.session.get('sale_last_order_id')
         if not sale_order_id:
             return request.redirect('/shop')
+
         order = request.env['sale.order'].sudo().browse(sale_order_id)
         if not order:
             return request.redirect('/shop')
+
         print("---------------->>>>> ORDER ID", order)
+
         # Default values
         values = self._prepare_shop_payment_confirmation_values(order)
+
         # Downpayment logic
         downpayment_amount = order.amount_total
         payment_term = order.payment_term_id
         print("---------------->>>>> Order Payment Term", payment_term.name if payment_term else "None")
-        check_adv_payment = request.env['sale.advance.payment.inv'].sudo().search([('id', '=', order.id)])
+
         print("---------------->>>>> Order State: ", order.state)
-        print("---------------->>>>> Got check_adv_payment: ", check_adv_payment)
-        if payment_term and payment_term.line_ids:
-            first_line = payment_term.line_ids[:1]
-            percentage_value = first_line.value_amount
-            downpayment_amount = (order.amount_total / 100.0) * percentage_value
-            if not order.invoice_ids:
-                invoice = order._create_invoices()
+
+        # compute downpayment
+        if order.payment_term_id and order.payment_term_id.line_ids:
+            first_line = order.payment_term_id.line_ids[0]
+            if first_line.value == "percent":
+                values['downpayment_amount'] = (order.amount_total * first_line.value_amount) / 100.0
+            elif first_line.value == "fixed":
+                values['downpayment_amount'] = first_line.value_amount
+
+        if order and not order.state == 'sale':
+            order.action_confirm()
+
+        if not order.invoice_ids:
+            invoice = order._create_invoices()
+        else:
+            invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
+
+        if invoice and invoice.state == 'draft':
+            invoice.action_post()
+
+
+        payment = request.env['account.payment'].sudo().search([
+            ('payment_transaction_id', '=', order.name)
+        ], limit=1)
+
+        print("---------------->>>>> Account Payment Record: ", payment)
+
+        print("---------------->>>>> Invoice State: ", invoice.state)
+
+        if invoice and invoice.state == 'posted' and payment:
+            print("---------------->>>>> Linking payment to invoice")
+
+            # Debug print all lines
+            print("------ Invoice Lines ------")
+            for l in invoice.line_ids:
+                print(l.id, l.name, l.account_id.name, l.account_id.account_type, l.account_id.internal_group)
+
+            print("------ Payment Move Lines ------")
+            for l in payment.move_id.line_ids:
+                print(l.id, l.name, l.account_id.name, l.account_id.account_type, l.account_id.internal_group)
+
+            # Find receivable lines by partner+account
+            inv_lines = invoice.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
+            pay_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
+
+            print("---------------->>>>> Invoice receivable lines:", inv_lines)
+            print("---------------->>>>> Payment receivable lines:", pay_lines)
+
+            if inv_lines and pay_lines:
+                lines_to_reconcile = inv_lines + pay_lines
+                lines_to_reconcile.reconcile()
+                print("---------------->>>>> Reconciled Payment %s with Invoice %s" % (payment.name, invoice.name))
             else:
-                invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
-            if invoice and invoice.state == 'draft':
-                invoice.action_post()
-                if invoice.amount_residual > 0:
-                    payment_register = request.env['account.payment.register'].sudo().with_context(
-                        active_model='account.move',
-                        active_ids=invoice.ids
-                    ).create({
-                        'payment_date': fields.Date.context_today(request.env.user),
-                    })
-                    payment_register.action_create_payments()
+                print("---------------->>>>> No receivable lines found to reconcile.")
+
         # --- Remove matching partner product line if approved ---
         if order.partner_id and order.partner_id.project_line_ids:
             print("-------------------->>>>> Order Partner:", order.partner_id.name)
+
             for so_line in order.order_line:
                 print("------------->>>>> OL")
                 for project in order.partner_id.project_line_ids:
                     if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'approved':
                         print(f"---------------------------->>>>> Removing project line: {project}")
                         project.unlink()
+
         values.update({
-            'downpayment_amount': downpayment_amount,
             'currency_symbol': order.currency_id.symbol,
+            'downpayment_amount': values.get('downpayment_amount', order.amount_total),
         })
+        print("---------------->>>>> I AM OUT <<<<<----------------")
+
         return request.render("website_sale.confirmation", values)
 
     @http.route('/shop/payment/validate', type='http', auth="public", website=True, sitemap=False)
@@ -143,3 +190,32 @@ class WebsiteSaleInherit(WebsiteSale):
         return request.redirect('/shop/confirmation')
 
 
+    @http.route('/shop/address/submit', type='http', methods=['POST'], auth='public', website=True, sitemap=False)
+    def shop_address_submit(self, partner_id=None, address_type='billing', use_delivery_as_billing=None, callback=None, required_fields=None, payment_term_id=None, **form_data):
+        """Inherit default address submit and also attach payment term to the order"""
+        # --- Call super to handle standard behavior ---
+        response = super().shop_address_submit(
+            partner_id=partner_id,
+            address_type=address_type,
+            use_delivery_as_billing=use_delivery_as_billing,
+            callback=callback,
+            required_fields=required_fields,
+            **form_data
+        )
+
+         # 🔹 Get current order
+        order = request.website.sale_get_order()
+        if not order:
+            return response
+
+        # 🔹 Check if payment_term_id came from form
+        term_id = payment_term_id or form_data.get('payment_term_id')
+        print("--------------->>>>>Before If Payment term :", term_id)
+        if term_id:
+            term = request.env['account.payment.term'].sudo().browse(int(term_id))
+            if term.exists():
+                order.sudo().write({'payment_term_id': term.id})
+                request.session['sale_order_payment_term'] = term.id
+                print("---------------->>>>>Payment term", term)
+
+        return response
