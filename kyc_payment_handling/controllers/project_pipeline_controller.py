@@ -19,12 +19,24 @@ class ProjectApplication(http.Controller):
             'countries': countries,
             'states': states,
         }
+        # print("\n\n\n------------->>>>>VALUESSSS:::::::", values)
         return request.render("kyc_payment_handling.project_application_template", values)
 
     # ===== KYC Details Submit - Button =====
     @http.route(['/apply/submit'], type='http', auth="public", website=True, csrf=False)
     def apply_submit(self, **post):
+        
         print("\n\n\n------------->>>>>KYC SUBMIT<<<<<-----------------")
+        # print("============ RAW POST ============")
+        # print(post)
+        # print("============ FILES ===============")
+        # print(request.httprequest.form)
+        # print("============ FILES RAW ===========")
+        # print(request.httprequest.files)
+
+
+        # print("\n\n\n------------->>>>>Product:::::::", post.get('product_id'))
+        # print("\n\n\n------------->>>>>Product:::::::", int(post.get('product_id')))
         files = request.httprequest.files
         id_photo_front_file = files.get('id_photo_front')
         id_photo_back_file = files.get('id_photo_back')

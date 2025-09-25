@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_invoice_payment_custom_inherit" inherit_id="account_payment.portal_invoice_payment">
+        <!-- Add button to switch to custom payment tab -->
+       <!-- Add Custom Amount Button -->
+        <xpath expr="//div[@id='o_payment_tabs']" position="inside">
+            <button class="btn btn-outline-primary o_btn_payment_tab"
+                id="o_payment_custom_tab"
+                data-bs-toggle="pill"
+                data-bs-target="#o_payment_custom"
+                type="button"
+                role="tab"
+                aria-controls="o_payment_custom"
+                aria-selected="false">
+                <strong>Custom Amount</strong><br/>
+                <span>Enter manually</span>
+            </button>
+        </xpath>
+
+        <!-- Add Custom Tab Content -->
+        <xpath expr="//div[@id='o_payment_tabs']" position="after">
+            <t t-if="o_payment_custom_tab">
+                <div class="tab-pane my-3"
+                    id="o_payment_custom"
+                    role="tabpanel"
+                    aria-labelledby="o_payment_custom_tab"
+                    tabindex="0">
+
+                    <!-- User Input -->
+                    <div class="text-bg-light row row-cols-1 mx-0 py-2 rounded mb-3">
+                        <div class="col-12 mb-2">
+                            <label for="custom_payment_amount" class="form-label">Enter Amount</label>
+                            <input type="number" step="0.01" min="0"
+                                id="custom_payment_amount"
+                                class="form-control"
+                                placeholder="Enter custom amount"/>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted">
+                                You can enter any amount up to the full invoice total.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Summary block just like installments -->
+                    <div class="text-bg-light row row-cols-1 row-cols-md-2 mx-0 py-2 rounded">
+                        <t t-call="payment.summary_item">
+                            <t t-set="name" t-value="'amount_custom'"/>
+                            <t t-set="label">Amount</t>
+                            <t t-set="value" t-value="next_amount_to_pay"/>
+                            <t t-set="options" t-value="{'widget': 'monetary', 'display_currency': currency}"/>
+                        </t>
+                        <t t-call="payment.summary_item">
+                            <t t-set="name" t-value="'reference_custom'"/>
+                            <t t-set="label">Reference</t>
+                            <t t-set="value" t-value="next_payment_reference"/>
+                            <t t-set="include_separator" t-value="True"/>
+                        </t>
+                    </div>
+                </div>
+            <t/>
+        </xpath>
+
+        <!-- Inject JS directly to sync custom amount -->
+        <xpath expr="//div[@id='pay_with']" position="inside">
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const customInput = document.querySelector("#custom_payment_amount");
+                    if (customInput) {
+                        customInput.addEventListener("input", function () {
+                            const val = parseFloat(this.value || 0);
+                            console.log("[CustomPayment] User entered custom:", val);
+                            // ⚡ Override the hidden 'next_amount_to_pay' span value
+                            const summaryValue = document.querySelector(
+                                "#o_payment_custom .text-bg-light [name='amount_installment']"
+                            );
+                            if (summaryValue) {
+                                summaryValue.textContent = val.toFixed(2);
+                            }
+                            // Update hidden amount in form (Odoo reads this)
+                            const amountInput = document.querySelector("input[name='o_payment_amount']");
+                            if (amountInput) {
+                                amountInput.value = val;
+                            }
+                        });
+                    }
+                });
+            </script>
+        </xpath>
+    </template>
+</odoo>

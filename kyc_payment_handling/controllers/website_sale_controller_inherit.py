@@ -77,8 +77,6 @@ class WebsiteSaleInherit(WebsiteSale):
             first_line = order.payment_term_id.line_ids[0]
             if first_line.value == "percent":
                 values['downpayment_amount'] = (order.amount_total * first_line.value_amount) / 100.0
-            elif first_line.value == "fixed":
-                values['downpayment_amount'] = first_line.value_amount
 
         if order and not order.state == 'sale':
             order.action_confirm()
@@ -127,15 +125,15 @@ class WebsiteSaleInherit(WebsiteSale):
                 print("---------------->>>>> No receivable lines found to reconcile.")
 
         # --- Remove matching partner product line if approved ---
-        if order.partner_id and order.partner_id.project_line_ids:
-            print("-------------------->>>>> Order Partner:", order.partner_id.name)
+        # if order.partner_id and order.partner_id.project_line_ids:
+        #     print("-------------------->>>>> Order Partner:", order.partner_id.name)
 
-            for so_line in order.order_line:
-                print("------------->>>>> OL")
-                for project in order.partner_id.project_line_ids:
-                    if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'approved':
-                        print(f"---------------------------->>>>> Removing project line: {project}")
-                        project.unlink()
+        #     for so_line in order.order_line:
+        #         print("------------->>>>> OL")
+        #         for project in order.partner_id.project_line_ids:
+        #             if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'approved':
+        #                 print(f"---------------------------->>>>> Removing project line: {project}")
+        #                 project.unlink()
 
         values.update({
             'currency_symbol': order.currency_id.symbol,
@@ -175,8 +173,6 @@ class WebsiteSaleInherit(WebsiteSale):
             if first_line:
                 if first_line.value == 'percent':
                     downpayment_amount = (order.amount_total / 100.0) * first_line.value_amount
-                elif first_line.value == 'fixed':
-                    downpayment_amount = first_line.value_amount
                 else:
                     downpayment_amount = order.amount_total
                 # Update transaction if mismatch
@@ -219,3 +215,20 @@ class WebsiteSaleInherit(WebsiteSale):
                 print("---------------->>>>>Payment term", term)
 
         return response
+    
+    # def _cart_values(self, **kwargs):
+    #     values = super()._cart_values(**kwargs)
+    #     order = values.get('website_sale_order')
+    #     if order and order.payment_term_id and order.payment_term_id.installment_amount:
+    #         extra = order.payment_term_id.installment_amount
+    #         down_percent = order.payment_term_id.line_ids[0].value_amount if order.payment_term_id.line_ids else 0
+    #         final_amount = order.amount_untaxed + extra
+    #         downpayment_amount = ((final_amount) * down_percent) / 100 if down_percent else 0
+
+    #         # 🔹 add safe custom fields (not touching order.amount_total)
+    #         values.update({
+    #             'custom_extra_down_amount': extra,
+    #             'custom_final_installment_amount': final_amount,
+    #             'custom_downpayment_amount': downpayment_amount,
+    #         })
+    #     return values

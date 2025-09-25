@@ -71,7 +71,7 @@
                                                                 <t t-set="line" t-value="term.line_ids[1:2]"/>
                                                                 <t t-if="line">
                                                                     <t t-set="installment"
-                                                                       t-value="(product_price / 100.0) * line.value_amount"/>
+                                                                       t-value="((product_price + term.installment_amount) / 100.0) * line.value_amount"/>
                                                                     <strong class="h2-fs">
                                                                         <t t-esc="'%.2f' % installment"/>
                                                                     </strong>
@@ -144,10 +144,18 @@
                                                             <ul class="list-group list-group-flush text-start">
                                                                 <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
+                                                                    <t t-set="total_inst_amount"
+                                                                        t-value="product_price + term.installment_amount"/>
+                                                                    &#160;On Installments Amount
+                                                                    <t t-esc="'%.2f' % total_inst_amount"/>
+                                                                    <t t-esc="currency_symbol"/>
+                                                                </li>
+                                                                <li class="list-group-item px-0 bg-transparent text-reset">
+                                                                    <i class="fa fa-check text-success" role="img"></i>
                                                                     <t t-set="first_line" t-value="term.line_ids[:1]"/>
                                                                     <t t-if="first_line">
                                                                         <t t-set="downpayment"
-                                                                           t-value="(product_price / 100.0) * first_line.value_amount"/>
+                                                                           t-value="((product_price + term.installment_amount) / 100.0) * first_line.value_amount"/>
                                                                         &#160;Downpayment
                                                                         <t t-esc="'%.2f' % downpayment"/>
                                                                         <t t-esc="currency_symbol"/>

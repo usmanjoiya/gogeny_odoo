@@ -15,13 +15,20 @@
         'data/quickpay_page.xml',
         'data/project_pipeline_form.xml',
         'data/website_sale_controller_view_inherit.xml',
+        # 'data/portal_invoice_payment.xml',
 
         'views/res_partner.xml',
-        'views/project_project.xml'
+        'views/project_project.xml',
+        'views/account_payment_term.xml',
     ],
     'assets': {
+            # 'payment.assets_frontend': [
+            #     'kyc_payment_handling/static/src/js/portal_invoice_payment.js',
+            # ],
+
             'web.assets_frontend': [
                 'kyc_payment_handling/static/src/js/kyc_file_size_validation.js',
+                # 'kyc_payment_handling/static/src/js/portal_invoice_payment.js',
                 ],
         },
 }

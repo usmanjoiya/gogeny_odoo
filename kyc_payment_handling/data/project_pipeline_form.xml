@@ -6,7 +6,7 @@
                 <h2 class="mb-4">Applying for <t t-esc="product.name"/> on <t t-esc="payment_term.name"/></h2>
                 <form id="applicationForm" action="/apply/submit" method="post" enctype="multipart/form-data" class="o_website_form">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                    <input type="hidden" name="product_id" t-att-value="product.id"/>
+                    <input type="hidden" name="prod_id" t-att-value="product.id"/>
                     <input type="hidden" name="term_id" t-att-value="payment_term.id"/>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
@@ -128,6 +128,149 @@
                 </li>
             </t>
         </xpath>
+        <xpath expr="//div[@id='cart_products']/div/t/div[3]/div[1]" position="replace">
+            <!-- Load all session terms -->
+            <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
+            <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
+            <!-- Extract ids -->
+            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <t t-if="term_id">
+                <t t-set="got_any_line_term" t-value="True"/>
+            </t>
+            <!-- Show payment term if exists -->
+            <t t-if="got_any_line_term">
+                <div t-attf-class="css_quantity input-group mb-2"
+                        name="website_sale_cart_line_quantity">
+                    <t t-if="not line._is_not_sellable_line()">
+                        <t t-if="show_qty">
+                            <!-- <a href="#"
+                                class="js_add_cart_json btn btn-link d-inline-block border-end-0"
+                                aria-label="Remove one"
+                                title="Remove one">
+                                <i class="position-relative z-1 fa fa-minus"/>
+                            </a> -->
+                            <input type="text"
+                                    readonly="True"
+                                    class="js_quantity quantity form-control border-start-0 border-end-0"
+                                    t-att-data-line-id="line.id"
+                                    t-att-data-product-id="line.product_id.id"
+                                    t-att-value="line._get_displayed_quantity()"/>
+                            <!-- <t t-if="line._get_shop_warning(clear=False)">
+                                <a href="#" class="btn btn-link">
+                                <i class='fa fa-warning text-warning'
+                                    t-att-title="line._get_shop_warning()"
+                                    role="img"
+                                    aria-label="Warning"/>
+                                </a>
+                            </t>
+                            <a t-else=""
+                                href="#"
+                                class="js_add_cart_json d-inline-block float_left btn btn-link border-start-0"
+                                aria-label="Add one"
+                                title="Add one">
+                                <i class="fa fa-plus position-relative z-1"/>
+                            </a> -->
+                        </t>
+                        <!-- <t t-else="">
+                            <input type="hidden"
+                                    class="js_quantity form-control quantity"
+                                    t-att-data-line-id="line.id"
+                                    t-att-data-product-id="line.product_id.id"
+                                    t-att-value="line._get_displayed_quantity()"/>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <span class="w-100 text-muted" t-esc="int(line.product_uom_qty)"/>
+                        <input type="hidden"
+                                class="js_quantity quantity form-control"
+                                t-att-data-line-id="line.id"
+                                t-att-data-product-id="line.product_id.id"
+                                t-att-value="line._get_displayed_quantity()"/> -->
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div t-attf-class="css_quantity input-group mb-2"
+                        name="website_sale_cart_line_quantity">
+                    <t t-if="not line._is_not_sellable_line()">
+                        <t t-if="show_qty">
+                            <a href="#"
+                                class="js_add_cart_json btn btn-link d-inline-block border-end-0"
+                                aria-label="Remove one"
+                                title="Remove one">
+                                <i class="position-relative z-1 fa fa-minus"/>
+                            </a>
+                            <input type="text"
+                                    class="js_quantity quantity form-control border-start-0 border-end-0"
+                                    t-att-data-line-id="line.id"
+                                    t-att-data-product-id="line.product_id.id"
+                                    t-att-value="line._get_displayed_quantity()"/>
+                            <t t-if="line._get_shop_warning(clear=False)">
+                                <a href="#" class="btn btn-link">
+                                <i class='fa fa-warning text-warning'
+                                    t-att-title="line._get_shop_warning()"
+                                    role="img"
+                                    aria-label="Warning"/>
+                                </a>
+                            </t>
+                            <a t-else=""
+                                href="#"
+                                class="js_add_cart_json d-inline-block float_left btn btn-link border-start-0"
+                                aria-label="Add one"
+                                title="Add one">
+                                <i class="fa fa-plus position-relative z-1"/>
+                            </a>
+                        </t>
+                        <t t-else="">
+                            <input type="hidden"
+                                    class="js_quantity form-control quantity"
+                                    t-att-data-line-id="line.id"
+                                    t-att-data-product-id="line.product_id.id"
+                                    t-att-value="line._get_displayed_quantity()"/>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <span class="w-100 text-muted" t-esc="int(line.product_uom_qty)"/>
+                        <input type="hidden"
+                                class="js_quantity quantity form-control"
+                                t-att-data-line-id="line.id"
+                                t-att-data-product-id="line.product_id.id"
+                                t-att-value="line._get_displayed_quantity()"/>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr="//div[@id='cart_products']/div/t/div[2]/div" position="replace">
+            <!-- Load all session terms -->
+            <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
+            <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
+            <!-- Extract ids -->
+            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <t t-if="term_id">
+                <t t-set="got_any_line_term" t-value="True"/>
+            </t>
+            <!-- Show payment term if exists -->
+            <t t-if="got_any_line_term">
+                <div name="o_wsale_cart_line_button_container">
+                    
+                </div>
+            </t>
+            <t t-else="">
+                <div name="o_wsale_cart_line_button_container">
+                    <a href='#'
+                        class="js_delete_product d-none d-md-inline-block small"
+                        aria-label="Remove from cart"
+                        title="Remove from cart">Remove</a>
+                    <button class="js_delete_product btn btn-light d-inline-block d-md-none"
+                            title="remove">
+                        <i class="fa fa-trash-o"/>
+                    </button>
+                </div>
+            </t>
+        </xpath>
     </template>
 
     <!-- Show down-payment in cart under Total -->
@@ -143,8 +286,8 @@
                         </td>
                         <td class="text-end border-0 px-0 pt-3">
                             <strong t-esc="downpayment_amount"
-                                    t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
-                                    class="monetary_field text-end p-0"/>
+                                t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+                                class="monetary_field text-end p-0"/>
                         </td>
                     </tr>
                 
@@ -156,6 +299,59 @@
                 </t>
             </t>
         </xpath>
+
+        <!-- <xpath expr="//div[@id='cart_total']/table/tr[@id='order_total']" position="after">
+            <t t-if="website_sale_order.payment_term_id and website_sale_order.payment_term_id.line_ids">
+                <t t-set="down_percent" t-value="website_sale_order.payment_term_id.line_ids[0].value_amount"/>
+                <t t-set="extra_down_amount" t-value="website_sale_order.payment_term_id.installment_amount"/>
+                <t t-set="downpayment_amount" t-value="((website_sale_order.amount_untaxed + extra_down_amount) * down_percent) / 100"/>
+                <t t-set="final_installment_amount" t-value="website_sale_order.amount_untaxed + extra_down_amount"/>
+                <t t-if="downpayment_amount != website_sale_order.amount_untaxed">
+                    <tr id="mark_up_value" class="border-top">
+                        <td colspan="2" class="text-muted border-0 ps-0 pt-3">Mark-up</td>
+                        <td class="text-end border-0 px-0 pt-3">
+                            <span t-esc="extra_down_amount"
+                                class="monetary_field"
+                                style="white-space: nowrap;"
+                                t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                        </td>
+                    </tr>
+                    <tr id="down_payment">
+                        <td colspan="2" class="border-0 ps-0 pt-0 pb-3">
+                            <strong>Final Total</strong>
+                        </td>
+                        <td class="text-end border-0 pe-0 pt-0 pb-3">
+                            <strong t-esc="final_installment_amount"
+                                t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+                                class="monetary_field text-end p-0"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </xpath> -->
     </template>
+
+    <!-- <template id="checkout_layout_inherited" inherit_id="website_sale.checkout_layout" name="Shopping Cart Total with Down Payment">
+        <xpath expr="//t/div/div/div/div[3]/div/div/div[1]/button/div/span[2]" position="replace">
+            <t t-if="website_sale_order.payment_term_id and website_sale_order.payment_term_id.line_ids">
+                <t t-set="down_percent" t-value="website_sale_order.payment_term_id.line_ids[0].value_amount"/>
+                <t t-set="extra_down_amount" t-value="website_sale_order.payment_term_id.installment_amount"/>
+                <t t-set="downpayment_amount" t-value="((website_sale_order.amount_untaxed + extra_down_amount) * down_percent) / 100"/>
+                <t t-set="final_installment_amount" t-value="website_sale_order.amount_untaxed + extra_down_amount"/>
+                <t t-if="downpayment_amount != website_sale_order.amount_untaxed">
+                    <span id="amount_total_summary"
+                        class="monetary_field ms-1"
+                        t-esc="final_installment_amount"
+                        t-options='{"widget": "monetary", "display_currency": website_sale_order.currency_id}'/>
+                </t>
+                <t t-if="downpayment_amount == website_sale_order.amount_untaxed">
+                    <span id="amount_total_summary"
+                        class="monetary_field ms-1"
+                        t-field="website_sale_order.amount_total"
+                        t-options='{"widget": "monetary", "display_currency": website_sale_order.currency_id}'/>
+                </t>
+            </t>
+        </xpath>
+    </template> -->
 
 </odoo>
