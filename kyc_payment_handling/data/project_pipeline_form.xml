@@ -6,7 +6,7 @@
                 <h2 class="mb-4">Applying for <t t-esc="product.name"/> on <t t-esc="payment_term.name"/></h2>
                 <form id="applicationForm" action="/apply/submit" method="post" enctype="multipart/form-data" class="o_website_form">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                    <input type="hidden" name="prod_id" t-att-value="product.id"/>
+                    <input type="hidden" name="product_id" t-att-value="product.id"/>
                     <input type="hidden" name="term_id" t-att-value="payment_term.id"/>
                     <div class="mb-3">
                         <label class="form-label">Name</label>
