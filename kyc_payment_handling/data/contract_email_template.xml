@@ -1,0 +1,20 @@
+<odoo>
+
+    <record id="email_template_customer_contract" model="mail.template">
+        <field name="name">Customer Contract</field>
+        <field name="model_id" ref="kyc_payment_handling.model_project_project"/>
+        <field name="subject">Mobile Purchase Contract</field>
+        <field name="email_from">{{ object.user_id.email or '' }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>Dear <t t-out="object.partner_id.name"/>,</p>
+                <p>Thank you for purchasing mobile from <t t-out="object.company_id.name"/>.</p>
+            <p>Please find attached your official purchase contract.</p>
+                <p>Best regards,<br/><t t-out="object.company_id.name"/></p>
+                ]]>
+        </field>
+    </record>
+
+
+</odoo>

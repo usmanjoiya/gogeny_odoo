@@ -1,0 +1,2789 @@
+<odoo>
+    <template id="contract_report_pdf">
+        <t t-name="kyc_payment_handling.contract_report_pdf">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <main class="o_report_layout">
+                        <!--                        <div class="page">-->
+                        <!--                            &lt;!&ndash; Your report body goes here &ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                            <h2>Contract</h2>&ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                        <p>&ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                            <t t-esc="o.name"/>&ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                        </p>&ndash;&gt;-->
+                        <!--                            <div class="offset-col-6 col-6" name="no_shipping">-->
+                        <!--                                <div class="address">-->
+                        <!--                                                                        <address class="mb-0">-->
+                        <!--                                                                            John Smith-->
+                        <!--                                                                            <br/>-->
+                        <!--                                                                            123 Main Street-->
+                        <!--                                                                            <br/>-->
+                        <!--                                                                            Dubai, UAE-->
+                        <!--                                                                            <br/>-->
+                        <!--                                                                            PO Box 12345-->
+                        <!--                                                                        </address>-->
+                        <!--                                    <div id="partner_vat_no_shipping">-->
+                        <!--                                        Tax ID:-->
+                        <!--                                        <span>123456789012345</span>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <div class="clearfix invoice_main">
+                            <div class="page mb-4"
+                                 style="font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif; line-height: 1.4;">
+                                <!--                                <div class="oe_structure">-->
+                                <!--                                    <span class="h2-fs">-->
+                                <!--                                        <strong>-->
+                                <!--                                            <em>-->
+                                <!--                                                <font style="color: rgb(183, 31, 31);">TAX INVOICE</font>-->
+                                <!--                                            </em>-->
+                                <!--                                        </strong>-->
+                                <!--                                    </span>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="oe_structure">-->
+                                <!--                                    <strong>-->
+                                <!--                                        <font style="color: rgb(183, 31, 31);">NO.</font>-->
+                                <!--                                        104492149000003-->
+                                <!--                                    </strong>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="oe_structure">-->
+                                <!--                                    <br/>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="oe_structure">-->
+                                <!--                                    <span class="h5-fs">-->
+                                <!--                                        <strong>-->
+                                <!--                                            <font style="color: rgb(183, 31, 31);">Invoice Number:</font>-->
+                                <!--                                        </strong>-->
+                                <!--                                    </span>-->
+                                <!--                                    <span>INV/2024/0001</span>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="oe_structure">-->
+                                <!--                                    <br/>-->
+                                <!--                                </div>-->
+
+                                <!-- Customer Information Tables -->
+                                <div class="customer-info-section" style="margin-bottom: 20px;">
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>CUSTOMER NAME</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.partner_id.display_name or ''"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>CUSTOMER PHONE</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.phone or o.emergency_phone or ' '"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>CUSTOMER E-MAIL</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.email or ' '"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>CUSTOMER ADDRESS</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.user_id.contact_address_inline"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>PAYMENT TERM</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.payment_term_id.display_name or ' '"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                        <tbody>
+                                            <tr style="height: 40px;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>UAE ID NUMBER</font>
+                                                    </p>
+                                                </td>
+                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
+                                                    <p style="margin: 0;">
+                                                        <span t-esc="o.uae_id_number or ' '"/>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Invoice Dates and Information -->
+                                <!--                                <div id="informations" class="row mb-4"-->
+                                <!--                                     style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">-->
+                                <!--                                    <div class="col" name="invoice_date" style="flex: 1; text-align: center;">-->
+                                <!--                                        <strong>Invoice Date</strong>-->
+                                <!--                                        <div>2024-01-15</div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col" name="due_date" style="flex: 1; text-align: center;">-->
+                                <!--                                        <strong>Due Date</strong>-->
+                                <!--                                        <div>2024-02-15</div>-->
+                                <!--                                    </div>-->
+                                <!--                                                                        <div class="col" name="delivery_date">-->
+                                <!--                                                                            <strong>Delivery Date</strong>-->
+                                <!--                                                                            <div>2024-01-20</div>-->
+                                <!--                                                                        </div>-->
+                                <!--                                                                        <div class="col" name="origin">-->
+                                <!--                                                                            <strong>Source</strong>-->
+                                <!--                                                                            <div>SO2024-001</div>-->
+                                <!--                                                                        </div>-->
+                                <!--                                                                        <div class="col" name="customer_code">-->
+                                <!--                                                                            <strong>Customer Code</strong>-->
+                                <!--                                                                            <div>CUST-001</div>-->
+                                <!--                                                                        </div>-->
+                                <!--                                                                        <div class="col" name="reference">-->
+                                <!--                                                                            <strong>Reference</strong>-->
+                                <!--                                                                            <div>INV/2024/0001</div>-->
+                                <!--                                                                        </div>-->
+                                <!--                                </div>-->
+
+                                <!-- Documents Section -->
+                                <table class="table o_table table-borderless"
+                                       style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                    <tbody>
+                                        <!-- Section Header -->
+                                        <tr style="height: 40px;">
+                                            <td colspan="2"
+                                                style="background-color: rgb(183, 31, 31); color: white; padding: 8px 12px; vertical-align: middle;">
+                                                <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                    <font>DOCUMENTS</font>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <!-- Document Previews -->
+                                        <tr>
+                                            <t t-if="o.id_photo_front">
+                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                    <strong style="display: block; margin-bottom: 8px;">ID Photo
+                                                        Front:
+                                                    </strong>
+                                                    <img t-att-src="image_data_uri(o.id_photo_front)"
+                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                </td>
+                                            </t>
+                                            <t t-if="o.id_photo_back">
+                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                    <strong style="display: block; margin-bottom: 8px;">ID Photo Back:
+                                                    </strong>
+                                                    <img t-att-src="image_data_uri(o.id_photo_back)"
+                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                        <tr>
+                                            <t t-if="o.salary_certificate">
+                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                    <strong style="display: block; margin-bottom: 8px;">Salary
+                                                        Certificate:
+                                                    </strong>
+                                                    <img t-att-src="image_data_uri(o.salary_certificate)"
+                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Invoice Lines Table -->
+                                <!--                                <table class="o_has_total_table table o_main_table table-borderless"-->
+                                <!--                                       name="invoice_line_table">-->
+                                <!--                                    <thead>-->
+                                <!--                                        <tr>-->
+                                <!--                                            <th name="th_description" class="text-start">-->
+                                <!--                                                <span>Description</span>-->
+                                <!--                                            </th>-->
+                                <!--                                            <th name="th_quantity" class="text-end">-->
+                                <!--                                                <span>Quantity</span>-->
+                                <!--                                            </th>-->
+                                <!--                                            <th name="th_priceunit" class="text-end text-nowrap">-->
+                                <!--                                                <span>Unit Price</span>-->
+                                <!--                                            </th>-->
+                                <!--&lt;!&ndash;                                            <th name="th_discount" class="text-end">&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                                <span>Disc.%</span>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                            </th>&ndash;&gt;-->
+                                <!--                                            <th name="th_taxes" class="text-start">-->
+                                <!--                                                <span>VAT</span>-->
+                                <!--                                            </th>-->
+                                <!--                                            <th name="tax_amount" class="text-start">-->
+                                <!--                                                <span>VAT Amount</span>-->
+                                <!--                                            </th>-->
+                                <!--                                            <th name="th_subtotal" class="text-end">-->
+                                <!--                                                <span>Amount</span>-->
+                                <!--                                            </th>-->
+                                <!--                                        </tr>-->
+                                <!--                                    </thead>-->
+                                <!--                                    <tbody class="invoice_tbody">-->
+                                <!--                                        &lt;!&ndash; Product Line 1 &ndash;&gt;-->
+                                <!--                                        <tr>-->
+                                <!--                                            <td name="account_invoice_line_name">-->
+                                <!--                                                <span t-esc="o.name or ' '"/>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td name="td_quantity" class="text-end text-nowrap">-->
+                                <!--                                                <span>1.00</span>-->
+                                <!--                                                <span>units</span>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td name="td_price_unit" class="text-end">-->
+                                <!--                                                <span class="text-nowrap">4,500.00</span>-->
+                                <!--                                            </td>-->
+                                <!--&lt;!&ndash;                                            <td name="td_discount" class="text-end">&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                                <span class="text-nowrap">0</span>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                            </td>&ndash;&gt;-->
+                                <!--                                            <td name="td_taxes" class="text-end text-nowrap">-->
+                                <!--                                                <span>VAT 5%</span>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td>-->
+                                <!--                                                <span>225.00</span>-->
+                                <!--                                            </td>-->
+                                <!--                                            <td name="td_subtotal" class="text-end o_price_total">-->
+                                <!--                                                <span class="text-nowrap">4,500.00</span>-->
+                                <!--                                            </td>-->
+                                <!--                                        </tr>-->
+                                <!--                                    </tbody>-->
+                                <!--                                </table>-->
+
+
+                                <!-- Totals Section -->
+                                <div id="right-elements" class="col-5 ms-5 d-inline-block float-end"
+                                     style="float: right; width: 40%; margin-top: 20px;">
+
+                                    <!--                                    <div id="total" class="clearfix row mt-n3">-->
+                                    <!--                                        <div class="ms-auto">-->
+                                    <!--                                            <table class="o_total_table table table-borderless avoid-page-break-inside">-->
+                                    <!--                                                <tr>-->
+                                    <!--                                                    <td class="text-end">-->
+                                    <!--                                                        <strong>Subtotal:</strong>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                    <td class="text-end">6,420.00 AED</td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                                <tr>-->
+                                    <!--                                                    <td class="text-end">-->
+                                    <!--                                                        <strong>VAT (5%):</strong>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                    <td class="text-end">321.00 AED</td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                                <tr class="fw-bold">-->
+                                    <!--                                                    <td class="text-end">-->
+                                    <!--                                                        <strong>Total:</strong>-->
+                                    <!--                                                    </td>-->
+                                    <!--                                                    <td class="text-end">6,741.00 AED</td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                                <tr class="fw-bold">-->
+                                    <!--                                                    <td>Amount Due</td>-->
+                                    <!--                                                    <td class="text-end">6,741.00 AED</td>-->
+                                    <!--                                                </tr>-->
+                                    <!--                                            </table>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
+
+                                    <!--                                    <div class="mb-2">-->
+                                    <!--                                        <p class="text-end lh-sm">-->
+                                    <!--                                            Total amount in words:-->
+                                    <!--                                            <br/>-->
+                                    <!--                                            <small class="text-muted lh-sm">Six Thousand Seven Hundred Forty One UAE-->
+                                    <!--                                                Dirhams-->
+                                    <!--                                                Only-->
+                                    <!--                                            </small>-->
+                                    <!--                                        </p>-->
+                                    <!--                                    </div>-->
+
+
+                                    <!-- Signature Area -->
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">---------------------------------
+                                        </span>
+                                    </p>
+                                </div>
+
+
+                                <div style="clear: both;"></div>
+
+                                <!-- Keep your existing terms and conditions section as it's already static -->
+                                <div class="text-muted mb-3"
+                                     style="text-align:justify;text-justify:inter-word; margin-top: 30px; padding: 20px;  background-color: #fafafa; font-size: 14px; line-height: 1.3;">
+                                    <font>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        لامارات
+                                        العربية
+                                        المتحدة
+                                        تم
+                                        الاتفاق
+                                        بين
+                                        كلاً
+                                        من
+                                    </font>
+                                    <ol dir="rtl" style="font-size: 14px;">
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>
+                                                        <b>قوجني
+                                                            لتجارة
+                                                            الاجهزة
+                                                            الالكترونية
+                                                            ش
+                                                        </b>
+                                                    </font>
+                                                    <b>.</b>
+                                                    <font>
+                                                        <b>ذ</b>
+                                                    </font>
+                                                    <b>.</b>
+                                                    <font>
+                                                        <b>م</b>
+                                                    </font>
+                                                    <b>.</b>
+                                                    <font>
+                                                        <b>م</b>،
+                                                        شركة
+                                                        ذات
+                                                        مسؤولية
+                                                        محدودة
+                                                        مؤسسة
+                                                        ومسجلة
+                                                        بدائرة
+                                                        الاقتصاد
+                                                        والسياحة
+                                                        دبي،
+                                                        تحت
+                                                        رقم
+                                                        الرخصة
+                                                    </font>
+                                                    1128172<font>،
+                                                    ومقرها
+                                                    الرئيس
+                                                    بسيح
+                                                    شعيب،
+                                                    برد
+                                                    دبي،
+                                                    دبي
+                                                    ،بريد
+                                                    الكتروني
+                                                </font>Info@sandhapp.com
+                                                    <font>،
+                                                        بصفة</font>:
+                                                    <font>بائع</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <b>(</b>
+                                            <font>
+                                                <b>يشار
+                                                    إليها
+                                                    هنا
+                                                    وفيما
+                                                    بعد
+                                                    بـ
+                                                </b>
+                                            </font>
+                                            <b>"</b>
+                                            <font>
+                                                <b>الطرف
+                                                    الأول
+                                                </b>
+                                            </font>
+                                            <b>")</b>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>السيد</font>/<font>السيدة</font>:
+                                        <font>
+                                            <b>المذكور
+                                                اسمه في فاتورة التقسيط المرفقة
+                                            </b>
+                                        </font>
+                                        .
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <b>(</b>
+                                            <font>
+                                                <b>يشار
+                                                    اليه
+                                                    هنا
+                                                    وفيما
+                                                    بعد
+                                                    بالطرف
+                                                    الثاني
+                                                </b>
+                                            </font>
+                                            <b>)</b>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>التمهيد</b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:</b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <ul dir="rtl" style="font-size: 14px;">
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>الطرف
+                                                        الأول
+                                                        شركة
+                                                        ذات
+                                                        مسؤولية
+                                                        محدودة
+                                                        مؤسسة
+                                                        حسب
+                                                        الاصول
+                                                        وفقا
+                                                        لقانون
+                                                        دولة
+                                                        الامارات
+                                                        العربية
+                                                        المتحدة
+                                                        وتمارس
+                                                        نشاط
+                                                        تجارة
+                                                        الهواتف
+                                                        المتحركة
+                                                        ولوازمها،
+                                                        وتجارة
+                                                        قطع
+                                                        غيار
+                                                        الاجهزة
+                                                        الكهربائية
+                                                        والالكترونية، 
+                                                    </font>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>الطرف
+                                                        الثاني
+                                                        ابدى
+                                                        رغبته
+                                                        في
+                                                        التعاقد
+                                                        مع
+                                                        الطرف
+                                                        الأول
+                                                        لشراء
+                                                        الأدوات</font>/
+                                                    <font>الأجهزة
+                                                        الالكترونية
+                                                        وفقاً
+                                                        للشروط
+                                                        والاحكام
+                                                        الواردة
+                                                        ببنود
+                                                        هذا
+                                                        العقد،
+                                                    </font>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>وحيث
+                                                        يقر
+                                                        الطرفان
+                                                        بأن
+                                                        لديهما
+                                                        كامل
+                                                        السلطات
+                                                        والصلاحيات
+                                                        القانونية
+                                                        اللازمة
+                                                        للدخول
+                                                        في
+                                                        هذ
+                                                        العقد
+                                                        وانفاذه
+                                                        وإكمال
+                                                        كل
+                                                        الالتزامات
+                                                        الواردة
+                                                        به
+                                                        وتحمل
+                                                        كافة
+                                                        تبعاتها</font>. 
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <b>لذا
+                                                    ،
+                                                    وبناءً
+                                                    عليه
+                                                    ،
+                                                    فقد
+                                                    اتفق
+                                                    الطرفان
+                                                    وهما
+                                                    بكامل
+                                                    الاهلية
+                                                    المعتبرة
+                                                    شرعاً
+                                                    وقانوناًعلي
+                                                    ما
+                                                    يلي
+                                                </b>
+                                            </font>
+                                            <b>:</b>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الأول
+                                                    </b>
+                                                </u>
+                                            </font>
+                                        </font>
+                                        <u>
+                                            <font>
+                                                <b>:
+                                                </b>
+                                                <font>
+                                                    <b>بيان
+                                                        محل التعاقد
+                                                    </b>
+                                                </font>
+                                                <b>(</b>
+                                                <font>
+                                                    <b>المبيع</b>
+                                                </font>
+                                                <b>) </b>
+                                            </font>
+                                        </u>
+                                    </p>
+                                    <ol dir="rtl" style="font-size: 14px;">
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>قام
+                                                        الطرف الأول ببيع المنتج الموضح تفاصيله
+                                                        في الفاتورة المرفقة أعلاه، والتي تم
+                                                        توقيعها من قبل الطرف الثاني</font>(<font>المشتري</font>)<font>،
+                                                    وتمثل جزءًا لا يتجزأ من هذا العقد</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف الثاني بأنه استلم المنتج المذكور،
+                                                        وأنه قام بمعاينته معاينة كاملة ووافية
+                                                        قبل دفع القسط الأول، وأقر بقبوله دون
+                                                        تحفظ، مع التأكد من عدد المبيع وأوصافه</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>لا
+                                                        يجوز للطرف الثاني الرجوع على الطرف
+                                                        الأول بأي مطالبات تتعلق بوجود عيب في
+                                                        المنتج بعد مرور مدة
+                                                        <b>ثلاثة
+                                                            أيام
+                                                        </b>
+                                                        من تاريخ استلام المنتج
+                                                    </font>
+                                                    .
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <b>الأساس
+                                                    القانوني
+                                                </b>
+                                            </font>
+                                            <b>:</b>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <b>
+                                            </b>
+                                            <font>يستند
+                                                هذا البند إلى أحكام القانون المدني لدولة
+                                                الإمارات العربية المتحدة، وخاصة المادة
+                                            </font>
+                                            <b>544</b>
+                                            <font>،
+                                                التي تنص على أن المشتري لا يحق له طلب
+                                                فسخ البيع أو الرجوع على البائع في حال
+                                                قبوله المبيع بعد معاينة نافعة للجهالة،
+                                                إلا إذا ثبت وجود غش أو تدليس</font>.
+                                            <font>كما
+                                                يتوافق هذا البند مع مبدأ</font>"<font>الالتزام
+                                            التعاقدي</font>"
+                                            <font>المقرر
+                                                في المادة
+                                            </font>
+                                            <b>246</b>
+                                            <font>،
+                                                التي تلزم الأطراف بتنفيذ العقد وفقًا
+                                                لما تم الاتفاق عليه بحسن نية</font>.
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الثاني
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                            <font>
+                                                <u>
+                                                    <b>المخاطبات
+                                                        والمراسلات
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:</b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>تتم
+                                                جميع
+                                                المخاطبات
+                                                والمراسلات
+                                                علي
+                                                عناوين
+                                                البريد
+                                                الالكتروني
+                                                وأرقام
+                                                الهواتف
+                                                التالية</font>:
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+
+                                            Saad@sandhapp.com<font>،
+                                        </font>Info@sandhapp.com
+                                            ,
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>هاتف
+                                            </font>:
+                                            <b>
+                                                <font>0505503599</font>
+                                            </b>
+                                            ,
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>عنوان</font>:
+                                            <font>بسيح
+                                                شعيب،
+                                                برد
+                                                دبي،
+                                                دبي
+                                            </font>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>على
+                                                أن
+                                                تتم
+                                                الإخطارات
+                                                بالبريد
+                                                المسجل
+                                                بعلم
+                                                الوصول
+                                                أو
+                                                باليد
+                                                مقابل
+                                                إيصال
+                                                بالاستلام
+                                                أو
+                                                الفاكس
+                                                أو
+                                                البريد
+                                                الالكتروني
+                                                المعتمد
+                                                للطرفين
+                                                اعلاه
+                                                وتعتبر
+                                                صحيحة
+                                                ومنتجة
+                                                لأثارها
+                                                القانونية</font>.
+                                        </font>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl" style="font-size: 14px;">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الثالث
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                            <font>
+                                                <u>
+                                                    <b>طريقة
+                                                        الدفع
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:</b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <ol dir="rtl" style="font-size: 14px;">
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف
+                                                        الثاني
+                                                        بأنه
+                                                        اشترى
+                                                        المنتج
+                                                        المبين
+                                                        أوصافه
+                                                        في
+                                                        البند
+                                                        الثاني
+                                                        من
+                                                        هذا
+                                                        العقد
+                                                        الثمن
+                                                        المذكور في الفاتورة اعله
+                                                    </font>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>يستحق
+                                                        الطرف
+                                                        الأول
+                                                        ثمن
+                                                        المنتج
+                                                        كاملاً
+                                                        وقت
+                                                        إبرام
+                                                        عقد
+                                                        التقسيط</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p style="font-size: 14px;">
+                                                <font>
+                                                    <font>مع
+                                                        عدم
+                                                        الإخلال
+                                                        بالفقرة
+                                                        السابقة،
+                                                        في
+                                                        حال
+                                                        اتفاق
+                                                        الأطراف
+                                                        <!-- Rest of your content continues with the same pattern -->
+                                                        على
+                                                        تقسيط
+                                                        المبلغ،
+                                                        فإنه
+                                                        يقسط
+                                                        على
+                                                        أقساط
+                                                        شهرية
+                                                        متتالية
+                                                        ومستمرة
+                                                        بدون
+                                                        أي
+                                                        انقطاع
+                                                        على
+                                                        أن
+                                                        يلتزم
+                                                        بسدادها
+                                                        في
+                                                        موعدها
+                                                        بدون
+                                                        أي
+                                                        تأخير
+                                                        كما
+                                                        سيأتي
+                                                        بيانه
+                                                        في
+                                                        البنود
+                                                        اللاحقة</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>في
+                                                        حال
+                                                        تأخر
+                                                        الطرف
+                                                        الثاني
+                                                        في
+                                                        سداد
+                                                        الأقساط
+                                                        المتفق
+                                                        عليها
+                                                        ولمدة
+                                                        شهر
+                                                        من
+                                                        تاريخ
+                                                        بدء
+                                                        سريان
+                                                        العقد
+                                                        يحق
+                                                        للطرف
+                                                        الأول
+                                                        فسخ
+                                                        العقد
+                                                        ومطالبة
+                                                        الطرف
+                                                        الثاني
+                                                        بدفع
+                                                        متبقي
+                                                        المبلغ
+                                                    </font>;<font>كاملاً</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>مع
+                                                        عدم
+                                                        الإخلال
+                                                        بالفقرة
+                                                        السابق،
+                                                        يكون
+                                                        الطرف
+                                                        الثاني
+                                                        ملزماً
+                                                        بسداد
+                                                        <b>مبلغ
+                                                        </b>
+                                                    </font>
+                                                    <b>-/
+                                                    </b>
+                                                    <font>١٠٠٠
+                                                        <b>
+                                                        </b>
+                                                    </font>
+                                                    <b>(
+                                                    </b>
+                                                    <font>
+                                                        <b>ألف
+                                                        </b>
+                                                    </font>
+                                                    <b>)
+                                                    </b>
+                                                    <font>
+                                                        <b>درهم
+                                                        </b>اضافي
+                                                        كتعويض
+                                                        عن
+                                                        التأخير
+                                                        يضاف
+                                                        لكامل
+                                                        المبلغ
+                                                        المترتب
+                                                        بذمته
+                                                    </font>
+                                                    .
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يلتزم
+                                                        الطرف
+                                                        الثاني
+                                                        بدفع
+                                                        ضريبة
+                                                        القيمة
+                                                        المضافة
+                                                        واي
+                                                        ضريبة
+                                                        اخري
+                                                        تستحدث
+                                                        وفق
+                                                        القوانين
+                                                        المعمول
+                                                        بها
+                                                        في
+                                                        الامارات
+                                                        العربية
+                                                        المتحدة</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>في
+                                                        حال
+                                                        اتفق
+                                                        الطرفان
+                                                        على
+                                                        السداد
+                                                        عن
+                                                        طريق
+                                                        الشيكات
+                                                        مؤجلة
+                                                        الدفع،
+                                                        وارتد
+                                                        الشيك
+                                                        بتاريخ
+                                                        استحقاقه
+                                                        فان
+                                                        الطرف
+                                                        الثاني
+                                                        يلتزم
+                                                        بسداد
+                                                        غرامة
+                                                        تأخير
+                                                        اتفاقية
+                                                        قدرها
+                                                    </font>
+                                                    <b>10%
+                                                    </b>
+                                                    <font>من
+                                                        قيمة
+                                                        الشيك
+                                                        المرتجع
+                                                        خلال
+                                                    </font>10
+                                                    <font>ايام
+                                                        من
+                                                        تاريخ
+                                                        الارتجاع</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>تم
+                                                        التأشير
+                                                        والاتفاق
+                                                        على
+                                                        أحد
+                                                        طرق
+                                                        الدفع
+                                                        التالية</font>:
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>الدفع
+                                                            النقدي
+                                                        </b>
+                                                    </font>
+                                                    <b>.</b>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>التحويل
+                                                            البنكي
+                                                        </b>
+                                                    </font>
+                                                    <b>.</b>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>الخصم
+                                                            الفوري
+                                                            من
+                                                            الحساب
+                                                            البنكي
+                                                            للطرف
+                                                            الثاني
+                                                        </b>
+                                                    </font>
+                                                    <b>.</b>
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>الشيكات
+                                                            مؤجلة
+                                                            الاستحقاق
+                                                            بالنسبة
+                                                            للدفعات
+                                                            الشهرية
+                                                            في
+                                                            التاريخ
+                                                            المتفق
+                                                            عليه
+                                                            من
+                                                            كل
+                                                            شهر
+                                                        </b>
+                                                    </font>
+                                                    <b>.</b>
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>بتاريخ
+                                                        توقيع
+                                                        هذا
+                                                        العقد،
+                                                        يسلم
+                                                        الطرف
+                                                        الثاني
+                                                        الي
+                                                        يد
+                                                        الطرف
+                                                        الاول
+                                                        شيكات
+                                                        ضمان
+                                                        بعدد
+                                                        الاقساط
+                                                        الشهرية
+                                                        وتواريخها
+                                                        ،
+                                                        تعتبر
+                                                        شيكات
+                                                        ضمان
+                                                        لا
+                                                        يحق
+                                                        للطرف
+                                                        الأول</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>استخدامها
+                                                        الا
+                                                        اذا
+                                                        اخل
+                                                        الطرف
+                                                        الثاني
+                                                        بسداد
+                                                        القسط
+                                                        في
+                                                        موعده
+                                                        المحدد،
+                                                        وتنطبق
+                                                        عليها
+                                                        الغرامة
+                                                        التأخيرية
+                                                        المنصوص
+                                                        عليها
+                                                        بالفقرة
+                                                    </font>7
+                                                    <font>من
+                                                        البند
+                                                        الثالث</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الثالث
+                                                    </b>
+                                                </u>
+                                            </font>
+                                        </font>
+                                        <u>
+                                            <font>
+                                                <b>:
+                                                </b>
+                                                <font>
+                                                    <b>طريقة
+                                                        الدفع والضمانات المالية
+                                                    </b>
+                                                </font>
+                                            </font>
+                                        </u>
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <b>إقرار
+                                                        بالسعر وطريقة السداد
+                                                    </b>
+                                                </font>
+                                                :
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>يقر
+                                                                الطرف الثاني بشراء المنتج الموضح في
+                                                                البند الثاني من هذا العقد وفقًا للسعر
+                                                                الإجمالي المذكور في فاتورة التقسيط
+                                                                المرفقة</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>يتفق
+                                                                الطرفان على أن قيمة المنتج يتم سدادها
+                                                                بالكامل أو على أقساط شهرية وفق الجدول
+                                                                المتفق عليه، بشرط التزام الطرف الثاني
+                                                                بالسداد في مواعيده المحددة
+                                                            </font>
+                                                        </font>
+                                                        .
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <b>التزامات
+                                                        الطرف الثاني في حالة السداد بالتقسيط
+                                                    </b>
+                                                </font>
+                                                :
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>يتم
+                                                                السداد على أقساط شهرية منتظمة دون
+                                                                تأخير</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>في
+                                                                حال تأخر الطرف الثاني عن سداد أي قسط
+                                                                لأكثر من</font>10
+                                                            <font>أيام
+                                                                من تاريخ استحقاقه، يحق للطرف الأول</font>:
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                    <ul dir="rtl">
+                                                        <li>
+                                                            <p>
+                                                                <font>
+                                                                    <font>إرسال
+                                                                        إشعار خطي بضرورة تسوية القسط المتأخر
+                                                                        خلال</font>10
+                                                                    <font>أيام
+                                                                        إضافية</font>.
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <font>
+                                                                    <font>في
+                                                                        حال استمرار التأخير، يحق للطرف الأول
+                                                                        فسخ العقد، والمطالبة بالمبلغ المتبقي
+                                                                        كاملاً، بالإضافة إلى التعويضات
+                                                                        المستحقة
+                                                                    </font>
+                                                                </font>
+                                                                .
+                                                            </p>
+                                                            <p>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <font>
+                                            <b>شيكات
+                                                الضمان
+                                            </b>
+                                        </font>
+                                        :
+                                    </p>
+                                    <p dir="rtl">
+                                    </p>
+                                    <ul dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يلتزم
+                                                        الطرف الثاني بتسليم شيكات ضمان بعدد
+                                                        الأقساط الشهرية وتواريخ استحقاقها في
+                                                        يوم توقيع العقد</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>يتم
+                                                استخدام هذه الشيكات كوسيلة ضمان للسداد
+                                                في مواعيده، وتُصرف الشيكات فقط في
+                                                الحالات التالية</font>:
+                                        </font>
+                                    </p>
+                                    <p dir="rtl">
+                                    </p>
+                                    <ul dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>عدم
+                                                        سداد القسط المستحق في موعده بعد انتهاء
+                                                        فترة الإشعار الممنوحة للطرف الثاني</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>تأكيد
+                                                        ارتداد الشيك بعد تقديمه للبنك، مع
+                                                        الالتزام بالإجراءات القانونية السارية</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>الأساس
+                                                            القانوني لصر
+                                                        </b>
+                                                    </font>
+                                                    ف
+                                                    شيك الضمان
+                                                </font>
+                                                <b>:</b>
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>يُستند
+                                                                في صرف شيك الضمان إلى المادة
+                                                            </font>
+                                                            <b>599</b>
+                                                            <font>من
+                                                                قانون المعاملات التجارية الإماراتي
+                                                                التي تنص على أن الشيك يعتبر أداة وفاء
+                                                                واجبة السداد في تاريخ استحقاقه</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>ويعتبر
+                                                                الامتناع عن سداد قيمة الشيك المرتجع
+                                                                إخلالًا بالتزامات الطرف الثاني، ما
+                                                                يخول الطرف الأول اللجوء للقضاء لتحصيل
+                                                                المبلغ</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>التعويض
+                                                            عن ارتداد الشيك
+                                                        </b>
+                                                    </font>
+                                                </font>
+                                                <b>:</b>
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>في
+                                                                حال ارتداد الشيك لعدم كفاية الرصيد أو
+                                                                لأي سبب آخر، يلتزم الطرف الثاني بالآتي</font>:
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                    <ul dir="rtl">
+                                                        <li>
+                                                            <p>
+                                                                <font>
+                                                                    <font>سداد
+                                                                        قيمة الشيك خلال</font>10
+                                                                    <font>أيام
+                                                                        من تاريخ الإخطار</font>.
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <font>
+                                                                    <font>دفع
+                                                                        مبلغ إضافي قدره</font>500
+                                                                    <font>درهم
+                                                                        لتغطية المصاريف الإدارية المتعلقة
+                                                                        بارتجاع الشيك</font>.
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                            </p>
+                                                        </li>
+                                                        <li>
+                                                            <p>
+                                                                <font>
+                                                                    <font>دفع
+                                                                        غرامة قدرها</font>5%
+                                                                    <font>من
+                                                                        قيمة الشيك المرتجع كتعويض عن الأضرار،
+                                                                        تشمل تكاليف الموظفين والمصاريف البنكية</font>.
+                                                                </font>
+                                                            </p>
+                                                            <p>
+                                                            </p>
+                                                        </li>
+                                                    </ul>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>
+                                                        <b>الضرائب
+                                                            والرسوم
+                                                        </b>
+                                                    </font>
+                                                </font>
+                                                <b>:</b>
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>يلتزم
+                                                                الطرف الثاني بدفع ضريبة القيمة المضافة
+                                                                وأي ضرائب أو رسوم أخرى تُفرض بموجب
+                                                                القوانين السارية في دولة الإمارات
+                                                                العربية المتحدة</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <b>طرق
+                                                        الدفع المتفق عليها
+                                                    </b>
+                                                </font>
+                                                :
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>الدفع
+                                                                النقدي</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>التحويل
+                                                                البنكي</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>الخصم
+                                                                المباشر من الحساب البنكي للطرف الثاني</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>الشيكات
+                                                                مؤجلة الاستحقاق للأقساط الشهرية</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <b>حماية
+                                                        الطرف الثاني وضمان حقوق الطرف الأول
+                                                    </b>
+                                                </font>
+                                                :
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>لا
+                                                                يحق للطرف الأول استخدام شيكات الضمان
+                                                                إلا بعد التحقق من إخلال الطرف الثاني
+                                                                بالسداد في الموعد المحدد، وبعد استيفاء
+                                                                جميع الإجراءات القانونية المقررة</font>.
+                                                        </font>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li class="oe-nested">
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <br/>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <b>إجراءات
+                                                        قانونية إضافية
+                                                    </b>
+                                                </font>
+                                                :
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul dir="rtl">
+                                                <li>
+                                                    <p>
+                                                        <font>
+                                                            <font>الطرف
+                                                                الأول يحتفظ بحقه في اتخاذ جميع الإجراءات
+                                                                القانونية اللازمة لتحصيل المبالغ
+                                                                المستحقة، بما يضمن حماية حقوقه وفقًا
+                                                                لقانون المعاملات التجارية الإماراتي</font>.
+                                                        </font>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الرابع
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                            <font>
+                                                <u>
+                                                    <b>تسليم
+                                                        المنتجات
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:</b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يتم
+                                                        تسليم
+                                                        المنتج
+                                                        في
+                                                        مقر
+                                                        الطرف
+                                                        الأول،
+                                                        ويجوز
+                                                        الاتفاق
+                                                        على
+                                                        التسليم
+                                                        في
+                                                        مقر
+                                                        الطرف
+                                                        الثاني
+                                                        كما
+                                                        هو
+                                                        مبين
+                                                        في
+                                                        هذا
+                                                        العقد،
+                                                        ويسلم
+                                                        في
+                                                        تاريخ
+                                                        التسليم
+                                                        المتفق
+                                                        عليه
+                                                        وحسب
+                                                        وفرة
+                                                        المخزون</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>اذا
+                                                        تعذر
+                                                        على
+                                                        الطرف
+                                                        الأول
+                                                        توفير
+                                                        المنتج
+                                                        لأي
+                                                        سبب
+                                                        كان،
+                                                        يحق
+                                                        له
+                                                        استبداله
+                                                        بمنتج
+                                                        آخر
+                                                        على
+                                                        أن
+                                                        يحمل
+                                                        نفس
+                                                        المواصفات
+                                                        والنوع
+                                                        المطلوب
+                                                        قبل
+                                                        الطرف
+                                                        الثاني</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>عند
+                                                        عدم
+                                                        توافر
+                                                        المخزون
+                                                        الكافي
+                                                        يُخطر
+                                                        الطرف
+                                                        الثاني
+                                                        بذلك
+                                                        على
+                                                        أن
+                                                        يتم
+                                                        تحديد
+                                                        مدة
+                                                        قريبة
+                                                        لوصول
+                                                        الشحنة
+                                                        ولا
+                                                        يدخل
+                                                        ذلك
+                                                        ضمن
+                                                        حالة
+                                                        استحالة
+                                                        التنفيذ</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يتحمل
+                                                        الطرف
+                                                        الثاني
+                                                        وحده
+                                                        مسئولية
+                                                        فحص
+                                                        المنتج
+                                                        في
+                                                        وقت
+                                                        الاستلام
+                                                        ويحق
+                                                        له
+                                                        عدم
+                                                        قبول
+                                                        المنتج
+                                                        اذا
+                                                        وجد
+                                                        به
+                                                        عيب</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>اذا
+                                                        لم
+                                                        يتمكن
+                                                        الطرف
+                                                        الأول
+                                                        تسليم
+                                                        المبيع
+                                                        للطرف
+                                                        الثاني
+                                                        لأسباب
+                                                        راجعة
+                                                        الى
+                                                        الطرف
+                                                        الثاني،
+                                                        كعدم
+                                                        التزامه
+                                                        بالوقت
+                                                        المحدد
+                                                        أو
+                                                        عدم
+                                                        تواجده
+                                                        في
+                                                        مكان
+                                                        التسليم،
+                                                        فإنه
+                                                        يحق
+                                                        للطرف
+                                                        الأول
+                                                        المطالبة
+                                                        بنفقات
+                                                        تخزين
+                                                        المنتجات
+                                                        للفترة
+                                                        التي
+                                                        تبقى
+                                                        في
+                                                        حوزته</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        السادس
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                            <font>
+                                                <u>
+                                                    <b>تعديل
+                                                        العقد
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>يجوز
+                                                الاتفاق
+                                                بين
+                                                الطرفين
+                                                على
+                                                اجراء
+                                                اي
+                                                تعديل
+                                                اثناء
+                                                سريان
+                                                هذا
+                                                العقد
+                                                على
+                                                ان
+                                                تفرغ
+                                                في
+                                                شكل
+                                                كتابي
+                                                يلحق
+                                                هذا
+                                                العقد
+                                                ويكمله</font>.
+                                        </font>
+                                    </p>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        السابع
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:
+                                                </b>
+                                            </u>
+                                            <font>
+                                                <u>
+                                                    <b>مسائل
+                                                        تنظيمية
+                                                    </b>
+                                                </u>
+                                            </font>
+                                            <u>
+                                                <b>:</b>
+                                            </u>
+                                        </font>
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف
+                                                        الثاني
+                                                        بأنه
+                                                        قد
+                                                        قرأ
+                                                        جميع
+                                                        الشروط
+                                                        والبنود
+                                                        الواردة
+                                                        في
+                                                        هذا
+                                                        العقد
+                                                        وأنه
+                                                        يقر
+                                                        ويعترف
+                                                        بها</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>في
+                                                        حال
+                                                        نشوء
+                                                        نزاع
+                                                        بين
+                                                        الطرفين
+                                                        حول
+                                                        هذا
+                                                        العقد
+                                                        أو
+                                                        تنفيذه
+                                                        أو
+                                                        تفسيره،
+                                                        فإن
+                                                        الاختصاص
+                                                        ينعقد
+                                                        للمحكمة
+                                                        المختصة
+                                                        بدولة
+                                                        الامارات
+                                                        العربية
+                                                        المتحدة،
+                                                        وأن
+                                                        القانون
+                                                        الواجب
+                                                        التطبيق
+                                                        هو
+                                                        دولة
+                                                        الامارات
+                                                        العربية
+                                                        المتحدة</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>تعتمد
+                                                        نصوص
+                                                        اللغة
+                                                        العربية
+                                                        في
+                                                        حال
+                                                        وجود
+                                                        خلاف
+                                                        بينها
+                                                        وبين
+                                                        اللغة
+                                                        الانجليزية</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>
+                                                <u>
+                                                    <b>البند
+                                                        الثامن
+                                                    </b>
+                                                </u>
+                                            </font>
+                                        </font>
+                                        <u>
+                                            <font>
+                                                <b>:
+                                                </b>
+                                                <font>
+                                                    <b>توقيع
+                                                        العقد إلكترونياً و استلام المنتج
+                                                    </b>
+                                                </font>
+                                            </font>
+                                        </u>
+                                    </p>
+                                    <ol dir="rtl">
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف الثاني بأنه قد قام بتوقيع هذا
+                                                        العقد إلكترونيًا عن طريق مندوب التوصيل
+                                                        المفوض من الطرف الأول، وذلك باستخدام
+                                                        الوسائل التقنية المعتمدة، بما يتوافق
+                                                        مع أحكام القانون الاتحادي رقم</font>46
+                                                    <font>لسنة
+                                                    </font>2021
+                                                    <font>بشأن
+                                                        المعاملات الإلكترونية وخدمات الثقة</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف الثاني بأنه استلم المنتج المذكور
+                                                        في الفاتورة المرفقة بشكل يدوي من مندوب
+                                                        التوصيل، وأن عملية استلام المنتج تمت
+                                                        بناءً على معاينة المنتج ومطابقته
+                                                        للمواصفات المذكورة في الفاتورة</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف الثاني بأنه قام بتسليم الشيكات
+                                                        المطلوبة للطرف الأول عن طريق مندوب
+                                                        التوصيل المفوض، وأن هذه الشيكات تُعتبر
+                                                        ضماناً للوفاء بالالتزامات المالية
+                                                        المنصوص عليها في هذا العقد</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يلتزم
+                                                        مندوب التوصيل المفوض من الطرف الأول
+                                                        بتوثيق عملية التسليم والاستلام من خلال
+                                                        توقيع الطرف الثاني إلكترونيًا أو يدويًا
+                                                        على سند استلام المنتج والشيكات، ويُعتبر
+                                                        هذا التوقيع جزءاً لا يتجزأ من العقد</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يعتبر
+                                                        توقيع العقد الإلكتروني وسيلة قانونية
+                                                        ملزمة للطرفين، لها نفس حجية العقود
+                                                        الموقعة يدويًا، وفقًا للقوانين السارية
+                                                        في دولة الإمارات العربية المتحدة</font>.
+                                                </font>
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <font>
+                                                    <font>يقر
+                                                        الطرف الثاني بأن توقيعه الإلكتروني أو
+                                                        اليدوي على العقد وسند استلام المنتج
+                                                        يُعد قبولًا صريحًا ونهائيًا لكافة
+                                                        البنود والشروط الواردة في هذا العقد</font>.
+                                                </font>
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p dir="rtl">
+                                        <font>
+                                            <font>حرر
+                                                هذا
+                                                العقد
+                                                من
+                                                نسختين
+                                                بيد
+                                                كل
+                                                طرف
+                                                نسخة
+                                                منها
+                                                للعمل
+                                                بموجبها
+                                                والتقييد
+                                                ببنودها</font>.
+                                        </font>
+                                    </p>
+                                    <p dir="rtl">
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        This agreement has been made
+                                        between:
+                                    </p>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                <b>Qogni Electronics Trading
+                                                    L.L.C.</b>, a limited liability company established and registered
+                                                with the Dubai Department of Economy and Tourism under license
+                                                number <b>1128172</b>, with its headquarters in <b>Saih Shuaib, Bur
+                                                Dubai, Dubai</b>, and email <b>Info@sandhapp.com</b>, hereinafter
+                                                referred to as the <b>First Party (Seller)</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <b>Mr./Ms. [Name
+                                                    mentioned in the attached installment invoice]</b>,
+                                                hereinafter referred to as the <b>Second Party (Buyer)</b>.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <h3>Preamble</h3>
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                The <b>First Party</b> is a limited liability company lawfully
+                                                established under the laws of the <b>United Arab Emirates</b>,
+                                                engaging in the <b>trade of mobile phones, accessories, and spare
+                                                parts for electrical and electronic devices</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> has expressed a desire to enter into an
+                                                agreement with the <b>First Party</b> to purchase electronic devices
+                                                in accordance with the terms and conditions outlined in this
+                                                contract.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                Both parties acknowledge that they have the legal authority and
+                                                capacity to enter into, execute, and fulfill all obligations of this
+                                                contract.
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        Accordingly, both parties,
+                                        being legally competent, have agreed to the following:
+                                    </p>
+                                    <h3>Clause
+                                        1: Subject of the Contract (Product Sale)
+                                    </h3>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                The <b>First Party</b> has sold the product detailed in the attached
+                                                invoice, which has been signed by the <b>Second Party</b> (the
+                                                buyer). The invoice forms an integral part of this contract.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> acknowledges having received the specified
+                                                product, examined it thoroughly before making the first installment
+                                                payment, and accepted it without reservation, ensuring its quantity
+                                                and description are accurate.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> may not claim any defects in the product
+                                                after <b>three (3) days</b> from the date of receipt.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p>
+                                        <b>Legal Basis:</b>
+                                    </p>
+                                    <p>
+                                        This
+                                        clause is based on <b>Article 544</b> of the UAE Civil Code, which
+                                        states that the buyer has no right to request contract termination or
+                                        claim against the seller after an adequate inspection unless fraud or
+                                        misrepresentation is proven. It also aligns with <b>Article 246</b>,
+                                        which mandates that contracts be executed in good faith as agreed.
+                                    </p>
+                                    <h3>Clause
+                                        2: Communications &amp; Correspondence
+                                    </h3>
+                                    <p>
+                                        All official communications
+                                        and correspondence shall be conducted through the following emails
+                                        and contact numbers:
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                <b>Emails:</b>
+                                                Saad@sandhapp.com, Info@sandhapp.com
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <b>Phone:</b>
+                                                0505503599
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <b>Address:</b>
+                                                Saih Shuaib, Bur Dubai, Dubai
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        Notices shall be considered
+                                        legally valid if sent via <b>registered mail with acknowledgment of
+                                        receipt, hand-delivered with a signed receipt, fax, or official
+                                        email</b>.
+                                    </p>
+                                    <h3>Clause
+                                        3: Payment Terms
+                                    </h3>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                The
+                                                <b>Second Party</b>
+                                                acknowledges purchasing the product described in <b>Clause 1</b> for
+                                                the price stated in the attached invoice.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The full payment is due upon
+                                                signing the installment contract.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If an installment plan is
+                                                agreed upon, the amount will be paid in <b>continuous monthly
+                                                installments
+                                            </b> without any interruptions, as outlined in the
+                                                following clauses.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If the
+                                                <b>Second Party</b>
+                                                fails to pay the agreed installments for <b>one (1) month</b> from
+                                                the contract’s start date, the <b>First Party</b> has the right to
+                                                <b>terminate the contract and demand full payment of the remaining
+                                                    balance</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                In addition, the <b>Second
+                                                Party
+                                            </b> will be obligated to pay an <b>additional AED 1,000</b> as
+                                                a late payment penalty, which will be added to the total outstanding
+                                                amount.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> shall
+                                                bear <b>VAT and any newly introduced taxes</b> as per UAE laws.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If payments are made through
+                                                <b>post-dated cheques</b>, and a cheque is returned due to
+                                                insufficient funds, the <b>Second Party</b> must pay a <b>late
+                                                penalty of 10% of the cheque value within 10 days
+                                            </b> of its return.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The following payment methods
+                                                have been agreed upon:
+                                            </p>
+                                            <p>
+                                            </p>
+                                            <ul>
+                                                <li>
+                                                    <p>
+                                                        <b>Cash payment</b>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <b>Bank transfer</b>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <b>Direct debit from the Second Party’s bank account</b>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                                <li>
+                                                    <p>
+                                                        <b>Post-dated cheques for monthly installments</b>
+                                                    </p>
+                                                    <p>
+                                                    </p>
+                                                </li>
+                                            </ul>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                Upon signing this contract,
+                                                the <b>Second Party</b> will provide
+                                                <b>post-dated cheques</b>
+                                                equivalent to the number of monthly installments, which serve as a
+                                                <b>guarantee</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>First Party</b> shall
+                                                not use these cheques <b>unless the Second Party defaults</b> on
+                                                payments, in which case the penalty stated in
+                                                <b>Clause 3, Section 7</b>
+                                                will apply.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <h3>Clause
+                                        4: Product Delivery
+                                    </h3>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                The product shall be delivered at the <b>First Party's</b> premises
+                                                unless both parties agree on delivery to the
+                                                <b>Second Party's</b>
+                                                location.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If the <b>First Party</b> is unable to provide the product for any
+                                                reason, it has the right to
+                                                <b>replace it with a similar product</b>
+                                                with the same specifications, subject to the
+                                                <b>Second Party’s</b>
+                                                approval.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If stock is unavailable, the <b>Second Party</b> will be informed,
+                                                and a <b>new delivery date will be set</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> is responsible for inspecting the product
+                                                upon receipt and may <b>reject it if defects are found</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                If the <b>Second Party</b> fails to receive the product due to their
+                                                own delay (e.g., not being present at the agreed time), the <b>First
+                                                Party
+                                            </b> may <b>charge storage fees</b>.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <h3>Clause
+                                        5: Contract Modifications
+                                    </h3>
+                                    <p>
+                                        Both parties may agree to
+                                        modify the terms of this contract during its validity, provided that
+                                        any changes are <b>documented in writing</b> and attached as an
+                                        addendum to this contract.
+                                    </p>
+                                    <h3>Clause
+                                        6: Dispute Resolution &amp; Governing Law
+                                    </h3>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> acknowledges reading and accepting all terms
+                                                of this contract.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                In the event of a dispute regarding <b>interpretation, execution, or
+                                                enforcement</b>, the competent courts in the
+                                                <b>United Arab Emirates</b>
+                                                shall have jurisdiction.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The governing law shall be the <b>laws of the United Arab Emirates</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                In case of discrepancies between the <b>Arabic and English versions</b>,
+                                                the <b>Arabic text shall prevail</b>.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <h3>Clause
+                                        7: Electronic Contract Signing &amp; Product Receipt
+                                    </h3>
+                                    <ol>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> acknowledges signing this contract
+                                                electronically via an <b>authorized delivery agent</b> using legally
+                                                recognized electronic means, in compliance with <b>Federal Law No.
+                                                46 of 2021 on Electronic Transactions and Trust Services</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> confirms that they have <b>received the
+                                                product manually
+                                            </b> from the delivery agent after verifying its
+                                                specifications as per the attached invoice.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> has handed over the required <b>post-dated
+                                                cheques
+                                            </b> to the <b>First Party</b> via the delivery agent as
+                                                <b>security for installment payments</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>delivery agent</b> must document the transaction by obtaining
+                                                an <b>electronic or manual signature</b> from the
+                                                <b>Second Party</b>
+                                                on the <b>product and cheque receipt forms</b>, which are considered
+                                                integral parts of this contract.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>electronic signature</b> shall have the same <b>legal
+                                                validity
+                                            </b> as a manually signed contract under <b>UAE laws</b>.
+                                            </p>
+                                            <p>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                The <b>Second Party</b> acknowledges that their <b>signature</b> on
+                                                this contract and receipt form <b>constitutes full acceptance</b> of
+                                                all contractual terms and conditions.
+                                            </p>
+                                        </li>
+                                    </ol>
+                                    <p>
+                                        This contract has been made in
+                                        <b>two copies</b>, with each party receiving one copy for reference
+                                        and compliance.
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <span class="h4-fs" style="font-size: 18px">
+                                            <strong>المستندات الرسمية للطرف الثاني  -  Official documents of the second
+                                                party
+                                            </strong>
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p>
+                                        <br/>
+                                    </p>
+                                    <p dir="rtl"
+                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
+                                        التوقيع الطرف الثاني
+                                    </p>
+
+                                    <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
+                                        <span dir="rtl" style="font-size: 14px;">-------------------------</span>
+                                    </p>
+                                    <br/>
+                                    <!--                                    <span t-field="o.narration"/>-->
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_print_contract" model="ir.actions.report">
+        <field name="name">Contract</field>
+        <field name="model">project.project</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">kyc_payment_handling.contract_report_pdf</field>
+        <field name="report_file">kyc_payment_handling.contract_report_pdf</field>
+        <field name="binding_model_id" ref="kyc_payment_handling.model_project_project"/>
+    </record>
+
+
+
+
+
+</odoo>

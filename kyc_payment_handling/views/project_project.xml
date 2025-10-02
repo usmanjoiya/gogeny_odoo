@@ -10,8 +10,11 @@
                 <button name="action_state_approved" string="Approve" type="object" class="oe_highlight"
                     invisible="state not in ['in_review']"/>
                 <button name="action_state_reject" string="Reject" type="object" class="oe_highlight"
-                    invisible="state in ['reject']"/>
+                        invisible="state in ['reject']"/>
+                <button name="action_send_contract" string="Send Contract" type="object" class="oe_highlight"
+                        invisible="state not in ['approved']"/>
             </xpath>
+
             <xpath expr="//form/sheet/group/group[1]/field[@name='partner_id']" position="attributes">
                 <attribute name="invisible">True</attribute>
             </xpath>

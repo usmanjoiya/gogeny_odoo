@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+import base64
 
 
 class ProjectProject(models.Model):
@@ -29,6 +30,40 @@ class ProjectProject(models.Model):
     state = fields.Selection(
         [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
         string="Status", default="recieved")
+
+    def action_send_contract(self):
+        self.ensure_one()
+
+        template = self.env.ref("kyc_payment_handling.email_template_customer_contract", raise_if_not_found=False)
+        report = self.env.ref("kyc_payment_handling.action_print_contract", raise_if_not_found=False)
+        if template and report:
+            pdf_content, _ = self.env['ir.actions.report']._render_qweb_pdf(
+                'kyc_payment_handling.action_print_contract', self.id
+            )
+
+            pdf_name = f"Customer_Contract_{self.name or 'Document'}.pdf"
+            attachment = self.env['ir.attachment'].create({
+                'name': pdf_name,
+                'type': 'binary',
+                'datas': base64.b64encode(pdf_content),
+                'res_model': 'project.project',
+                'res_id': self.id,
+                'mimetype': 'application/pdf',
+            })
+            template.send_mail(
+                self.id,
+                force_send=True,
+                email_values={'attachment_ids': [attachment.id]}
+            )
+
+            self.state = "contract_sent"
+            stage = self.env.ref(
+                "kyc_payment_handling.project_project_stage_contract_sent",
+                raise_if_not_found=False
+            )
+            if stage:
+                self.stage_id = stage.id
+
 
     @api.constrains('bank_statement', 'salary_certificate', 'id_photo_front', 'id_photo_back')
     def _check_file_size(self):

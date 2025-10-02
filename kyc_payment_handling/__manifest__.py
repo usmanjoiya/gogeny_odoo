@@ -17,6 +17,9 @@
         'data/project_pipeline_form.xml',
         'data/website_sale_controller_view_inherit.xml',
         'data/portal_invoice_payment.xml',
+        'data/contract_email_template.xml',
+
+        'report/contract_template.xml',
 
         'views/res_partner.xml',
         'views/project_project.xml',

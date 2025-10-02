@@ -125,15 +125,15 @@ class WebsiteSaleInherit(WebsiteSale):
                 print("---------------->>>>> No receivable lines found to reconcile.")
 
         # --- Remove matching partner product line if approved ---
-        # if order.partner_id and order.partner_id.project_line_ids:
-        #     print("-------------------->>>>> Order Partner:", order.partner_id.name)
+        if order.partner_id and order.partner_id.project_line_ids:
+            print("-------------------->>>>> Order Partner:", order.partner_id.name)
 
-        #     for so_line in order.order_line:
-        #         print("------------->>>>> OL")
-        #         for project in order.partner_id.project_line_ids:
-        #             if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'approved':
-        #                 print(f"---------------------------->>>>> Removing project line: {project}")
-        #                 project.unlink()
+            for so_line in order.order_line:
+                print("------------->>>>> OL")
+                for project in order.partner_id.project_line_ids:
+                    if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'approved':
+                        print(f"---------------------------->>>>> Removing project line: {project}")
+                        project.unlink()
 
         values.update({
             'currency_symbol': order.currency_id.symbol,
