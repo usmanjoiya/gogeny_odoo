@@ -1,74 +1,74 @@
 /** @odoo-module **/
 
 import PaymentForm from "@payment/js/payment_form";
-console.log("[CustomPayment] JS Loaded");
+
+console.log("✅ Custom Payment JS Loaded!");
 
 PaymentForm.include({
+
     async _submitForm(ev) {
-        console.log("[CustomPayment] _submitForm triggered");
+        console.log("▶️ Custom _submitForm triggered!");
+
         ev.stopPropagation();
-        console.log("[CustomPayment] stopPropagation called");
         ev.preventDefault();
-        console.log("[CustomPayment] preventDefault called");
 
         const paymentDialog = this.el.closest("#pay_with");
-        console.log("[CustomPayment] paymentDialog =", paymentDialog);
-
         const chosenPaymentDetails = paymentDialog
             ? paymentDialog.querySelector(".o_btn_payment_tab.active")
             : null;
-        console.log("[CustomPayment] chosenPaymentDetails =", chosenPaymentDetails);
 
         if (chosenPaymentDetails) {
-            console.log("[CustomPayment] chosenPaymentDetails.id =", chosenPaymentDetails.id);
+            console.log("🔎 Active Tab ID:", chosenPaymentDetails.id);
 
             if (chosenPaymentDetails.id === "o_payment_installments_tab") {
                 this.paymentContext.amount = parseFloat(this.paymentContext.invoiceNextAmountToPay);
-                console.log("[CustomPayment] Paying installment:", this.paymentContext.amount);
+                console.log("💰 Paying Installment:", this.paymentContext.amount);
 
             } else if (chosenPaymentDetails.id === "o_payment_custom_tab") {
-                console.log("[CustomPayment] Custom tab selected");
-
-                const input = paymentDialog.querySelector("#custom_payment_amount");
-                console.log("[CustomPayment] input field =", input);
-
-                const customValue = parseFloat(input?.value || 0);
-                console.log("[CustomPayment] customValue =", customValue);
-
-                const maxValue = parseFloat(this.paymentContext.invoiceAmountDue);
-                console.log("[CustomPayment] maxValue =", maxValue);
-
-                if (customValue > 0 && customValue <= maxValue) {
-                    this.paymentContext.amount = customValue;
-                    console.log("[CustomPayment] Paying custom amount:", this.paymentContext.amount);
+                const customAmountInput = paymentDialog.querySelector("#o_payment_custom_amount_input");
+                if (customAmountInput && customAmountInput.value) {
+                    this.paymentContext.amount = parseFloat(customAmountInput.value);
+                    console.log("💰 Paying Custom Amount:", this.paymentContext.amount);
                 } else {
-                    console.log("[CustomPayment] Invalid custom value entered!");
-                    alert(`⚠️ Please enter a valid amount (1 – ${maxValue}).`);
-                    return;
+                    this.paymentContext.amount = 0;
+                    console.warn("⚠️ Custom amount input empty or invalid!");
                 }
 
             } else {
                 this.paymentContext.amount = parseFloat(this.paymentContext.invoiceAmountDue);
-                console.log("[CustomPayment] Paying full invoice:", this.paymentContext.amount);
+                console.log("💰 Paying Full Amount:", this.paymentContext.amount);
             }
         } else {
-            console.log("[CustomPayment] No chosenPaymentDetails found, fallback to full amount");
-            this.paymentContext.amount = parseFloat(this.paymentContext.invoiceAmountDue);
+            console.warn("⚠️ No active payment tab found!");
         }
 
-        console.log("[CustomPayment] Final amount before super:", this.paymentContext.amount);
-        await this._super(...arguments);
-        console.log("[CustomPayment] After super call");
+        console.log("📤 Final amount before calling super:", this.paymentContext.amount);
+
+        // ✅ Now safely call the original _submitForm
+        return this._super.apply(this, arguments);
     },
 
     _prepareTransactionRouteParams() {
-        console.log("[CustomPayment] _prepareTransactionRouteParams triggered");
-        const transactionRouteParams = this._super(...arguments);
-        console.log("[CustomPayment] transactionRouteParams before add =", transactionRouteParams);
+        const params = this._super(...arguments);
 
-        transactionRouteParams.payment_reference = this.paymentContext.paymentReference;
-        console.log("[CustomPayment] transactionRouteParams after add =", transactionRouteParams);
+        console.log("🛠️ Params from super before override:", params);
 
-        return transactionRouteParams;
+        const paymentDialog = this.el.closest("#pay_with");
+        const chosenPaymentDetails = paymentDialog
+            ? paymentDialog.querySelector(".o_btn_payment_tab.active")
+            : null;
+
+        if (chosenPaymentDetails && chosenPaymentDetails.id === "o_payment_custom_tab") {
+            const customAmountInput = paymentDialog.querySelector("#o_payment_custom_amount_input");
+            if (customAmountInput && customAmountInput.value) {
+                params.amount = parseFloat(customAmountInput.value);
+                console.log("✅ Overridden Params with Custom Amount:", params.amount);
+            } else {
+                console.warn("⚠️ Custom amount input empty in params stage!");
+            }
+        }
+
+        console.log("📦 Final transaction params:", params);
+        return params;
     },
 });
