@@ -46,9 +46,9 @@
                                                                 <t t-esc="term.name"/>
                                                             </h5>
                                                             <t t-if="partner_payment_term and term.id == partner_payment_term">
-                                                                <t t-if="partner_project_state == 'pending'">
+                                                                <t t-if="partner_project_state == 'recieved'">
                                                                     <span class="badge bg-info">
-                                                                        Pending
+                                                                        Recieved
                                                                     </span>
                                                                 </t>
                                                                 <t t-if="partner_project_state == 'in_review'">
@@ -61,9 +61,9 @@
                                                                         Approved
                                                                     </span>
                                                                 </t>
-                                                                <t t-if="partner_project_state == 'cancel'">
+                                                                <t t-if="partner_project_state == 'reject'">
                                                                     <span class="badge bg-info">
-                                                                        Cancelled
+                                                                        Rejected
                                                                     </span>
                                                                 </t>
                                                             </t>
@@ -103,7 +103,7 @@
                                                                 </p>
                                                             </t>
                                                             <t t-if="partner_payment_term and term.id == partner_payment_term">
-                                                                <t t-if="partner_project_state == 'pending' or partner_project_state == 'in_review'">
+                                                                <t t-if="partner_project_state == 'recieved' or partner_project_state == 'in_review'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                         data-scroll-zone-end="100"
@@ -115,7 +115,7 @@
                                                                         </a>
                                                                     </p>
                                                                 </t>
-                                                                <t t-if="partner_project_state == 'approved'">
+                                                                <t t-if="partner_project_state == 'approved' or partner_project_state == 'contract_sent'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                         data-scroll-zone-end="100"
@@ -127,7 +127,7 @@
                                                                         </a>
                                                                     </p>
                                                                 </t>
-                                                                <t t-if="partner_project_state == 'cancel'">
+                                                                <t t-if="partner_project_state == 'reject'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                         data-scroll-zone-end="100"

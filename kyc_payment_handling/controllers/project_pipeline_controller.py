@@ -120,7 +120,7 @@ class ProjectApplication(http.Controller):
         print("------->>>>> Printing partner After Update: ", partner.customer_reference)
 
         for line in partner.project_line_ids:
-            if line.product_id.id == product.id and line.payment_term_id.id == term.id and line.state == 'cancel':
+            if line.product_id.id == product.id and line.payment_term_id.id == term.id and line.state == 'reject':
                 print(f"---------------------------->>>>> Removing project line: {line}")
                 line.unlink()
         # ---------------- Link Project to Partner (new One2many line) ----------------

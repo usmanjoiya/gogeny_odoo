@@ -5,14 +5,12 @@
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
             <xpath expr="//form/header/button[@name='action_open_share_project_wizard']" position="after">
-                <button name="action_state_pending" string="Reset to Pending" type="object" class="oe_highlight"
-                    invisible="state in ['pending', 'approved']"/>
                 <button name="action_state_in_review" string="Send for Review" type="object" class="oe_highlight"
-                    invisible="state in ['in_review']"/>
-                <button name="action_state_approved" string="Approved" type="object" class="oe_highlight"
-                    invisible="state in ['approved', 'cancel', 'pending']"/>
-                <button name="action_state_cancel" string="Cancel" type="object" class="oe_highlight"
-                    invisible="state in ['cancel']"/>
+                    invisible="state not in ['recieved']"/>
+                <button name="action_state_approved" string="Approve" type="object" class="oe_highlight"
+                    invisible="state not in ['in_review']"/>
+                <button name="action_state_reject" string="Reject" type="object" class="oe_highlight"
+                    invisible="state in ['reject']"/>
             </xpath>
             <xpath expr="//form/header/field[@name='stage_id']" position="after">
                 <field name="state" widget="statusbar" readonly="1" nolabel="1"/>

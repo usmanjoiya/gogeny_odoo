@@ -26,8 +26,8 @@ class ProjectProject(models.Model):
     salary_certificate = fields.Binary(string="Salary Certificate", attachment=True)
     salary_certificate_filename = fields.Char(string="Salary Certificate Filename")
     state = fields.Selection(
-        [('pending', 'Pending'), ('in_review', 'In-Review'), ('approved', 'Approved'), ('cancel', 'Cancelled')],
-        string="Status", default="pending")
+        [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
+        string="Status", default="recieved")
 
     @api.constrains('bank_statement', 'salary_certificate', 'id_photo_front', 'id_photo_back')
     def _check_file_size(self):
@@ -42,9 +42,9 @@ class ProjectProject(models.Model):
             if record.salary_certificate and len(record.salary_certificate) > max_size:
                 raise ValidationError("Salary Certificate file size cannot exceed 20 MB.")
 
-    def action_state_pending(self):
+    def action_state_recieved(self):
         self.ensure_one()
-        self.state = 'pending'
+        self.state = 'recieved'
 
     def action_state_in_review(self):
         self.ensure_one()
@@ -54,9 +54,9 @@ class ProjectProject(models.Model):
         self.ensure_one()
         self.state = 'approved'
 
-    def action_state_cancel(self):
+    def action_state_reject(self):
         self.ensure_one()
-        self.state = 'cancel'
+        self.state = 'reject'
 
     @api.onchange('uae_id_number')
     def onchange_uae_id_number(self):
