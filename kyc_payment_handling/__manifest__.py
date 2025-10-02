@@ -11,7 +11,8 @@
     'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment',],
     'data': [
         'security/ir.model.access.csv',
-
+        
+        'data/project_stages_data_file.xml',
         'data/quickpay_page.xml',
         'data/project_pipeline_form.xml',
         'data/website_sale_controller_view_inherit.xml',
@@ -22,9 +23,6 @@
         'views/account_payment_term.xml',
     ],
     'assets': {
-            # 'payment.assets_frontend': [
-                # 'kyc_payment_handling/static/src/js/portal_invoice_payment.js',
-            # ],
 
             'web.assets_frontend': [
                 # 'kyc_payment_handling/static/src/js/kyc_file_size_validation.js',

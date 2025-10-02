@@ -1,0 +1,23 @@
+<odoo>
+    <data>
+        <record id="project_project_stage_received" model="project.project.stage">
+            <field name="name">Received</field>
+        </record>
+
+        <record id="project_project_stage_in_review" model="project.project.stage">
+            <field name="name">In-Review</field>
+        </record>
+
+        <record id="project_project_stage_approved" model="project.project.stage">
+            <field name="name">Approved</field>
+        </record>
+
+        <record id="project_project_stage_contract_sent" model="project.project.stage">
+            <field name="name">Contract Sent</field>
+        </record>
+
+        <record id="project_project_stage_rejected" model="project.project.stage">
+            <field name="name">Rejected</field>
+        </record>
+    </data>
+</odoo>

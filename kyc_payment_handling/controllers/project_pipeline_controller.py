@@ -75,6 +75,7 @@ class ProjectApplication(http.Controller):
         # ---------------- Project Creation ----------------
         project_vals = {
             'name': f"{product.name}",
+            'product_id': product.id,
             'partner_id': partner.id,
             'phone': post.get('phone_number'),
             'emergency_phone': post.get('emergency_phone_number'),

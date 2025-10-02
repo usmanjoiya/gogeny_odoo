@@ -6,6 +6,7 @@ class ProjectProject(models.Model):
     _inherit = 'project.project'
 
     phone = fields.Char(string="Phone")
+    product_id = fields.Many2one('product.template', string="Product")
     emergency_phone = fields.Char(string="Emergency Phone")
     email = fields.Char(string="Email")
     place_of_work = fields.Char(string="Place of Work")
@@ -42,21 +43,49 @@ class ProjectProject(models.Model):
             if record.salary_certificate and len(record.salary_certificate) > max_size:
                 raise ValidationError("Salary Certificate file size cannot exceed 20 MB.")
 
-    def action_state_recieved(self):
-        self.ensure_one()
-        self.state = 'recieved'
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("stage_id"):
+                stage = self.env.ref(
+                    "kyc_payment_handling.project_project_stage_received",
+                    raise_if_not_found=False
+                )
+                if stage:
+                    vals["stage_id"] = stage.id
+        return super().create(vals_list)
 
     def action_state_in_review(self):
         self.ensure_one()
-        self.state = 'in_review'
+        self.state = "in_review"
+        stage = self.env.ref(
+            "kyc_payment_handling.project_project_stage_in_review",
+            raise_if_not_found=False
+        )
+        if stage:
+            self.stage_id = stage.id
 
     def action_state_approved(self):
         self.ensure_one()
-        self.state = 'approved'
+        self.state = "approved"
+        stage = self.env.ref(
+            "kyc_payment_handling.project_project_stage_approved",
+            raise_if_not_found=False
+        )
+        if stage:
+            self.stage_id = stage.id
 
     def action_state_reject(self):
         self.ensure_one()
-        self.state = 'reject'
+        self.state = "reject"
+        stage = self.env.ref(
+            "kyc_payment_handling.project_project_stage_rejected",
+            raise_if_not_found=False
+        )
+        print("--------->>>>>Stage", stage)
+        if stage:
+            self.stage_id = stage.id
+
 
     @api.onchange('uae_id_number')
     def onchange_uae_id_number(self):
