@@ -201,154 +201,168 @@
                                 <!--                                                                        </div>-->
                                 <!--                                </div>-->
 
-                                <!-- Documents Section -->
-                                <table class="table o_table table-borderless"
-                                       style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                                    <tbody>
-                                        <!-- Section Header -->
-                                        <tr style="height: 40px;">
-                                            <td colspan="2"
-                                                style="background-color: rgb(183, 31, 31); color: white; padding: 8px 12px; vertical-align: middle;">
-                                                <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                    <font>DOCUMENTS</font>
-                                                </p>
+                                <!-- Invoice Lines Table -->
+                                <table class="o_has_total_table table o_main_table table-borderless"
+                                       name="invoice_line_table">
+                                    <thead>
+                                        <tr>
+                                            <th name="th_description" class="text-start">
+                                                <span>Description</span>
+                                            </th>
+                                            <th name="th_quantity" class="text-end">
+                                                <span>Quantity</span>
+                                            </th>
+                                            <th name="th_priceunit" class="text-end text-nowrap">
+                                                <span>Unit Price</span>
+                                            </th>
+                                            <!--                                            <th name="th_discount" class="text-end">-->
+                                            <!--                                                <span>Disc.%</span>-->
+                                            <!--                                            </th>-->
+                                            <th name="th_taxes" class="text-start">
+                                                <span>VAT</span>
+                                            </th>
+                                            <th name="tax_amount" class="text-start">
+                                                <span>VAT Amount</span>
+                                            </th>
+                                            <th name="th_subtotal" class="text-end">
+                                                <span>Amount</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="invoice_tbody">
+                                        <!-- Product Line 1 -->
+                                        <tr>
+                                            <td name="account_invoice_line_name">
+                                                <span t-esc="o.product_id.display_name or ' '"/>
                                             </td>
-                                        </tr>
-                                        <!-- Document Previews -->
-                                        <tr>
-                                            <t t-if="o.id_photo_front">
-                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                    <strong style="display: block; margin-bottom: 8px;">ID Photo
-                                                        Front:
-                                                    </strong>
-                                                    <img t-att-src="image_data_uri(o.id_photo_front)"
-                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
-                                                </td>
-                                            </t>
-                                            <t t-if="o.id_photo_back">
-                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                    <strong style="display: block; margin-bottom: 8px;">ID Photo Back:
-                                                    </strong>
-                                                    <img t-att-src="image_data_uri(o.id_photo_back)"
-                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
-                                                </td>
-                                            </t>
-                                        </tr>
-                                        <tr>
-                                            <t t-if="o.salary_certificate">
-                                                <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                    <strong style="display: block; margin-bottom: 8px;">Salary
-                                                        Certificate:
-                                                    </strong>
-                                                    <img t-att-src="image_data_uri(o.salary_certificate)"
-                                                         style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
-                                                </td>
-                                            </t>
+                                            <td name="td_quantity" class="text-end text-nowrap">
+                                                <span>1.00</span>
+                                                <span>units</span>
+                                            </td>
+                                            <td name="td_price_unit" class="text-end">
+                                                <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
+                                            </td>
+                                            <!--                                            <td name="td_discount" class="text-end">-->
+                                            <!--                                                <span class="text-nowrap">0</span>-->
+                                            <!--                                            </td>-->
+                                            <td name="td_taxes" class="text-end text-nowrap">
+                                                <span>0%</span>
+                                            </td>
+                                            <td>
+                                                <span>00.00</span>
+                                            </td>
+                                            <td name="td_subtotal" class="text-end o_price_total">
+                                                <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
-
-                                <!-- Invoice Lines Table -->
-                                <!--                                <table class="o_has_total_table table o_main_table table-borderless"-->
-                                <!--                                       name="invoice_line_table">-->
-                                <!--                                    <thead>-->
-                                <!--                                        <tr>-->
-                                <!--                                            <th name="th_description" class="text-start">-->
-                                <!--                                                <span>Description</span>-->
-                                <!--                                            </th>-->
-                                <!--                                            <th name="th_quantity" class="text-end">-->
-                                <!--                                                <span>Quantity</span>-->
-                                <!--                                            </th>-->
-                                <!--                                            <th name="th_priceunit" class="text-end text-nowrap">-->
-                                <!--                                                <span>Unit Price</span>-->
-                                <!--                                            </th>-->
-                                <!--&lt;!&ndash;                                            <th name="th_discount" class="text-end">&ndash;&gt;-->
-                                <!--&lt;!&ndash;                                                <span>Disc.%</span>&ndash;&gt;-->
-                                <!--&lt;!&ndash;                                            </th>&ndash;&gt;-->
-                                <!--                                            <th name="th_taxes" class="text-start">-->
-                                <!--                                                <span>VAT</span>-->
-                                <!--                                            </th>-->
-                                <!--                                            <th name="tax_amount" class="text-start">-->
-                                <!--                                                <span>VAT Amount</span>-->
-                                <!--                                            </th>-->
-                                <!--                                            <th name="th_subtotal" class="text-end">-->
-                                <!--                                                <span>Amount</span>-->
-                                <!--                                            </th>-->
-                                <!--                                        </tr>-->
-                                <!--                                    </thead>-->
-                                <!--                                    <tbody class="invoice_tbody">-->
-                                <!--                                        &lt;!&ndash; Product Line 1 &ndash;&gt;-->
-                                <!--                                        <tr>-->
-                                <!--                                            <td name="account_invoice_line_name">-->
-                                <!--                                                <span t-esc="o.name or ' '"/>-->
-                                <!--                                            </td>-->
-                                <!--                                            <td name="td_quantity" class="text-end text-nowrap">-->
-                                <!--                                                <span>1.00</span>-->
-                                <!--                                                <span>units</span>-->
-                                <!--                                            </td>-->
-                                <!--                                            <td name="td_price_unit" class="text-end">-->
-                                <!--                                                <span class="text-nowrap">4,500.00</span>-->
-                                <!--                                            </td>-->
-                                <!--&lt;!&ndash;                                            <td name="td_discount" class="text-end">&ndash;&gt;-->
-                                <!--&lt;!&ndash;                                                <span class="text-nowrap">0</span>&ndash;&gt;-->
-                                <!--&lt;!&ndash;                                            </td>&ndash;&gt;-->
-                                <!--                                            <td name="td_taxes" class="text-end text-nowrap">-->
-                                <!--                                                <span>VAT 5%</span>-->
-                                <!--                                            </td>-->
-                                <!--                                            <td>-->
-                                <!--                                                <span>225.00</span>-->
-                                <!--                                            </td>-->
-                                <!--                                            <td name="td_subtotal" class="text-end o_price_total">-->
-                                <!--                                                <span class="text-nowrap">4,500.00</span>-->
-                                <!--                                            </td>-->
-                                <!--                                        </tr>-->
-                                <!--                                    </tbody>-->
-                                <!--                                </table>-->
 
 
                                 <!-- Totals Section -->
                                 <div id="right-elements" class="col-5 ms-5 d-inline-block float-end"
                                      style="float: right; width: 40%; margin-top: 20px;">
 
-                                    <!--                                    <div id="total" class="clearfix row mt-n3">-->
-                                    <!--                                        <div class="ms-auto">-->
-                                    <!--                                            <table class="o_total_table table table-borderless avoid-page-break-inside">-->
-                                    <!--                                                <tr>-->
-                                    <!--                                                    <td class="text-end">-->
-                                    <!--                                                        <strong>Subtotal:</strong>-->
-                                    <!--                                                    </td>-->
-                                    <!--                                                    <td class="text-end">6,420.00 AED</td>-->
-                                    <!--                                                </tr>-->
-                                    <!--                                                <tr>-->
-                                    <!--                                                    <td class="text-end">-->
-                                    <!--                                                        <strong>VAT (5%):</strong>-->
-                                    <!--                                                    </td>-->
-                                    <!--                                                    <td class="text-end">321.00 AED</td>-->
-                                    <!--                                                </tr>-->
-                                    <!--                                                <tr class="fw-bold">-->
-                                    <!--                                                    <td class="text-end">-->
-                                    <!--                                                        <strong>Total:</strong>-->
-                                    <!--                                                    </td>-->
-                                    <!--                                                    <td class="text-end">6,741.00 AED</td>-->
-                                    <!--                                                </tr>-->
-                                    <!--                                                <tr class="fw-bold">-->
-                                    <!--                                                    <td>Amount Due</td>-->
-                                    <!--                                                    <td class="text-end">6,741.00 AED</td>-->
-                                    <!--                                                </tr>-->
-                                    <!--                                            </table>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
+                                    <div id="total" class="clearfix row mt-n3">
+                                        <div class="ms-auto">
+                                            <table class="o_total_table table table-borderless avoid-page-break-inside">
+                                                <tr>
+                                                    <td class="text-end">
+                                                        <strong>Subtotal:</strong>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
+                                                        <span t-esc="o.product_id.currency_id.display_name"/>
 
-                                    <!--                                    <div class="mb-2">-->
-                                    <!--                                        <p class="text-end lh-sm">-->
-                                    <!--                                            Total amount in words:-->
-                                    <!--                                            <br/>-->
-                                    <!--                                            <small class="text-muted lh-sm">Six Thousand Seven Hundred Forty One UAE-->
-                                    <!--                                                Dirhams-->
-                                    <!--                                                Only-->
-                                    <!--                                            </small>-->
-                                    <!--                                        </p>-->
-                                    <!--                                    </div>-->
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-end">
+                                                        <strong>VAT (0%):</strong>
+                                                    </td>
+                                                    <td class="text-end">00.00 AED</td>
+                                                </tr>
+                                                <tr class="fw-bold">
+                                                    <td class="text-end">
+                                                        <strong>Total:</strong>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
+                                                        <span t-esc="o.product_id.currency_id.display_name"/>
+
+                                                    </td>
+                                                </tr>
+                                                <tr class="fw-bold">
+                                                    <td>Amount Due</td>
+                                                    <td class="text-end">
+                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
+                                                        <span t-esc="o.product_id.currency_id.display_name"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <p class="text-end lh-sm">
+                                            Total amount in words:
+                                            <br/>
+                                            <small class="text-muted lh-sm">
+                                                <span t-esc="o.product_id.currency_id.amount_to_text(o.product_id.base_unit_price + o.payment_term_id.installment_amount)"/>
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+
+
+                                <!-- Documents Section -->
+                                <div style="page-break-before: always;">
+                                    <table class="table o_table table-borderless"
+                                           style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                        <tbody>
+                                            <!-- Section Header -->
+                                            <tr style="height: 40px;">
+                                                <td colspan="2"
+                                                    style="background-color: rgb(183, 31, 31); color: white; padding: 8px 12px; vertical-align: middle;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>DOCUMENTS</font>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                            <!-- Document Previews -->
+                                            <tr>
+                                                <t t-if="o.id_photo_front">
+                                                    <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo
+                                                            Front:
+                                                        </strong>
+                                                        <img t-att-src="image_data_uri(o.id_photo_front)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    </td>
+                                                </t>
+                                                <t t-if="o.id_photo_back">
+                                                    <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo
+                                                            Back:
+                                                        </strong>
+                                                        <img t-att-src="image_data_uri(o.id_photo_back)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                            <tr>
+                                                <t t-if="o.salary_certificate">
+                                                    <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
+                                                        <strong style="display: block; margin-bottom: 8px;">Salary
+                                                            Certificate:
+                                                        </strong>
+                                                        <img t-att-src="image_data_uri(o.salary_certificate)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
 
                                     <!-- Signature Area -->
@@ -2781,9 +2795,6 @@
         <field name="report_file">kyc_payment_handling.contract_report_pdf</field>
         <field name="binding_model_id" ref="kyc_payment_handling.model_project_project"/>
     </record>
-
-
-
 
 
 </odoo>
