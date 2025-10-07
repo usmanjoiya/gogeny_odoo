@@ -366,10 +366,21 @@
 
 
                                     <!-- Signature Area -->
-                                    <p dir="rtl"
-                                       style="font-size: 16px; font-weight: bold; margin-bottom: 30px; text-align: right;">
-                                        التوقيع الطرف الثاني
-                                    </p>
+                                    <table style="width:100%; border: none;">
+                                        <tr>
+                                            <td style="text-align:center; vertical-align:middle; width:50%;">
+                                                <img class="image" src="/kyc_payment_handling/static/description/stamp.jpeg"
+                                                    alt="stamp-icon"
+                                                    style="height:150px; width:150px; display:inline-block;"/>
+                                            </td>
+                                            <td style="text-align:right; vertical-align:middle; width:50%;">
+                                                <p dir="rtl" style="font-size:16px; font-weight:bold; margin:0;">
+                                                    التوقيع الطرف الثاني
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    
 
                                     <p dir="rtl" style="font-size: 18px; padding: 15px 0; text-align: right;">
                                         <span dir="rtl" style="font-size: 14px;">---------------------------------

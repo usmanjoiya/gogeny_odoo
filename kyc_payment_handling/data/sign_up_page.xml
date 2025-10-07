@@ -1,0 +1,22 @@
+<odoo>
+    <template id="portal_signup_inherit" inherit_id="auth_signup.fields">
+        <xpath expr="//div[@class='mb-3 field-name']" position="replace">
+            <div class="mb-3 field-first-name">
+                <label for="first_name">First Name</label>
+                <input type="text" name="first_name" id="first_name"
+                    class="form-control form-control-sm"
+                    required="required"/>
+            </div>
+            <div class="mb-3 field-middle-name">
+                <label for="middle_name">Middle Name</label>
+                <input type="text" name="middle_name" id="middle_name"
+                    class="form-control form-control-sm"/>
+            </div>
+            <div class="mb-3 field-last-name">
+                <label for="last_name">Last Name</label>
+                <input type="text" name="last_name" id="last_name"
+                    class="form-control form-control-sm"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -12,6 +12,7 @@
     'data': [
         'security/ir.model.access.csv',
         
+        'data/sign_up_page.xml',
         'data/project_stages_data_file.xml',
         'data/quickpay_page.xml',
         'data/project_pipeline_form.xml',
