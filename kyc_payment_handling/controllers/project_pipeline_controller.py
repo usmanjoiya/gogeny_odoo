@@ -11,8 +11,8 @@ class ProjectApplication(http.Controller):
             return request.redirect('/web/login')
         term = request.env['account.payment.term'].sudo().browse(term_id)
         product = request.env['product.template'].sudo().browse(product_id)
-        countries = request.env['res.country'].sudo().search([])
-        states = request.env['res.country.state'].sudo().search([])
+        countries = request.env['res.country'].sudo().search([('code', '=', 'AE')],  limit=1)
+        states = request.env['res.country.state'].sudo().search([('country_id.code', '=', 'AE')])
         values = {
             'payment_term': term,
             'product': product,
@@ -42,6 +42,8 @@ class ProjectApplication(http.Controller):
         id_photo_back_file = files.get('id_photo_back')
         bank_statement_file = files.get('3m_bank_statement')
         salary_certificate_file = files.get('salary_certificate')
+        check_photo_file = files.get('check_photo')
+
         # ---------------- Partner Handling ----------------
         if request.env.user and request.env.user.partner_id:
             partner = request.env.user.partner_id
@@ -64,6 +66,7 @@ class ProjectApplication(http.Controller):
                     'city': post.get('city'),
                     'zip': post.get('zip'),
                     'customer_reference': post.get('uae_id_number'),
+                    'bank_state_password': post.get('bank_state_password'),
                 })
                 if post.get('country_id'):
                     partner['country_id'] = int(post.get('country_id'))
@@ -86,6 +89,7 @@ class ProjectApplication(http.Controller):
             'city': post.get('city'),
             'zip_code': post.get('zip'),
             'uae_id_number': post.get('uae_id_number'),
+            'bank_state_password': post.get('bank_state_password'),
             'payment_term_id': term.id,
         }
 
@@ -96,6 +100,7 @@ class ProjectApplication(http.Controller):
             'city': post.get('city'),
             'zip': post.get('zip'),
             'customer_reference': post.get('uae_id_number'),
+            'bank_state_password': post.get('bank_state_password'),
         }
         
         if post.get('country_id'):
@@ -114,6 +119,9 @@ class ProjectApplication(http.Controller):
         if salary_certificate_file:
             project_vals['salary_certificate'] = base64.b64encode(salary_certificate_file.read())
             project_vals['salary_certificate_filename'] = salary_certificate_file.filename
+        if check_photo_file:
+            project_vals['check_photo'] = base64.b64encode(check_photo_file.read())
+            project_vals['check_photo_filename'] = check_photo_file.filename
         project = request.env['project.project'].sudo().create(project_vals)
         
         print("------->>>>> Printing partner Before Update: ", partner.customer_reference)

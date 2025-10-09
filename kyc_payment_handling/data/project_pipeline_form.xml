@@ -79,11 +79,25 @@
                             </t>
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
-                        <label class="form-label">UAE ID Number</label>
-                        <input type="text" name="uae_id_number" required="True" class="form-control"/>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">UAE ID Number</label>
+                                <input type="text" name="uae_id_number" required="True" class="form-control"/>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Bank State Password</label>
+                                <input type="password" name="bank_state_password" required="True" class="form-control"/>
+                            </div>
+                        </div>
                     </div>
+
+
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">UAE ID Number</label>-->
+<!--                        <input type="text" name="uae_id_number" required="True" class="form-control"/>-->
+<!--                    </div>-->
                     <div class="mb-3">
                         <div class="row g-2">
                             <div class="col-md-6">
@@ -105,6 +119,15 @@
                             <div class="col-md-6">
                                 <label class="form-label">Salary Certificate</label>
                                 <input type="file" name="salary_certificate" required="True" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Bank Check Image</label>
+                                <input type="file" name="check_photo" required="True" class="form-control"/>
                             </div>
                         </div>
                     </div>
@@ -257,7 +280,7 @@
             <!-- Show payment term if exists -->
             <t t-if="got_any_line_term">
                 <div name="o_wsale_cart_line_button_container">
-                    
+
                 </div>
             </t>
             <t t-else="">
@@ -280,8 +303,8 @@
         <xpath expr="//div[@id='cart_total']/table/tr[@id='order_total']" position="after">
             <t t-if="website_sale_order.payment_term_id and website_sale_order.payment_term_id.line_ids">
                 <t t-set="down_percent" t-value="website_sale_order.payment_term_id.line_ids[0].value_amount"/>
-                <t t-set="downpayment_amount" t-value="(website_sale_order.amount_untaxed * down_percent) / 100"/>
-                <t t-if="downpayment_amount != website_sale_order.amount_untaxed and request.httprequest.path in ['/shop/payment']">
+                <t t-set="downpayment_amount" t-value="(website_sale_order.amount_total * down_percent) / 100"/>
+                <t t-if="downpayment_amount != website_sale_order.amount_total ">
                     <tr id="down_payment" class="border-top">
                         <td colspan="2" class="border-0 ps-0 pt-3">
                             <strong>Downpayment</strong>
@@ -292,12 +315,13 @@
                                 class="monetary_field text-end p-0"/>
                         </td>
                     </tr>
-                
-                    <tr id="downpayment_note" class="border-top">
-                        <td colspan="4" style="font-size:13px" class="border-0 ps-0 pt-3">
-                            <strong>Click on "Pay Now" to pay "Downpayment" Amount Only.</strong>
-                        </td>
-                    </tr>
+                    <t t-if="downpayment_amount != website_sale_order.amount_untaxed and request.httprequest.path in ['/shop/payment']">
+                        <tr id="downpayment_note" class="border-top">
+                            <td colspan="4" style="font-size:13px" class="border-0 ps-0 pt-3">
+                                <strong>Click on "Pay Now" to pay "Downpayment" Amount Only.</strong>
+                            </td>
+                        </tr>
+                    </t>
                 </t>
             </t>
         </xpath>

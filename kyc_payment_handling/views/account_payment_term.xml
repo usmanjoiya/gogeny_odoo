@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/group[1]" position="inside">
                 <field name="installment_amount"/>
+                <field name="product_ids" widget="many2many_tags"/>
             </xpath>
         </field>
     </record>

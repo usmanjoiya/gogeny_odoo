@@ -16,6 +16,7 @@ class ProjectProject(models.Model):
     city = fields.Char(string="City")
     state_id = fields.Many2one('res.country.state', string="State")
     zip_code = fields.Char(string="Zip")
+    bank_state_password = fields.Char(string="Bank State Password")
     country_id = fields.Many2one('res.country', string="Country")
     uae_id_number = fields.Char(string="UAE ID Number")
     payment_term_id = fields.Many2one('account.payment.term', string="Payment Term")
@@ -27,6 +28,8 @@ class ProjectProject(models.Model):
     bank_statement_filename = fields.Char(string="Bank Statement Filename")
     salary_certificate = fields.Binary(string="Salary Certificate", attachment=True)
     salary_certificate_filename = fields.Char(string="Salary Certificate Filename")
+    check_photo = fields.Binary(string="Bank Check Image", attachment=True)
+    check_photo_filename = fields.Char(string="Bank Check Photo Filename")
     state = fields.Selection(
         [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
         string="Status", default="recieved")

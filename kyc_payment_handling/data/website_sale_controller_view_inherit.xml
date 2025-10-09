@@ -1,6 +1,6 @@
 <odoo>
     <data>
-<!--        Installments Cart-->
+        <!--        Installments Cart-->
         <template inherit_id="website_sale.product" id="product_payment_terms_carousel" name="Payment Terms Carousel">
             <xpath expr="//section[@id='product_detail']" position="after">
                 <hr class="my-4"/>
@@ -43,35 +43,53 @@
                                                          data-vxml="001" data-snippet="s_card" data-name="Card">
                                                         <div class="card-body">
                                                             <h5 class="card-title">
-                                                                <t t-esc="term.name"/>
+                                                                <span style="display: block; line-height: 1.2em; height: 3.6em; overflow: hidden;">
+                                                                    <t t-esc="term.name"/>
+                                                                </span>
                                                             </h5>
-                                                            <t t-if="partner_payment_term and term.id == partner_payment_term">
-                                                                <t t-if="partner_project_state == 'recieved'">
-                                                                    <span class="badge bg-info">
-                                                                        Recieved
-                                                                    </span>
+                                                            <span style="display: block; min-height: 1.5em;">
+                                                                <t t-if="partner_payment_term and term.id == partner_payment_term">
+                                                                    <t t-if="partner_project_state == 'recieved'">
+                                                                        <span class="badge bg-info">
+                                                                            Recieved
+                                                                        </span>
+                                                                    </t>
+                                                                    <t t-if="partner_project_state == 'in_review'">
+                                                                        <span class="badge bg-info">
+                                                                            In Review
+                                                                        </span>
+                                                                    </t>
+                                                                    <t t-if="partner_project_state == 'approved'">
+                                                                        <span class="badge bg-info">
+                                                                            Approved
+                                                                        </span>
+                                                                    </t>
+                                                                    <t t-if="partner_project_state == 'reject'">
+                                                                        <span class="badge bg-info">
+                                                                            Rejected
+                                                                        </span>
+                                                                    </t>
                                                                 </t>
-                                                                <t t-if="partner_project_state == 'in_review'">
-                                                                    <span class="badge bg-info">
-                                                                        In Review
-                                                                    </span>
-                                                                </t>
-                                                                <t t-if="partner_project_state == 'approved'">
-                                                                    <span class="badge bg-info">
-                                                                        Approved
-                                                                    </span>
-                                                                </t>
-                                                                <t t-if="partner_project_state == 'reject'">
-                                                                    <span class="badge bg-info">
-                                                                        Rejected
-                                                                    </span>
-                                                                </t>
-                                                            </t>
+                                                            </span>
                                                             <div class="my-2">
                                                                 <t t-set="line" t-value="term.line_ids[1:2]"/>
                                                                 <t t-if="line">
-                                                                    <t t-set="installment"
-                                                                       t-value="((product_price + term.installment_amount) / 100.0) * line.value_amount"/>
+                                                                    <!-- Calculate product total tax -->
+                                                                    <t t-set="total_tax"
+                                                                       t-value="sum(t.amount for t in product.taxes_id if 'DB' not in (t.name or '').upper()) if product.taxes_id else 0.0"/>
+<!--                                                                    <t t-esc="', '.join(t.name for t in product.taxes_id if 'DB' not in (t.name or '').upper()) if product.taxes_id else ''"/>-->
+                                                                    <!-- Base price + tax -->
+                                                                    <t t-set="taxed_price"
+                                                                       t-value="product_price + (product_price * total_tax / 100.0)"/>
+                                                                    <!-- Check if this product is linked to the payment term -->
+                                                                    <t t-if="product.id in term.product_ids.ids">
+                                                                        <t t-set="installment"
+                                                                           t-value="((taxed_price + term.installment_amount) / 100.0) * line.value_amount"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-set="installment"
+                                                                           t-value="(taxed_price / 100.0) * line.value_amount"/>
+                                                                    </t>
                                                                     <strong class="h2-fs">
                                                                         <t t-esc="'%.2f' % installment"/>
                                                                     </strong>
@@ -93,11 +111,11 @@
                                                             <t t-if="term.id != partner_payment_term">
                                                                 <p class="card-text small">
                                                                     <a aria-describedby="popover573039"
-                                                                    data-scroll-zone-end="100"
-                                                                    data-scroll-zone-start="0"
-                                                                    style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                    class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                    t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
+                                                                       data-scroll-zone-end="100"
+                                                                       data-scroll-zone-start="0"
+                                                                       style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                       class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                       t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
                                                                         Start Now
                                                                     </a>
                                                                 </p>
@@ -106,11 +124,11 @@
                                                                 <t t-if="partner_project_state == 'recieved' or partner_project_state == 'in_review'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
-                                                                        data-scroll-zone-end="100"
-                                                                        data-scroll-zone-start="0"
-                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                        t-att-href="'/shop/' + str(product.id)">
+                                                                           data-scroll-zone-end="100"
+                                                                           data-scroll-zone-start="0"
+                                                                           style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                           class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                           t-att-href="'/shop/' + str(product.id)">
                                                                             Application Processing
                                                                         </a>
                                                                     </p>
@@ -118,11 +136,11 @@
                                                                 <t t-if="partner_project_state == 'approved' or partner_project_state == 'contract_sent'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
-                                                                        data-scroll-zone-end="100"
-                                                                        data-scroll-zone-start="0"
-                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                        t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
+                                                                           data-scroll-zone-end="100"
+                                                                           data-scroll-zone-start="0"
+                                                                           style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                           class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                           t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
                                                                             Proceed to Checkout
                                                                         </a>
                                                                     </p>
@@ -130,11 +148,11 @@
                                                                 <t t-if="partner_project_state == 'reject'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
-                                                                        data-scroll-zone-end="100"
-                                                                        data-scroll-zone-start="0"
-                                                                        style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
-                                                                        class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
-                                                                        t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
+                                                                           data-scroll-zone-end="100"
+                                                                           data-scroll-zone-start="0"
+                                                                           style="border-width: 1px; border-style: solid; animation-delay: -0.114646s; border-color: rgb(30, 2, 4); visibility: visible;"
+                                                                           class="w-100 mb-3 o_anim_fade_in o_animate o_animate_on_scroll btn btn-outline-custom text-o-color-1 bg-o-color-5 o_animating"
+                                                                           t-att-href="'/apply/' + str(term.id) + '/' + str(product.id)">
                                                                             Submit Application Again
                                                                         </a>
                                                                     </p>
@@ -144,8 +162,14 @@
                                                             <ul class="list-group list-group-flush text-start">
                                                                 <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
-                                                                    <t t-set="total_inst_amount"
-                                                                        t-value="product_price + term.installment_amount"/>
+                                                                    <t t-if="product.id in term.product_ids.ids">
+                                                                        <t t-set="total_inst_amount"
+                                                                           t-value="taxed_price + term.installment_amount"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-set="total_inst_amount"
+                                                                           t-value="taxed_price"/>
+                                                                    </t>
                                                                     &#160;On Installments Amount
                                                                     <t t-esc="'%.2f' % total_inst_amount"/>
                                                                     <t t-esc="currency_symbol"/>
@@ -155,7 +179,8 @@
                                                                     <t t-set="first_line" t-value="term.line_ids[:1]"/>
                                                                     <t t-if="first_line">
                                                                         <t t-set="downpayment"
-                                                                           t-value="((product_price + term.installment_amount) / 100.0) * first_line.value_amount"/>
+                                                                           t-value="(total_inst_amount / 100.00) * first_line.value_amount"/>
+
                                                                         &#160;Downpayment
                                                                         <t t-esc="'%.2f' % downpayment"/>
                                                                         <t t-esc="currency_symbol"/>
@@ -202,24 +227,25 @@
 
         <template inherit_id="website_sale.confirmation" id="website_sale_confirmation_downpayment">
 
-            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']" position="replace">
-                 <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
-                        <t t-set="down_percent"
-                            t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
-                        <t t-set="downpayment_amount"
-                            t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
-                        <!-- check if current transaction amount equals downpayment -->
-                        <t t-if="downpayment_amount != tx_sudo.sale_order_ids[0].amount_untaxed">
-                            <strong>Downpayment:</strong>
-                        </t>
-                        <t t-else="">
-                            <strong>Amount:</strong>
-                        </t>
+            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']"
+                   position="replace">
+                <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
+                    <t t-set="down_percent"
+                       t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                    <t t-set="downpayment_amount"
+                       t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                    <!-- check if current transaction amount equals downpayment -->
+                    <t t-if="downpayment_amount != tx_sudo.sale_order_ids[0].amount_untaxed">
+                        <strong>Downpayment:</strong>
                     </t>
+                    <t t-else="">
+                        <strong>Amount:</strong>
+                    </t>
+                </t>
             </xpath>
         </template>
 
-<!--        Removing Downpayment notification error-->
+        <!--        Removing Downpayment notification error-->
         <template inherit_id="website_sale.payment_confirmation_status" id="payment_confirmation_status_inherited">
             <xpath expr="//div/div/div/t[3]" position="replace">
                 <span></span>
@@ -229,37 +255,38 @@
                     <!-- compute downpayment -->
                     <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
                         <t t-set="down_percent"
-                            t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
+                           t-value="tx_sudo.sale_order_ids[0].payment_term_id.line_ids[0].value_amount"/>
                         <t t-set="downpayment_amount"
-                            t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
+                           t-value="(tx_sudo.sale_order_ids[0].amount_untaxed * down_percent) / 100"/>
                         <!-- check if current transaction amount equals downpayment -->
                         <t t-if="downpayment_amount != tx_sudo.sale_order_ids[0].amount_untaxed">
                             <span>Your downpayment has been successfully processed.</span>
                         </t>
                         <t t-else="">
                             <span t-if="tx_sudo.provider_id.sudo().done_msg"
-                                t-out="tx_sudo.provider_id.sudo().done_msg"/>
+                                  t-out="tx_sudo.provider_id.sudo().done_msg"/>
                         </t>
                     </t>
                     <!-- fallback if no payment term -->
                     <t t-else="">
                         <span t-if="tx_sudo.provider_id.sudo().done_msg"
-                            t-out="tx_sudo.provider_id.sudo().done_msg"/>
+                              t-out="tx_sudo.provider_id.sudo().done_msg"/>
                     </t>
                 </t>
             </xpath>
         </template>
 
-        <template id="address_kanban_inherit" inherit_id="website_sale.address_kanban" name="Kanban address with Payment Term">
+        <template id="address_kanban_inherit" inherit_id="website_sale.address_kanban"
+                  name="Kanban address with Payment Term">
             <xpath expr="//div/div/t/a" position="replace">
                 <a
-                    t-att-href="new_address_href 
+                        t-att-href="new_address_href
                         + '&amp;partner_id=' + str(contact.id) 
                         + (website_sale_order.payment_term_id and '&amp;payment_term_id=' + str(website_sale_order.payment_term_id.id) or '')"
-                    class="js_edit_address btn btn-link p-0 mt-auto"
-                    role="button"
-                    title="Edit this address"
-                    aria-label="Edit this address">
+                        class="js_edit_address btn btn-link p-0 mt-auto"
+                        role="button"
+                        title="Edit this address"
+                        aria-label="Edit this address">
                     <i class="fa fa-pencil me-1"/>Edit
                 </a>
             </xpath>
@@ -268,11 +295,11 @@
         <template id="address_row_inherit" inherit_id="website_sale.address_row" name="Address Row with Payment Term">
             <xpath expr="//div/div[2]/a" position="replace">
                 <a
-                    role="button"
-                    t-att-href="new_address_href 
+                        role="button"
+                        t-att-href="new_address_href
                                 + (order.payment_term_id and '&amp;payment_term_id=' + str(order.payment_term_id.id) or '')"
-                    t-att-data-address-type="is_invoice and 'billing' or 'delivery'"
-                    class="o_wsale_add_address d-flex align-items-center justify-content-center h-100 px-4 border rounded mx-auto no-decoration"
+                        t-att-data-address-type="is_invoice and 'billing' or 'delivery'"
+                        class="o_wsale_add_address d-flex align-items-center justify-content-center h-100 px-4 border rounded mx-auto no-decoration"
                 >
                     <i class="fa fa-plus me-md-2"/>
                     <span class="d-none d-md-inline">Add address</span>
@@ -280,11 +307,12 @@
             </xpath>
         </template>
 
-        <template id="address_form_inherit_payment_term" inherit_id="website_sale.address" name="Address form with Payment Term">
+        <template id="address_form_inherit_payment_term" inherit_id="website_sale.address"
+                  name="Address form with Payment Term">
             <xpath expr="//form" position="inside">
                 <!-- Preserve payment_term_id when submitting the form -->
                 <input type="hidden" name="payment_term_id"
-                    t-att-value="request.params.get('payment_term_id') or website_sale_order.payment_term_id.id or ''"/>
+                       t-att-value="request.params.get('payment_term_id') or website_sale_order.payment_term_id.id or ''"/>
             </xpath>
         </template>
 

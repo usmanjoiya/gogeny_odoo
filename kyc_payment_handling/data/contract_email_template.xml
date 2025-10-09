@@ -3,15 +3,24 @@
     <record id="email_template_customer_contract" model="mail.template">
         <field name="name">Customer Contract</field>
         <field name="model_id" ref="kyc_payment_handling.model_project_project"/>
-        <field name="subject">Mobile Purchase Contract</field>
+        <field name="subject">Contract Confirmation &amp; Installment Checkout</field>
         <field name="email_from">{{ object.user_id.email or '' }}</field>
         <field name="email_to">{{ object.partner_id.email }}</field>
         <field name="body_html">
             <![CDATA[
-                <p>Dear <t t-out="object.partner_id.name"/>,</p>
-                <p>Thank you for purchasing mobile from <t t-out="object.company_id.name"/>.</p>
-            <p>Please find attached your official purchase contract.</p>
-                <p>Best regards,<br/><t t-out="object.company_id.name"/></p>
+                <p>Dear <t t-out="object.partner_id.name"/>,
+                <br/><br/>We are pleased to inform you that your product contract has been successfully confirmed.
+                <br/><br/>You may now proceed to checkout using the product link below to complete your purchase through our installment payment plan:</p>
+                <br/>
+                <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
+                <t t-set="lang_path" t-value="request and request.env.lang or 'en_001'"/>
+
+                <a t-att-href="base_url + '/' + lang_path + '/shop/' + slug(object.product_id)">
+                    <t t-esc="object.product_id.display_name"/>
+                </a>
+                <br/>
+                <p>Should you have any questions or require assistance with your installment schedule, please don’t hesitate to contact us.
+                <br/><br/>Best regards,<br/><t t-out="object.company_id.name"/></p>
                 ]]>
         </field>
     </record>

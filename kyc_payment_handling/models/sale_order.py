@@ -17,7 +17,6 @@ class SaleOrder(models.Model):
                 product_tmpl = self.env['product.template'].search([
                     ('name', '=', product_name)
                 ], limit=1)
-
                 if not product_tmpl:
                     product_tmpl = self.env['product.template'].create({
                         'name': product_name,
@@ -42,14 +41,14 @@ class SaleOrder(models.Model):
                 print("------------------->>>>>product_tmpl: ", product_tmpl)
 
                 product = product_tmpl.product_variant_id
-
-                rec.order_line += self.env['sale.order.line'].new({
-                    'order_id': rec.id,
-                    'product_id': product.id,
-                    'product_uom_qty': 1,
-                    'price_unit': product.list_price,
-                    'tax_id': [(5, 0, 0)],
-                })
+                if any(line.product_id.product_tmpl_id.id in rec.payment_term_id.product_ids.ids for line in rec.order_line):
+                    rec.order_line += self.env['sale.order.line'].new({
+                        'order_id': rec.id,
+                        'product_id': product.id,
+                        'product_uom_qty': 1,
+                        'price_unit': product.list_price,
+                        'tax_id': [(5, 0, 0)],
+                    })
 
     @api.model_create_multi
     def create(self, vals_list):
