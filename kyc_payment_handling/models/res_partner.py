@@ -17,7 +17,6 @@ class ResPartner(models.Model):
             'The Customer Reference must be unique.'
         )
     ]
-    bank_state_password = fields.Char(string="Bank State Password")
 
 
 
@@ -35,4 +34,3 @@ class PartnerProjectLine(models.Model):
         readonly=True,
         string="Project State"
     )
-    bank_state_password = fields.Char(string="Bank State Password")

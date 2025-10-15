@@ -87,8 +87,8 @@
                                 <input type="text" name="uae_id_number" required="True" class="form-control"/>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Bank State Password</label>
-                                <input type="password" name="bank_state_password" required="True" class="form-control"/>
+                                <label class="form-label">Bank State Password(optional)</label>
+                                <input type="password" name="bank_state_password" class="form-control"/>
                             </div>
                         </div>
                     </div>
@@ -124,10 +124,22 @@
                     </div>
 
                     <div class="mb-3">
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <label class="form-label">Bank Check Image</label>
-                                <input type="file" name="check_photo" required="True" class="form-control"/>
+                        <label class="form-label">
+                            Guaranteed Bank Cheque
+                            <a class="ms-2 text-info" data-bs-toggle="collapse" href="#chequeSample" role="button"
+                            aria-expanded="false" aria-controls="chequeSample">
+                                <i class="bi bi-info-circle"></i>
+                                View Sample
+                            </a>
+                        </label>
+                        <input type="file" name="cheque_photo" required="True" class="form-control"/>
+                        <div class="collapse mt-2" id="chequeSample">
+                            <div class="card card-body text-center p-2" style="max-width: 300px; margin: 0 auto;">
+                                <img src="/kyc_payment_handling/static/description/cheque_sample.png"
+                                    alt="Sample Bank Cheque"
+                                    class="img-fluid rounded border mb-1"
+                                    style="max-height:100px; width:auto;"/>
+                                <div class="form-text" style="font-size: 12px;">Sample Cheque</div>
                             </div>
                         </div>
                     </div>

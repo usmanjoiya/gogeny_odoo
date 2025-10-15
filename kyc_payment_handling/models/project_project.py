@@ -28,8 +28,8 @@ class ProjectProject(models.Model):
     bank_statement_filename = fields.Char(string="Bank Statement Filename")
     salary_certificate = fields.Binary(string="Salary Certificate", attachment=True)
     salary_certificate_filename = fields.Char(string="Salary Certificate Filename")
-    check_photo = fields.Binary(string="Bank Check Image", attachment=True)
-    check_photo_filename = fields.Char(string="Bank Check Photo Filename")
+    cheque_photo = fields.Binary(string="Bank Check Image", attachment=True)
+    cheque_photo_filename = fields.Char(string="Bank Check Photo Filename")
     state = fields.Selection(
         [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
         string="Status", default="recieved")

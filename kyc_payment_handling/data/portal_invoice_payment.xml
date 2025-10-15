@@ -1,7 +1,10 @@
 <odoo>
     <template id="portal_invoice_payment_custom_amount" inherit_id="account_payment.portal_invoice_payment" name="Invoice Payment - Custom Amount">
+        <xpath expr="//div[@id='o_payment_tabs']" position="attributes">
+            <attribute name="class">d-flex flex-wrap justify-content-center gap-2</attribute>
+        </xpath>
         <xpath expr="//div[@id='o_payment_tabs']/button[2]" position="after">
-            <button class="btn btn-outline-primary o_btn_payment_tab"
+            <button class="btn btn-outline-primary o_btn_payment_tab flex-fill text-center"
                 id="o_payment_custom_tab"
                 data-bs-toggle="pill"
                 data-bs-target="#o_payment_custom"
@@ -9,7 +12,7 @@
                 role="tab"
                 aria-controls="o_payment_custom"
                 aria-selected="false"
-            >
+                style="min-width: 120px;">
                 <strong>Custom Amount</strong><br/>
             </button>
         </xpath>

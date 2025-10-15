@@ -25,7 +25,6 @@
                 <field name="email" widget="email"/>
                 <field name="place_of_work"/>
                 <field name="uae_id_number"/>
-                <field name="bank_state_password"/>
                 <field name="product_id"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[2]/field[@name='user_id']" position="after">
@@ -63,7 +62,7 @@
                     </group>
                     <group>
                         <group>
-                            <field name="check_photo" filename="check_photo_filename" widget="binary"/>
+                            <field name="cheque_photo" filename="cheque_photo_filename" widget="binary"/>
                         </group>
 
                     </group>

@@ -64,6 +64,11 @@
                                                                             Approved
                                                                         </span>
                                                                     </t>
+                                                                    <t t-if="partner_project_state == 'contract_sent'">
+                                                                        <span class="badge bg-info">
+                                                                            Ready to Checkout
+                                                                        </span>
+                                                                    </t>
                                                                     <t t-if="partner_project_state == 'reject'">
                                                                         <span class="badge bg-info">
                                                                             Rejected
@@ -121,7 +126,7 @@
                                                                 </p>
                                                             </t>
                                                             <t t-if="partner_payment_term and term.id == partner_payment_term">
-                                                                <t t-if="partner_project_state == 'recieved' or partner_project_state == 'in_review'">
+                                                                <t t-if="partner_project_state == 'recieved' or partner_project_state == 'approved' or partner_project_state == 'in_review'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                            data-scroll-zone-end="100"
@@ -133,7 +138,7 @@
                                                                         </a>
                                                                     </p>
                                                                 </t>
-                                                                <t t-if="partner_project_state == 'approved' or partner_project_state == 'contract_sent'">
+                                                                <t t-if="partner_project_state == 'contract_sent'">
                                                                     <p class="card-text small">
                                                                         <a aria-describedby="popover573039"
                                                                            data-scroll-zone-end="100"

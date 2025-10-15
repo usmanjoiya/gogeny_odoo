@@ -42,7 +42,7 @@ class ProjectApplication(http.Controller):
         id_photo_back_file = files.get('id_photo_back')
         bank_statement_file = files.get('3m_bank_statement')
         salary_certificate_file = files.get('salary_certificate')
-        check_photo_file = files.get('check_photo')
+        cheque_photo_file = files.get('cheque_photo')
 
         # ---------------- Partner Handling ----------------
         if request.env.user and request.env.user.partner_id:
@@ -66,7 +66,6 @@ class ProjectApplication(http.Controller):
                     'city': post.get('city'),
                     'zip': post.get('zip'),
                     'customer_reference': post.get('uae_id_number'),
-                    'bank_state_password': post.get('bank_state_password'),
                 })
                 if post.get('country_id'):
                     partner['country_id'] = int(post.get('country_id'))
@@ -100,7 +99,6 @@ class ProjectApplication(http.Controller):
             'city': post.get('city'),
             'zip': post.get('zip'),
             'customer_reference': post.get('uae_id_number'),
-            'bank_state_password': post.get('bank_state_password'),
         }
         
         if post.get('country_id'):
@@ -119,9 +117,9 @@ class ProjectApplication(http.Controller):
         if salary_certificate_file:
             project_vals['salary_certificate'] = base64.b64encode(salary_certificate_file.read())
             project_vals['salary_certificate_filename'] = salary_certificate_file.filename
-        if check_photo_file:
-            project_vals['check_photo'] = base64.b64encode(check_photo_file.read())
-            project_vals['check_photo_filename'] = check_photo_file.filename
+        if cheque_photo_file:
+            project_vals['cheque_photo'] = base64.b64encode(cheque_photo_file.read())
+            project_vals['cheque_photo_filename'] = cheque_photo_file.filename
         project = request.env['project.project'].sudo().create(project_vals)
         
         print("------->>>>> Printing partner Before Update: ", partner.customer_reference)
