@@ -4,319 +4,241 @@
             <t t-call="web.external_layout">
                 <t t-foreach="docs" t-as="o">
                     <main class="o_report_layout">
-                        <!--                        <div class="page">-->
-                        <!--                            &lt;!&ndash; Your report body goes here &ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                            <h2>Contract</h2>&ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                        <p>&ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                            <t t-esc="o.name"/>&ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                        </p>&ndash;&gt;-->
-                        <!--                            <div class="offset-col-6 col-6" name="no_shipping">-->
-                        <!--                                <div class="address">-->
-                        <!--                                                                        <address class="mb-0">-->
-                        <!--                                                                            John Smith-->
-                        <!--                                                                            <br/>-->
-                        <!--                                                                            123 Main Street-->
-                        <!--                                                                            <br/>-->
-                        <!--                                                                            Dubai, UAE-->
-                        <!--                                                                            <br/>-->
-                        <!--                                                                            PO Box 12345-->
-                        <!--                                                                        </address>-->
-                        <!--                                    <div id="partner_vat_no_shipping">-->
-                        <!--                                        Tax ID:-->
-                        <!--                                        <span>123456789012345</span>-->
-                        <!--                                    </div>-->
-                        <!--                                </div>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
+
                         <div class="clearfix invoice_main">
                             <div class="page mb-4"
                                  style="font-family: 'DejaVu Sans', 'Helvetica', Arial, sans-serif; line-height: 1.4;">
-                                <!--                                <div class="oe_structure">-->
-                                <!--                                    <span class="h2-fs">-->
-                                <!--                                        <strong>-->
-                                <!--                                            <em>-->
-                                <!--                                                <font style="color: rgb(183, 31, 31);">TAX INVOICE</font>-->
-                                <!--                                            </em>-->
-                                <!--                                        </strong>-->
-                                <!--                                    </span>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="oe_structure">-->
-                                <!--                                    <strong>-->
-                                <!--                                        <font style="color: rgb(183, 31, 31);">NO.</font>-->
-                                <!--                                        104492149000003-->
-                                <!--                                    </strong>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="oe_structure">-->
-                                <!--                                    <br/>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="oe_structure">-->
-                                <!--                                    <span class="h5-fs">-->
-                                <!--                                        <strong>-->
-                                <!--                                            <font style="color: rgb(183, 31, 31);">Invoice Number:</font>-->
-                                <!--                                        </strong>-->
-                                <!--                                    </span>-->
-                                <!--                                    <span>INV/2024/0001</span>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="oe_structure">-->
-                                <!--                                    <br/>-->
-                                <!--                                </div>-->
 
-                                <!-- Customer Information Tables -->
+                                <!-- ================= CUSTOMER INFORMATION ================= -->
                                 <div class="customer-info-section" style="margin-bottom: 20px;">
+                                    <!-- Customer Name -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                                         <tbody>
                                             <tr style="height: 40px;">
                                                 <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
                                                     <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>CUSTOMER NAME</font>
+                                                        CUSTOMER NAME
                                                     </p>
                                                 </td>
                                                 <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.partner_id.display_name or ''"/>
-                                                    </p>
+                                                    <span t-esc="o.partner_id.display_name or ''"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
+                                    <!-- Phone -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                                         <tbody>
                                             <tr style="height: 40px;">
-                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px;">
                                                     <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>CUSTOMER PHONE</font>
+                                                        CUSTOMER PHONE
                                                     </p>
                                                 </td>
-                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.phone or o.emergency_phone or ' '"/>
-                                                    </p>
+                                                <td style="width: 75%; padding: 8px 12px; border: 1px solid #dee2e6;">
+                                                    <span t-esc="o.phone or o.emergency_phone or ' '"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
+                                    <!-- Email -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                                         <tbody>
                                             <tr style="height: 40px;">
-                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px;">
                                                     <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>CUSTOMER E-MAIL</font>
+                                                        CUSTOMER EMAIL
                                                     </p>
                                                 </td>
-                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.email or ' '"/>
-                                                    </p>
+                                                <td style="width: 75%; padding: 8px 12px; border: 1px solid #dee2e6;">
+                                                    <span t-esc="o.email or ' '"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
+                                    <!-- Address -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                                         <tbody>
                                             <tr style="height: 40px;">
-                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px;">
                                                     <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>CUSTOMER ADDRESS</font>
+                                                        CUSTOMER ADDRESS
                                                     </p>
                                                 </td>
-                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.user_id.contact_address_inline"/>
-                                                    </p>
+                                                <td style="width: 75%; padding: 8px 12px; border: 1px solid #dee2e6;">
+                                                    <span t-esc="o.street or ''"/>
+                                                    <t t-if="o.street2">,
+                                                        <t t-esc="o.street2"/>
+                                                    </t>
+                                                    <t t-if="o.city">,
+                                                        <t t-esc="o.city"/>
+                                                    </t>
+                                                    <t t-if="o.state_id">,
+                                                        <t t-esc="o.state_id.name"/>
+                                                    </t>
+                                                    <t t-if="o.country_id">,
+                                                        <t t-esc="o.country_id.name"/>
+                                                    </t>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
+                                    <!-- Payment Term -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
                                         <tbody>
                                             <tr style="height: 40px;">
-                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
-                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>PAYMENT TERM</font>
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">PAYMENT
+                                                        TERM
                                                     </p>
                                                 </td>
-                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.payment_term_id.display_name or ' '"/>
-                                                    </p>
+                                                <td style="width: 75%; padding: 8px 12px; border: 1px solid #dee2e6;">
+                                                    <span t-esc="o.payment_term_id.display_name or ' '"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
 
+                                    <!-- UAE ID -->
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                                         <tbody>
                                             <tr style="height: 40px;">
-                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px; vertical-align: middle;">
-                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>UAE ID NUMBER</font>
+                                                <td style="background-color: rgb(183, 31, 31); color: white; width: 25%; padding: 8px 12px;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">UAE ID
+                                                        NUMBER
                                                     </p>
                                                 </td>
-                                                <td style="width: 75%; padding: 8px 12px; vertical-align: middle; border: 1px solid #dee2e6;">
-                                                    <p style="margin: 0;">
-                                                        <span t-esc="o.uae_id_number or ' '"/>
-                                                    </p>
+                                                <td style="width: 75%; padding: 8px 12px; border: 1px solid #dee2e6;">
+                                                    <span t-esc="o.uae_id_number or ' '"/>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
 
-                                <!-- Invoice Dates and Information -->
-                                <!--                                <div id="informations" class="row mb-4"-->
-                                <!--                                     style="display: flex; justify-content: space-between; margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">-->
-                                <!--                                    <div class="col" name="invoice_date" style="flex: 1; text-align: center;">-->
-                                <!--                                        <strong>Invoice Date</strong>-->
-                                <!--                                        <div>2024-01-15</div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col" name="due_date" style="flex: 1; text-align: center;">-->
-                                <!--                                        <strong>Due Date</strong>-->
-                                <!--                                        <div>2024-02-15</div>-->
-                                <!--                                    </div>-->
-                                <!--                                                                        <div class="col" name="delivery_date">-->
-                                <!--                                                                            <strong>Delivery Date</strong>-->
-                                <!--                                                                            <div>2024-01-20</div>-->
-                                <!--                                                                        </div>-->
-                                <!--                                                                        <div class="col" name="origin">-->
-                                <!--                                                                            <strong>Source</strong>-->
-                                <!--                                                                            <div>SO2024-001</div>-->
-                                <!--                                                                        </div>-->
-                                <!--                                                                        <div class="col" name="customer_code">-->
-                                <!--                                                                            <strong>Customer Code</strong>-->
-                                <!--                                                                            <div>CUST-001</div>-->
-                                <!--                                                                        </div>-->
-                                <!--                                                                        <div class="col" name="reference">-->
-                                <!--                                                                            <strong>Reference</strong>-->
-                                <!--                                                                            <div>INV/2024/0001</div>-->
-                                <!--                                                                        </div>-->
-                                <!--                                </div>-->
+                                <!-- ================= PRODUCT / INVOICE LINES ================= -->
+                                <t t-if="o.invoice_ref_id">
+                                    <table class="table o_table table-borderless" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                        <thead>
+                                            <!-- Section Header -->
+                                            <tr style="height: 40px;">
+                                                <td colspan="6"
+                                                    style="background-color: rgb(183, 31, 31); color: white; padding: 8px 12px; vertical-align: middle; text-align: center;">
+                                                    <p style="margin: 0; font-weight: bold; font-style: italic;">
+                                                        <font>INVOICE</font>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </thead>
 
-                                <!-- Invoice Lines Table -->
-                                <table class="o_has_total_table table o_main_table table-borderless"
-                                       name="invoice_line_table">
-                                    <thead>
-                                        <tr>
-                                            <th name="th_description" class="text-start">
-                                                <span>Description</span>
-                                            </th>
-                                            <th name="th_quantity" class="text-end">
-                                                <span>Quantity</span>
-                                            </th>
-                                            <th name="th_priceunit" class="text-end text-nowrap">
-                                                <span>Unit Price</span>
-                                            </th>
-                                            <!--                                            <th name="th_discount" class="text-end">-->
-                                            <!--                                                <span>Disc.%</span>-->
-                                            <!--                                            </th>-->
-                                            <th name="th_taxes" class="text-start">
-                                                <span>VAT</span>
-                                            </th>
-                                            <th name="tax_amount" class="text-start">
-                                                <span>VAT Amount</span>
-                                            </th>
-                                            <th name="th_subtotal" class="text-end">
-                                                <span>Amount</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="invoice_tbody">
-                                        <!-- Product Line 1 -->
-                                        <tr>
-                                            <td name="account_invoice_line_name">
-                                                <span t-esc="o.product_id.display_name or ' '"/>
-                                            </td>
-                                            <td name="td_quantity" class="text-end text-nowrap">
-                                                <span>1.00</span>
-                                                <span>units</span>
-                                            </td>
-                                            <td name="td_price_unit" class="text-end">
-                                                <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
-                                            </td>
-                                            <!--                                            <td name="td_discount" class="text-end">-->
-                                            <!--                                                <span class="text-nowrap">0</span>-->
-                                            <!--                                            </td>-->
-                                            <td name="td_taxes" class="text-end text-nowrap">
-                                                <span>0%</span>
-                                            </td>
-                                            <td>
-                                                <span>00.00</span>
-                                            </td>
-                                            <td name="td_subtotal" class="text-end o_price_total">
-                                                <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        <tbody class="invoice_tbody">
+                                            <!-- Table Headers -->
+                                            <tr style="background-color: #f8f9fa;">
+                                                <th style="font-weight: bold;">Description</th>
+                                                <th style="font-weight: bold;" class="text-end">Quantity</th>
+                                                <th style="font-weight: bold;" class="text-end">Unit Price</th>
+                                                <th style="font-weight: bold;" class="text-end">VAT %</th>
+                                                <th style="font-weight: bold;" class="text-end">VAT Amount</th>
+                                                <th style="font-weight: bold;" class="text-end">Total</th>
+                                            </tr>
 
+                                            <!-- Invoice Line Loop -->
+                                            <t t-foreach="o.invoice_ref_id.invoice_line_ids" t-as="line">
+                                                <tr style="vertical-align: middle;">
+                                                    <!-- Description + Markup % -->
+                                                    <td style="padding: 8px 12px;">
+                                                        <span t-esc="line.name or line.product_id.display_name or ' '"/>
+                                                    </td>
 
-                                <!-- Totals Section -->
-                                <div id="right-elements" class="col-5 ms-5 d-inline-block float-end"
-                                     style="float: right; width: 40%; margin-top: 20px;">
+                                                    <!-- Quantity -->
+                                                    <td class="text-end text-nowrap" style="padding: 8px 12px;">
+                                                        <span t-esc="'%.2f' % (line.quantity or 0.0)"/> 
+                                                        <span t-esc="line.product_uom_id.name or ''"/>
+                                                    </td>
 
-                                    <div id="total" class="clearfix row mt-n3">
-                                        <div class="ms-auto">
-                                            <table class="o_total_table table table-borderless avoid-page-break-inside">
+                                                    <!-- Unit Price -->
+                                                    <td class="text-end" style="padding: 8px 12px;">
+                                                        <span t-esc="'%.2f' % (line.price_unit or 0.0)"/>
+                                                    </td>
+
+                                                    <!-- VAT % -->
+                                                    <td class="text-end" style="padding: 8px 12px;">
+                                                        <t t-set="tax_percent"
+                                                        t-value="sum(t.amount for t in line.tax_ids) if line.tax_ids else 0.0"/>
+                                                        <span t-esc="'%.2f' % tax_percent"/>%
+                                                    </td>
+
+                                                    <!-- VAT Amount -->
+                                                    <td class="text-end" style="padding: 8px 12px;">
+                                                        <t t-set="vat_amount" t-value="(line.price_unit * tax_percent / 100.0) * line.quantity"/>
+                                                        <span t-esc="'%.2f' % vat_amount"/>
+                                                    </td>
+
+                                                    <!-- Total = Base + VAT + Markup -->
+                                                    <td class="text-end" style="padding: 8px 12px;">
+                                                        <t t-set="total_amount"
+                                                        t-value="(line.price_unit * line.quantity) + vat_amount"/>
+                                                        <span t-esc="'%.2f' % total_amount"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+
+                                    <!-- ================= INSTALLMENT PLAN ================= -->
+                                    <div style="margin-top: 20px;">
+                                        <h5 style="font-weight: bold; margin-bottom: 10px;">INSTALLMENT PLAN</h5>
+                                        <table class="table table-bordered" style="width:100%; border-collapse:collapse;">
+                                            <thead style="background-color: #f8f9fa;">
                                                 <tr>
-                                                    <td class="text-end">
-                                                        <strong>Subtotal:</strong>
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
-                                                        <span t-esc="o.product_id.currency_id.display_name"/>
-
-                                                    </td>
+                                                    <th>Due Date</th>
+                                                    <th>Label</th>
+                                                    <th class="text-end">Amount</th>
                                                 </tr>
-                                                <tr>
-                                                    <td class="text-end">
-                                                        <strong>VAT (0%):</strong>
-                                                    </td>
-                                                    <td class="text-end">00.00 AED</td>
-                                                </tr>
-                                                <tr class="fw-bold">
-                                                    <td class="text-end">
-                                                        <strong>Total:</strong>
-                                                    </td>
-                                                    <td class="text-end">
-                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
-                                                        <span t-esc="o.product_id.currency_id.display_name"/>
-
-                                                    </td>
-                                                </tr>
-                                                <tr class="fw-bold">
-                                                    <td>Amount Due</td>
-                                                    <td class="text-end">
-                                                        <span t-esc="o.product_id.base_unit_price + o.payment_term_id.installment_amount"/>
-                                                        <span t-esc="o.product_id.currency_id.display_name"/>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
+                                            </thead>
+                                            <tbody>
+                                                <t t-if="o.invoice_ref_id.line_ids and any(l.debit > 0 for l in o.invoice_ref_id.line_ids)">
+                                                    <t t-set="counter" t-value="0"/>
+                                                    <t t-foreach="o.invoice_ref_id.line_ids" t-as="move_line">
+                                                        <t t-if="move_line.debit > 0">
+                                                            <tr>
+                                                                <td><t t-esc="move_line.date_maturity"/></td>
+                                                                <td>
+                                                                    <t t-if="counter == 0">
+                                                                        <t t-esc="(move_line.name or '-') + ' (Downpayment)'"/>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        <t t-esc="move_line.name or '-'"/>
+                                                                    </t>
+                                                                </td>
+                                                                <td class="text-end"><t t-esc="'%.2f' % (move_line.debit or 0.0)"/></td>
+                                                            </tr>
+                                                            <t t-set="counter" t-value="counter + 1"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <tr>
+                                                        <td colspan="5" style="text-align:center;">No journal entries available.</td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
                                     </div>
+                                </t>
 
-                                    <div class="mb-2">
-                                        <p class="text-end lh-sm">
-                                            Total amount in words:
-                                            <br/>
-                                            <small class="text-muted lh-sm">
-                                                <span t-esc="o.product_id.currency_id.amount_to_text(o.product_id.base_unit_price + o.payment_term_id.installment_amount)"/>
-                                            </small>
-                                        </p>
-                                    </div>
-                                </div>
-
-
-                                <!-- Documents Section -->
-                                <div style="page-break-before: always;">
+                                <!-- ================= DOCUMENTS SECTION ================= -->
+                                <div style="page-break-before: always; margin-top: 30px;">
                                     <table class="table o_table table-borderless"
                                            style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                                         <tbody>
@@ -325,10 +247,11 @@
                                                 <td colspan="2"
                                                     style="background-color: rgb(183, 31, 31); color: white; padding: 8px 12px; vertical-align: middle;">
                                                     <p style="margin: 0; font-weight: bold; font-style: italic;">
-                                                        <font>DOCUMENTS</font>
+                                                        DOCUMENTS
                                                     </p>
                                                 </td>
                                             </tr>
+
                                             <!-- Document Previews -->
                                             <tr>
                                                 <t t-if="o.id_photo_front">
@@ -350,6 +273,7 @@
                                                     </td>
                                                 </t>
                                             </tr>
+
                                             <tr>
                                                 <t t-if="o.salary_certificate">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
@@ -360,7 +284,6 @@
                                                              style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                     </td>
                                                 </t>
-
                                                 <t t-if="o.cheque_photo">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
                                                         <strong style="display: block; margin-bottom: 8px;">Bank Check
@@ -374,9 +297,8 @@
                                         </tbody>
                                     </table>
 
-
-                                    <!-- Signature Area -->
-                                    <table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 0; background: none;">
+                                    <!-- Signature / Stamp -->
+                                    <table style="width: 100%; border-collapse: separate; border-spacing: 0; border: 0; background: none; margin-top: 30px;">
                                         <tr style="border: 0; background: none;">
                                             <!-- Stamp -->
                                             <td style="width: 50%; text-align: center; vertical-align: middle; border: 0; background: none;">
@@ -392,20 +314,13 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
                                     </table>
-
                                 </div>
-
 
                                 <div style="clear: both;"></div>
 
@@ -652,13 +567,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -909,13 +819,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1340,13 +1245,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1566,13 +1466,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1831,13 +1726,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -2259,13 +2149,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -2886,13 +2771,8 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <p dir="rtl"
-                                                       style="font-size:18px; margin-top: 45px; text-align:right; border:0; background:none;">
-                                                        <span dir="rtl"
-                                                              style="font-size:14px; border:0; background:none;">
-                                                            --------------------------------------
-                                                        </span>
-                                                    </p>
+                                                    <img t-att-src="image_data_uri(o.customer_signature)"
+                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                 </div>
                                             </td>
                                         </tr>
@@ -2900,7 +2780,10 @@
                                     <!--                                    <span t-field="o.narration"/>-->
                                 </div>
                             </div>
+
+
                         </div>
+
                     </main>
                 </t>
             </t>

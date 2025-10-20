@@ -16,7 +16,7 @@ class WebsiteSaleInherit(WebsiteSale):
     @http.route(['/shop/<model("product.template"):product>'], type='http', auth="public", website=True, sitemap=True)
     def product(self, product, category='', search='', **kwargs):
         response = super().product(product, category=category, search=search, **kwargs)
-        payment_terms = request.env['account.payment.term'].sudo().search([])
+        payment_terms = request.env['account.payment.term'].sudo().search([ ('product_ids', 'in', [product.id]) ])
         # Default values
         partner_line_id = None
         partner_payment_term = None
@@ -81,14 +81,47 @@ class WebsiteSaleInherit(WebsiteSale):
         if order and not order.state == 'sale':
             order.action_confirm()
 
+        # ----->>>>> PROJECT & SALE ORDER CONNECTION
+        project_obj = request.env['project.project'].sudo()
+        matching_projects = project_obj.search([
+            ('partner_id', '=', order.partner_id.id),
+            ('payment_term_id', '=', order.payment_term_id.id),
+            ('sale_order_id', '=', False),
+            ('product_id', 'in', order.order_line.mapped('product_id.product_tmpl_id').ids),
+        ])
+
+        print("\n\n\n-------->>> Matching Projects Found:", matching_projects)
+        for proj in matching_projects:
+            print(f"Matched Project: {proj.name}, Product: {proj.product_id.display_name}")
+        
+        # ----->>>>> GET SALE ORDER INVOICE
         if not order.invoice_ids:
             invoice = order._create_invoices()
         else:
             invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
 
+        # ----->>>>> UPDATE SALE ORDER INVOICE DATE, UNLINK DUMMY INVOICE & ASSIGN ORIGINAL INVOICE TO PROJECT 
+        if invoice:
+            for proj in matching_projects:
+                if not proj.sale_order_id:
+                    proj.sale_order_id = order.id
+                if proj.invoice_ref_id:
+                    if proj.invoice_ref_id.invoice_date:
+                        invoice.invoice_date = proj.invoice_ref_id.invoice_date
+
+                    old_invoice = proj.invoice_ref_id
+                    proj.write({'invoice_ref_id': False})
+                    old_invoice.button_draft()
+                    old_invoice.button_cancel()
+                    old_invoice.sudo().unlink()
+
+                proj.write({'invoice_ref_id': invoice.id})
+
+                print(f"✅ Updated project '{proj.name}' — linked to new invoice {invoice.name} with date {invoice.invoice_date}")
+
+        # ----->>>>> OLD LOGIC CONTINUES FROM HERE
         if invoice and invoice.state == 'draft':
             invoice.action_post()
-
 
         payment = request.env['account.payment'].sudo().search([
             ('payment_transaction_id', '=', order.name)

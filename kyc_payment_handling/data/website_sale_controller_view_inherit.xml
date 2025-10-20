@@ -81,7 +81,7 @@
                                                                 <t t-if="line">
                                                                     <!-- Calculate product total tax -->
                                                                     <t t-set="total_tax"
-                                                                       t-value="sum(t.amount for t in product.taxes_id if 'DB' not in (t.name or '').upper()) if product.taxes_id else 0.0"/>
+                                                                       t-value="sum(t.amount for t in product.taxes_id) if product.taxes_id else 0.0"/>
 <!--                                                                    <t t-esc="', '.join(t.name for t in product.taxes_id if 'DB' not in (t.name or '').upper()) if product.taxes_id else ''"/>-->
                                                                     <!-- Base price + tax -->
                                                                     <t t-set="taxed_price"

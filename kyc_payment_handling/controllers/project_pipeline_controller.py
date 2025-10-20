@@ -43,6 +43,7 @@ class ProjectApplication(http.Controller):
         bank_statement_file = files.get('3m_bank_statement')
         salary_certificate_file = files.get('salary_certificate')
         cheque_photo_file = files.get('cheque_photo')
+        customer_signature = files.get('customer_signature')
 
         # ---------------- Partner Handling ----------------
         if request.env.user and request.env.user.partner_id:
@@ -120,11 +121,66 @@ class ProjectApplication(http.Controller):
         if cheque_photo_file:
             project_vals['cheque_photo'] = base64.b64encode(cheque_photo_file.read())
             project_vals['cheque_photo_filename'] = cheque_photo_file.filename
+        if customer_signature:
+            project_vals['customer_signature'] = base64.b64encode(customer_signature.read())
+            project_vals['customer_signature_filename'] = customer_signature.filename
+
         project = request.env['project.project'].sudo().create(project_vals)
+
+        attachment_fields = [
+            ('id_photo_front', 'id_photo_front_filename'),
+            ('id_photo_back', 'id_photo_back_filename'),
+            ('bank_statement', 'bank_statement_filename'),
+            ('salary_certificate', 'salary_certificate_filename'),
+            ('cheque_photo', 'cheque_photo_filename'),
+        ]
+
+        for field_name, filename_field in attachment_fields:
+            file_data = project[field_name]
+            file_name = project[filename_field]
+            if file_data:
+                request.env['ir.attachment'].sudo().create({
+                    'name': file_name or 'Document',
+                    'res_model': 'project.project',
+                    'res_id': project.id,
+                    'type': 'binary',
+                    'datas': file_data,
+                    'mimetype': 'application/octet-stream',
+                })
         
         print("------->>>>> Printing partner Before Update: ", partner.customer_reference)
         partner.sudo().write(partner_vals)
         print("------->>>>> Printing partner After Update: ", partner.customer_reference)
+
+        # ---------------- Partner Attachments (for review) ----------------
+        attachment_model = request.env['ir.attachment'].sudo()
+
+        def create_attachment(file, label):
+            if file:
+                file.stream.seek(0)
+                file_content = file.stream.read()
+                if not file_content:
+                    raise ValueError(f"File {file.filename} is empty or unreadable.")
+                attachment_model.create({
+                    'name': f"{label} - {partner.name}",
+                    'res_model': 'res.partner',
+                    'res_id': partner.id,
+                    'type': 'binary',
+                    'datas': base64.b64encode(file_content).decode('utf-8'),
+                    'mimetype': file.mimetype or 'application/octet-stream',
+                })
+
+        # create partner attachments
+        if files.get('id_photo_front'):
+            create_attachment(files.get('id_photo_front'), "ID Front")
+        if files.get('id_photo_back'):
+            create_attachment(files.get('id_photo_back'), "ID Back")
+        if files.get('3m_bank_statement'):
+            create_attachment(files.get('3m_bank_statement'), "3M Bank Statement")
+        if files.get('salary_certificate'):
+            create_attachment(files.get('salary_certificate'), "Salary Certificate")
+        if files.get('cheque_photo'):
+            create_attachment(files.get('cheque_photo'), "Cheque Photo")
 
         for line in partner.project_line_ids:
             if line.product_id.id == product.id and line.payment_term_id.id == term.id and line.state == 'reject':

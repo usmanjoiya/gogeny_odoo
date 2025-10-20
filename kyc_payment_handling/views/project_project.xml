@@ -26,6 +26,8 @@
                 <field name="place_of_work"/>
                 <field name="uae_id_number"/>
                 <field name="product_id"/>
+                <field name="sale_order_id" readonly="True"/>
+                <field name="invoice_ref_id" readonly="True"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[2]/field[@name='user_id']" position="after">
                 <field name="payment_term_id"/>
@@ -64,7 +66,9 @@
                         <group>
                             <field name="cheque_photo" filename="cheque_photo_filename" widget="binary"/>
                         </group>
-
+                        <group>
+                            <field name="customer_signature" filename="customer_signature_filename" widget="binary"/>
+                        </group>
                     </group>
                 </page>
             </xpath>
