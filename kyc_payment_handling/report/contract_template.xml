@@ -215,10 +215,10 @@
                                                                 <td><t t-esc="move_line.date_maturity"/></td>
                                                                 <td>
                                                                     <t t-if="counter == 0">
-                                                                        <t t-esc="(move_line.name or '-') + ' (Downpayment)'"/>
+                                                                        <t t-esc="((move_line.name or '').replace('INV/','').split(' ', 1)[-1] or '-') + ' (Downpayment)'"/>
                                                                     </t>
                                                                     <t t-else="">
-                                                                        <t t-esc="move_line.name or '-'"/>
+                                                                        <t t-esc="(move_line.name or '').replace('INV/','').split(' ', 1)[-1] or '-'"/>
                                                                     </t>
                                                                 </td>
                                                                 <td class="text-end"><t t-esc="'%.2f' % (move_line.debit or 0.0)"/></td>
@@ -314,8 +314,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -567,8 +569,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -819,8 +823,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1245,8 +1251,11 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1466,8 +1475,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -1726,8 +1737,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -2149,8 +2162,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>
@@ -2771,8 +2786,10 @@
                                                        style="font-size:16px; font-weight:bold; margin:0; border: 0; background: none;">
                                                         التوقيع الطرف الثاني
                                                     </p>
-                                                    <img t-att-src="image_data_uri(o.customer_signature)"
-                                                             style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
+                                                    <t t-if="o.customer_signature">
+                                                        <img t-att-src="image_data_uri(o.customer_signature)"
+                                                                style="max-height: 160px; max-width: 160px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: transparent;"/>
+                                                    </t>
                                                 </div>
                                             </td>
                                         </tr>

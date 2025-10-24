@@ -105,15 +105,8 @@ class WebsiteSaleInherit(WebsiteSale):
             for proj in matching_projects:
                 if not proj.sale_order_id:
                     proj.sale_order_id = order.id
-                if proj.invoice_ref_id:
-                    if proj.invoice_ref_id.invoice_date:
-                        invoice.invoice_date = proj.invoice_ref_id.invoice_date
-
-                    old_invoice = proj.invoice_ref_id
-                    proj.write({'invoice_ref_id': False})
-                    old_invoice.button_draft()
-                    old_invoice.button_cancel()
-                    old_invoice.sudo().unlink()
+                if proj.invoice_date:
+                    invoice.invoice_date = proj.invoice_date
 
                 proj.write({'invoice_ref_id': invoice.id})
 

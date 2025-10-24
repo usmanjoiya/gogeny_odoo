@@ -43,7 +43,6 @@ class ProjectApplication(http.Controller):
         bank_statement_file = files.get('3m_bank_statement')
         salary_certificate_file = files.get('salary_certificate')
         cheque_photo_file = files.get('cheque_photo')
-        customer_signature = files.get('customer_signature')
 
         # ---------------- Partner Handling ----------------
         if request.env.user and request.env.user.partner_id:
@@ -121,9 +120,11 @@ class ProjectApplication(http.Controller):
         if cheque_photo_file:
             project_vals['cheque_photo'] = base64.b64encode(cheque_photo_file.read())
             project_vals['cheque_photo_filename'] = cheque_photo_file.filename
-        if customer_signature:
-            project_vals['customer_signature'] = base64.b64encode(customer_signature.read())
-            project_vals['customer_signature_filename'] = customer_signature.filename
+        signature_data = post.get('customer_signature_data')
+        if signature_data:
+            signature_base64 = signature_data.split(',')[1]
+            project_vals['customer_signature'] = signature_base64
+            project_vals['customer_signature_filename'] = 'signature.png'
 
         project = request.env['project.project'].sudo().create(project_vals)
 
@@ -133,6 +134,7 @@ class ProjectApplication(http.Controller):
             ('bank_statement', 'bank_statement_filename'),
             ('salary_certificate', 'salary_certificate_filename'),
             ('cheque_photo', 'cheque_photo_filename'),
+            ('customer_signature', 'customer_signature_filename'),
         ]
 
         for field_name, filename_field in attachment_fields:

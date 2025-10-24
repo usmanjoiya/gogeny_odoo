@@ -1,7 +1,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 import base64
-
+import re
 
 class ProjectProject(models.Model):
     _inherit = 'project.project'
@@ -40,6 +40,8 @@ class ProjectProject(models.Model):
     
     invoice_ref_id = fields.Many2one('account.move', string="Invoice Ref")
     sale_order_id = fields.Many2one('sale.order', string="Sale Order Ref")
+
+    invoice_date = fields.Date(string="Invoice Date")
 
     def _apply_installment_product_invoice(self, invoice):
         """Create and attach installment product line on invoice."""
@@ -97,7 +99,6 @@ class ProjectProject(models.Model):
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
             'invoice_payment_term_id': self.payment_term_id.id,
-            'ref': "DUMMY INVOICE",
             # 'company_id': self.partner_id.company_id.id,
             'invoice_line_ids': [
                 (0, 0, {
@@ -114,7 +115,10 @@ class ProjectProject(models.Model):
         self._apply_installment_product_invoice(invoice)
 
         invoice.action_post()
+
+        self.invoice_date = invoice.invoice_date
         self.invoice_ref_id = invoice.id
+
 
         template = self.env.ref("kyc_payment_handling.email_template_customer_contract", raise_if_not_found=False)
         report = self.env.ref("kyc_payment_handling.action_print_contract", raise_if_not_found=False)
@@ -146,6 +150,10 @@ class ProjectProject(models.Model):
             if stage:
                 self.stage_id = stage.id
 
+        self.invoice_ref_id = None
+        invoice.button_draft()
+        invoice.button_cancel()
+        invoice.sudo().unlink()
 
     @api.constrains('bank_statement', 'salary_certificate', 'id_photo_front', 'id_photo_back')
     def _check_file_size(self):
@@ -231,3 +239,4 @@ class ProjectProject(models.Model):
     #             if partner:
     #                 vals['partner_id'] = partner.id
     #     return super().write(vals)
+

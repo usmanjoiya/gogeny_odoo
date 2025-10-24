@@ -138,8 +138,64 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Signature</label>
-                                <input type="file" name="customer_signature" required="True" class="form-control"/>
+                                <div class="border rounded p-2 bg-light" style="height: 280px; width: 280px; position: relative;">
+                                    <canvas id="signature-pad" style="width: 240px; height: 240px;"></canvas>
+                                    <button type="button" id="clear-signature" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2">
+                                        Clear
+                                    </button>
+                                </div>
+                                <input type="hidden" name="customer_signature_data" id="customer_signature_data" />
                             </div>
+                            <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const canvas = document.getElementById('signature-pad');
+                                    const clearButton = document.getElementById('clear-signature');
+                                    const signatureData = document.getElementById('customer_signature_data');
+
+                                    // --- Set fixed drawing size ---
+                                    const fixedWidth = 240;
+                                    const fixedHeight = 240;
+
+                                    function resizeCanvas() {
+                                        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                                        canvas.width = fixedWidth * ratio;
+                                        canvas.height = fixedHeight * ratio;
+                                        canvas.style.width = fixedWidth + 'px';
+                                        canvas.style.height = fixedHeight + 'px';
+                                        const ctx = canvas.getContext("2d");
+                                        ctx.scale(ratio, ratio);
+                                        ctx.clearRect(0, 0, fixedWidth, fixedHeight);
+                                    }
+
+                                    window.addEventListener("resize", resizeCanvas);
+                                    resizeCanvas();
+
+                                    // --- Transparent background (no white fill) ---
+                                    const signaturePad = new SignaturePad(canvas, {
+                                        backgroundColor: 'rgba(0, 0, 0, 0)', // transparent
+                                        penColor: 'black'
+                                    });
+
+                                    clearButton.addEventListener('click', function() {
+                                        signaturePad.clear();
+                                        signatureData.value = '';
+                                    });
+
+                                    // --- Capture signature before form submit ---
+                                    const form = document.getElementById('applicationForm');
+                                    form.addEventListener('submit', function(event) {
+                                        if (!signaturePad.isEmpty()) {
+                                            // Export transparent PNG with fixed size
+                                            const dataURL = canvas.toDataURL('image/png');
+                                            signatureData.value = dataURL;
+                                        } else {
+                                            alert("Please provide a signature before submitting.");
+                                            event.preventDefault();
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
                         
                         <div class="collapse mt-2" id="chequeSample">

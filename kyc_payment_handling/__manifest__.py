@@ -10,8 +10,10 @@
 
     'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment',],
     'data': [
+        # 'security/security.xml',
         'security/ir.model.access.csv',
-        
+
+        # 'data/paymen_provider_method.xml',
         'data/sign_up_page.xml',
         'data/project_stages_data_file.xml',
         'data/quickpay_page.xml',
@@ -25,6 +27,7 @@
         'views/res_partner.xml',
         'views/project_project.xml',
         'views/account_payment_term.xml',
+        # 'views/payment_provider_views.xml',
     ],
     'assets': {
 

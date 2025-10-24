@@ -26,8 +26,8 @@
                 <field name="place_of_work"/>
                 <field name="uae_id_number"/>
                 <field name="product_id"/>
-                <field name="sale_order_id" readonly="True"/>
-                <field name="invoice_ref_id" readonly="True"/>
+                <field name="sale_order_id" readonly="True" force_save="True"/>
+                <field name="invoice_ref_id" readonly="True" force_save="True"/>
             </xpath>
             <xpath expr="//form/sheet/group/group[2]/field[@name='user_id']" position="after">
                 <field name="payment_term_id"/>
