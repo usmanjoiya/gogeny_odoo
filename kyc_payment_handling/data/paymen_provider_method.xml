@@ -29,6 +29,6 @@
 
     <function model="payment.provider"
               name="_transfer_ensure_pending_msg_is_set"
-              eval="[[ref('payment_provider_cod')]]"/>
+              eval="[[ref('payment_provider_cod_custom')]]"/>
               
 </odoo>
