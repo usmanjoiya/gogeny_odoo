@@ -6,7 +6,7 @@
     'author': "MountSol",
     'website': "https://www.mountsol.com",
     'category': 'Uncategorized',
-    'version': '0.2',
+    'version': '0.1',
 
     'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment',],
     'data': [
