@@ -38,8 +38,8 @@ class ProjectProject(models.Model):
         [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
         string="Status", default="recieved")
     
-    invoice_ref_id = fields.Many2one('account.move', string="Invoice Ref")
-    sale_order_id = fields.Many2one('sale.order', string="Sale Order Ref")
+    invoice_ref_id = fields.Many2one('account.move', string="Invoice Ref", store=True)
+    sale_order_id = fields.Many2one('sale.order', string="Sale Order Ref", store=True)
 
     invoice_date = fields.Date(string="Invoice Date")
 

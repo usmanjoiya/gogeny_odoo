@@ -7,17 +7,17 @@
         <field name="priority">32</field>
         <field name="arch" type="xml">
             <field name="code" position="after">
-                <field name="code" invisible="1"/>
+                <field name="custom_mode" invisible="1"/>
             </field>
             <field name="payment_method_ids" position="attributes">
-                <attribute name="invisible">state == 'disabled' or code != 'cod'</attribute>
+                <attribute name="invisible">state == 'disabled' or code != 'custom'</attribute>
             </field>
             <field name="pending_msg" position="attributes">
                 <attribute name="string">COD Instructions</attribute>
-                <attribute name="invisible">code != 'cod'</attribute>
+                <attribute name="invisible">custom_mode != 'cod'</attribute>
             </field>
             <group name="payment_followup" position="attributes">
-                <attribute name="invisible">code == 'cod'</attribute>
+                <attribute name="invisible">code == 'custom'</attribute>
             </group>
         </field>
     </record>

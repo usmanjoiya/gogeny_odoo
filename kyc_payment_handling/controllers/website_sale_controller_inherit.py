@@ -70,16 +70,11 @@ class WebsiteSaleInherit(WebsiteSale):
         payment_term = order.payment_term_id
         print("---------------->>>>> Order Payment Term", payment_term.name if payment_term else "None")
 
-        print("---------------->>>>> Order State: ", order.state)
-
         # compute downpayment
         if order.payment_term_id and order.payment_term_id.line_ids:
             first_line = order.payment_term_id.line_ids[0]
             if first_line.value == "percent":
                 values['downpayment_amount'] = (order.amount_total * first_line.value_amount) / 100.0
-
-        if order and not order.state == 'sale':
-            order.action_confirm()
 
         # ----->>>>> PROJECT & SALE ORDER CONNECTION
         project_obj = request.env['project.project'].sudo()
@@ -93,7 +88,46 @@ class WebsiteSaleInherit(WebsiteSale):
         print("\n\n\n-------->>> Matching Projects Found:", matching_projects)
         for proj in matching_projects:
             print(f"Matched Project: {proj.name}, Product: {proj.product_id.display_name}")
+
+        tx_sudo = order.get_portal_last_transaction()
+        provider_code = tx_sudo.provider_code if tx_sudo else None
+        print("\n\n💰 Provider Code: ", provider_code)
+
+        if provider_code == 'custom':
+            print("\n\n📦 COD order detected — skipping confirmation/invoice/payment creation.")
+            # Optionally, set a flag or state note for internal tracking
+            order.write({'note': "Cash on Delivery order — awaiting manual confirmation."})
+
+            for proj in matching_projects:
+                print("\n\n\n--------------->>>>> MAtching Projs")
+                if not proj.sale_order_id:
+                    proj.sale_order_id = order.id
+                    print("\n\n\n--------------->>>>> MAtching Projs ID: ", proj.id)
+                    print("\n--------------->>>>> MAtching Projs Sale Order: ", proj.sale_order_id)
+            # --- Remove matching partner product line if approved ---
+            if order.partner_id and order.partner_id.project_line_ids:
+                print("-------------------->>>>> For COD Order Partner:", order.partner_id.name)
+
+                for so_line in order.order_line:
+                    print("------------->>>>> OL")
+                    for project in order.partner_id.project_line_ids:
+                        if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'contract_sent':
+                            print(f"---------------------------->>>>> Removing project line: {project}")
+                            project.unlink()
+                            
+            # Render standard confirmation page (without invoice logic)
+            values = self._prepare_shop_payment_confirmation_values(order)
+            values.update({
+                'cod_order': True,
+            })
+            
+            return request.render("website_sale.confirmation", values)
         
+        if order and not order.state == 'sale':
+            order.action_confirm()
+        
+        print("---------------->>>>> Order State: ", order.state)
+
         # ----->>>>> GET SALE ORDER INVOICE
         if not order.invoice_ids:
             invoice = order._create_invoices()
