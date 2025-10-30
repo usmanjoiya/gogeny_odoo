@@ -52,6 +52,7 @@ class WebsiteSaleInherit(WebsiteSale):
 
     @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
     def shop_payment_confirmation(self, **post):
+        print("---------------->>>>> shop_payment_confirmation")
         sale_order_id = request.session.get('sale_last_order_id')
         if not sale_order_id:
             return request.redirect('/shop')
@@ -59,8 +60,12 @@ class WebsiteSaleInherit(WebsiteSale):
         order = request.env['sale.order'].sudo().browse(sale_order_id)
         if not order:
             return request.redirect('/shop')
-
         print("---------------->>>>> ORDER ID", order)
+
+        partner_company = order.partner_id.company_id
+        if partner_company and order.company_id != partner_company:
+            print("\n\n------------------->>>>> Updating Sale Order company to partner's company: ", partner_company.name)
+            order.write({'company_id': partner_company.id})
 
         # Default values
         values = self._prepare_shop_payment_confirmation_values(order)

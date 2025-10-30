@@ -91,15 +91,15 @@ class ProjectProject(models.Model):
         if not self.product_id:
             raise ValidationError("Please provide 'Product' before sending contract.")
         
-        # if not self.company_id:
-        #     raise ValidationError("Please provide 'Company' before sending contract.")
+        if not self.company_id:
+            raise ValidationError("Please provide 'Company' before sending contract.")
 
         invoice_vals = {
             'partner_id': self.partner_id.id,
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
             'invoice_payment_term_id': self.payment_term_id.id,
-            # 'company_id': self.partner_id.company_id.id,
+            'company_id': self.partner_id.company_id.id,
             'invoice_line_ids': [
                 (0, 0, {
                     'product_id': self.product_id.id,
@@ -218,25 +218,25 @@ class ProjectProject(models.Model):
             if rec.partner_id and not rec.partner_id.customer_reference:
                 rec.partner_id.customer_reference = rec.uae_id_number
 
-    # @api.onchange('company_id')
-    # def _onchange_company_id(self):
-    #     for rec in self:
-    #         if rec.company_id and rec.partner_id:
-    #             partner = rec.partner_id
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        for rec in self:
+            if rec.company_id and rec.partner_id:
+                partner = rec.partner_id
                 
-    #             user = self.env['res.users'].search([('partner_id', '=', partner.id)], limit=1)
-    #             user.sudo().write({
-    #                 'company_id': rec.company_id.id,
-    #                 'company_ids': [(6, 0, [rec.company_id.id])]
-    #             })
+                user = self.env['res.users'].search([('partner_id', '=', partner.id)], limit=1)
+                user.sudo().write({
+                    'company_id': rec.company_id.id,
+                    'company_ids': [(6, 0, [rec.company_id.id])]
+                })
                 
-    #             rec.partner_id.company_id = rec.company_id.id
+                rec.partner_id.company_id = rec.company_id.id
 
-    # def write(self, vals):
-    #     for rec in self:
-    #         if rec.uae_id_number:
-    #             partner = self.env['res.partner'].search([('customer_reference', '=', rec.uae_id_number)], limit=1)
-    #             if partner:
-    #                 vals['partner_id'] = partner.id
-    #     return super().write(vals)
+    def write(self, vals):
+        for rec in self:
+            if rec.uae_id_number:
+                partner = self.env['res.partner'].search([('customer_reference', '=', rec.uae_id_number)], limit=1)
+                if partner:
+                    vals['partner_id'] = partner.id
+        return super().write(vals)
 

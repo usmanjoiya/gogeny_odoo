@@ -210,8 +210,23 @@ class ProjectApplication(http.Controller):
     # ===== Checkout Page - Adding installment info under Product cart =====
     @http.route(['/checkout/<int:product_id>/<int:term_id>/<int:project_line_id>'], type='http', auth="user", website=True)
     def checkout_with_term(self, product_id, term_id, project_line_id, **kw):
+        print("\n\n ------------>>>>> checkout_with_term <<<<<----------------- ")
         # Get current sale order (cart)
         order = request.website.sale_get_order(force_create=True)
+        partner = request.env.user.partner_id
+
+        # 🔹 Fix: Align SO company with partner company (if different)
+        if partner.company_id and order.company_id != partner.company_id:
+            print("\n\n ------------>>>>> Adjusting Sale Order company to match partner's company: ", partner.company_id.name)
+            order = order.sudo().with_company(partner.company_id)
+            order.sudo().write({'company_id': partner.company_id.id})
+
+        order.sudo().write({
+            'partner_id': partner.id,
+            'partner_invoice_id': partner.id,
+            'partner_shipping_id': partner.id,
+        })
+
         # Find product (use product template id to get variant/product record)
         product = request.env['product.product'].sudo().search(
             [('product_tmpl_id', '=', product_id)], limit=1
@@ -234,3 +249,4 @@ class ProjectApplication(http.Controller):
         request.session.modified = True
         # :white_check_mark: Redirect user to cart page
         return request.redirect('/shop/cart')
+    

@@ -8,7 +8,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom'],
+    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom', 'sale_management'],
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',
