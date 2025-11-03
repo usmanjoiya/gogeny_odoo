@@ -280,6 +280,23 @@ class WebsiteSaleInherit(WebsiteSale):
                 print("---------------->>>>>Payment term", term)
 
         return response
+
+    def _prepare_address_form_values(
+            self, order_sudo, partner_sudo, address_type, use_delivery_as_billing, callback='', **kwargs
+    ):
+        values = super(WebsiteSaleInherit, self)._prepare_address_form_values(
+            order_sudo, partner_sudo, address_type, use_delivery_as_billing, callback, **kwargs
+        )
+
+        ResCountrySudo = request.env['res.country'].sudo()
+        uae_country = ResCountrySudo.search([('code', '=', 'AE')], limit=1)
+
+        values.update({
+            'countries': uae_country,
+            'country_states': uae_country.state_ids,
+        })
+
+        return values
     
     # def _cart_values(self, **kwargs):
     #     values = super()._cart_values(**kwargs)
