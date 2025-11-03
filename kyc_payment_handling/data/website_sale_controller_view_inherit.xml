@@ -321,6 +321,20 @@
             </xpath>
         </template>
 
-
+        <template id="payment_form_inherit" inherit_id="payment.form" name="Payment Form - Filtered">
+            <xpath expr="//t[@t-foreach='payment_methods_sudo']" position="replace">
+                <t t-foreach="payment_methods_sudo.filtered(lambda pm: pm.code != 'cod')" t-as="pm_sudo">
+                    <li name="o_payment_option"
+                        class="list-group-item d-flex flex-column gap-2 py-3 o_outline"
+                    >
+                        <t t-call="payment.method_form">
+                            <t t-set="is_selected"
+                               t-value="pm_sudo.id == selected_method_id"
+                            />
+                        </t>
+                    </li>
+                </t>
+            </xpath>
+        </template>
     </data>
 </odoo>
