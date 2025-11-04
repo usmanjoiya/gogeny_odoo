@@ -2,7 +2,7 @@ from odoo import http
 from odoo.http import request
 import base64
 
-ALLOWED_EXTENSIONS = ('.pdf', '.png')
+# ALLOWED_EXTENSIONS = ('.pdf', '.png')
 
 class ProjectApplication(http.Controller):
     # ===== Start Now Button - Installments Cart =====
@@ -39,28 +39,28 @@ class ProjectApplication(http.Controller):
         print("\n\n\n------------->>>>>Product:::::::", post.get('product_id'))
         print("\n\n\n------------->>>>>Product:::::::", int(post.get('product_id')))
         files = request.httprequest.files
-        def validate_file(file, field_name):
-            """Validate file extension for PDF/PNG only."""
-            if not file:
-                return
-            filename = file.filename.lower()
-            if not filename.endswith(ALLOWED_EXTENSIONS):
-                return request.render(
-                    "kyc_payment_handling.validation_error_page",
-                    {
-                        'error_message': f"Invalid file format for {field_name.replace('_', ' ').title()}. Only PDF or PNG files are allowed."
-                    }
-                )
+        # def validate_file(file, field_name):
+        #     """Validate file extension for PDF/PNG only."""
+        #     if not file:
+        #         return
+        #     filename = file.filename.lower()
+        #     if not filename.endswith(ALLOWED_EXTENSIONS):
+        #         return request.render(
+        #             "kyc_payment_handling.validation_error_page",
+        #             {
+        #                 'error_message': f"Invalid file format for {field_name.replace('_', ' ').title()}. Only PDF or PNG files are allowed."
+        #             }
+        #         )
         
-        invalid_response = (
-            validate_file(files.get('id_photo_front'), 'id_photo_front') or
-            validate_file(files.get('id_photo_back'), 'id_photo_back') or
-            validate_file(files.get('3m_bank_statement'), '3m_bank_statement') or
-            validate_file(files.get('salary_certificate'), 'salary_certificate') or
-            validate_file(files.get('cheque_photo'), 'cheque_photo')
-        )
-        if invalid_response:
-            return invalid_response
+        # invalid_response = (
+        #     validate_file(files.get('id_photo_front'), 'id_photo_front') or
+        #     validate_file(files.get('id_photo_back'), 'id_photo_back') or
+        #     validate_file(files.get('3m_bank_statement'), '3m_bank_statement') or
+        #     validate_file(files.get('salary_certificate'), 'salary_certificate') or
+        #     validate_file(files.get('cheque_photo'), 'cheque_photo')
+        # )
+        # if invalid_response:
+        #     return invalid_response
         
         id_photo_front_file = files.get('id_photo_front')
         id_photo_back_file = files.get('id_photo_back')

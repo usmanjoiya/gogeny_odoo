@@ -214,7 +214,7 @@
         </t>
     </template>
 
-    <template id="validation_error_page" name="KYC Validation Error">
+    <!-- <template id="validation_error_page" name="KYC Validation Error">
         <t t-call="website.layout">
             <div class="container mt-5">
                 <div class="alert alert-danger text-center">
@@ -224,7 +224,7 @@
                 </div>
             </div>
         </t>
-    </template>
+    </template> -->
 
     <!-- Show Installment details in cart under product -->
     <template id="cart_lines" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines with Payment Terms">
