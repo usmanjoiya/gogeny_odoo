@@ -214,6 +214,18 @@
         </t>
     </template>
 
+    <template id="validation_error_page" name="KYC Validation Error">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <div class="alert alert-danger text-center">
+                    <h3>⚠️ File Upload Error</h3>
+                    <p><t t-esc="error_message"/></p>
+                    <a href="javascript:history.back()" class="btn btn-primary mt-3">Go Back</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <!-- Show Installment details in cart under product -->
     <template id="cart_lines" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines with Payment Terms">
         <xpath expr="//div[@id='cart_products']/div/t/div[2]" position="inside">
@@ -373,7 +385,7 @@
                 </div>
             </t>
         </xpath>
-    </template>
+    </template> 
 
     <!-- Show down-payment in cart under Total -->
     <template id="total" inherit_id="website_sale.total" name="Shopping Cart Total with Down Payment">

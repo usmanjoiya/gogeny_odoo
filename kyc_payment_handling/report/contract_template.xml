@@ -254,20 +254,16 @@
 
                                             <!-- Document Previews -->
                                             <tr>
-                                                <t t-if="o.id_photo_front">
+                                                <t t-if="o.id_photo_front and not o.id_photo_front_filename.lower().endswith('.pdf')">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo
-                                                            Front:
-                                                        </strong>
+                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo Front:</strong>
                                                         <img t-att-src="image_data_uri(o.id_photo_front)"
                                                              style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                     </td>
                                                 </t>
-                                                <t t-if="o.id_photo_back">
+                                                <t t-if="o.id_photo_back and not o.id_photo_front_filename.lower().endswith('.pdf')">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo
-                                                            Back:
-                                                        </strong>
+                                                        <strong style="display: block; margin-bottom: 8px;">ID Photo Back:</strong>
                                                         <img t-att-src="image_data_uri(o.id_photo_back)"
                                                              style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                     </td>
@@ -275,20 +271,16 @@
                                             </tr>
 
                                             <tr>
-                                                <t t-if="o.salary_certificate">
+                                                <t t-if="o.salary_certificate and not o.id_photo_front_filename.lower().endswith('.pdf')">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                        <strong style="display: block; margin-bottom: 8px;">Salary
-                                                            Certificate:
-                                                        </strong>
+                                                        <strong style="display: block; margin-bottom: 8px;">Salary Certificate:</strong>
                                                         <img t-att-src="image_data_uri(o.salary_certificate)"
                                                              style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                     </td>
                                                 </t>
-                                                <t t-if="o.cheque_photo">
+                                                <t t-if="o.cheque_photo and not o.id_photo_front_filename.lower().endswith('.pdf')">
                                                     <td style="text-align: center; width: 50%; padding: 10px; vertical-align: top; border: 1px solid #dee2e6;">
-                                                        <strong style="display: block; margin-bottom: 8px;">Bank Check
-                                                            Image:
-                                                        </strong>
+                                                        <strong style="display: block; margin-bottom: 8px;">Bank Check Image:</strong>
                                                         <img t-att-src="image_data_uri(o.cheque_photo)"
                                                              style="max-height: 300px; max-width: 90%; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: white;"/>
                                                     </td>
