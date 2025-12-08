@@ -102,10 +102,10 @@ class ProjectProject(models.Model):
             'company_id': self.partner_id.company_id.id,
             'invoice_line_ids': [
                 (0, 0, {
-                    'product_id': self.product_id.id,
+                    'product_id': self.product_id.product_variant_id.id,
                     'quantity': 1,
                     'price_unit': self.product_id.list_price,
-                    'name': self.product_id.name,
+                    'name': self.product_id.product_variant_id.name,
                 })
             ],
         }
