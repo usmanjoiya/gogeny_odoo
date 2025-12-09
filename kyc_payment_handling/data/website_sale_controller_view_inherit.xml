@@ -165,20 +165,20 @@
                                                             </t>
 
                                                             <ul class="list-group list-group-flush text-start">
-                                                                <li class="list-group-item px-0 bg-transparent text-reset">
+                                                                <t t-if="product.id in term.product_ids.ids">
+                                                                    <t t-set="total_inst_amount"
+                                                                        t-value="taxed_price + term.installment_amount"/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-set="total_inst_amount"
+                                                                        t-value="taxed_price"/>
+                                                                </t>
+                                                                <!-- <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
-                                                                    <t t-if="product.id in term.product_ids.ids">
-                                                                        <t t-set="total_inst_amount"
-                                                                           t-value="taxed_price + term.installment_amount"/>
-                                                                    </t>
-                                                                    <t t-else="">
-                                                                        <t t-set="total_inst_amount"
-                                                                           t-value="taxed_price"/>
-                                                                    </t>
                                                                     &#160;On Installments Amount
                                                                     <t t-esc="'%.2f' % total_inst_amount"/>
                                                                     <t t-esc="currency_symbol"/>
-                                                                </li>
+                                                                </li> -->
                                                                 <li class="list-group-item px-0 bg-transparent text-reset">
                                                                     <i class="fa fa-check text-success" role="img"></i>
                                                                     <t t-set="first_line" t-value="term.line_ids[:1]"/>
