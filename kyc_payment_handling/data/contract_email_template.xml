@@ -25,5 +25,56 @@
         </field>
     </record>
 
+    <record id="email_template_project_review" model="mail.template">
+        <field name="name">Project Review Email Template</field>
+        <field name="model_id" ref="kyc_payment_handling.model_project_project"/>
+        <field name="subject">المستندات المستلمة - قيد المراجعة</field>
+        <field name="email_from">${ object.user_id.email or '' }</field>
+        <field name="email_to">${ object.partner_id.email or '' }</field>
+        <field name="body_html"><![CDATA[
+            <div>
+                <p>مرحبا ,,</p>
+                <p>
+                    عزيزي العميل،<br/>
+                    تم ارسال مستنداتك إلى الأقسام المختصة للنظر في طلبك.<br/>
+                    في حال تم التحقق من استقطاعاتك الشهرية، سنقوم بإبلاغكم بالموافقة أو الرفض.<br/>
+                </p>
+                <p>
+                    ملاحظة: قد يستغرق التدقيق من يوم إلى 3 أيام وقد يمتد لفترة أطول في حال طلب أي مستندات إضافية.
+                </p>
+            </div>
+        ]]></field>
+    </record>
+
+    <record id="email_template_project_reject" model="mail.template">
+        <field name="name">Project Reject Email Template</field>
+        <field name="model_id" ref="kyc_payment_handling.model_project_project"/>
+        <field name="subject">اعتذار بخصوص طلبكم – عدم اجتياز التقييم الائتماني</field>
+        <field name="email_from">${ object.user_id.email or '' }</field>
+        <field name="email_to">${ object.partner_id.email or '' }</field>
+        <field name="body_html"><![CDATA[
+            <div dir="rtl" style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <p>عزيزي العميل،</p>
+                <p>
+                    نود إعلامكم بأنه للأسف تم <strong>رفض معاملتكم</strong> من قبل قسم الائتمان،
+                    وذلك بسبب عدم استيفاء بعض شروط التقييم. وقد يكون سبب الرفض أحد الأسباب التالية:
+                </p>
+                <ul>
+                    <li>التعثر المالي</li>
+                    <li>تخطي نسبة عبء المديونية</li>
+                    <li>الراتب الشهري أقل من الحد المطلوب</li>
+                    <li>مدة خدمة العمل الحالي أقل من المطلوب</li>
+                    <li>الشركة غير معتمدة ضمن قائمة الشركات المدرجة لدى الجهة الممولة</li>
+                    <li>وضع مالي غير منتظم</li>
+                    <li>وجود تعثر مالي أو فواتير متأخرة لم يتم دفعها أو تسويتها</li>
+                </ul>
+                <p>
+                    نتقدم إليكم بخالص الاعتذار،
+                    ونأمل أن نتمكن من خدمتكم مستقبلاً عندما تتوافق بياناتكم مع متطلبات التمويل.
+                </p>
+                <p>شكراً لكم،</p>
+            </div>
+        ]]></field>
+    </record>
 
 </odoo>

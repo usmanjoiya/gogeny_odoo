@@ -182,6 +182,17 @@ class ProjectProject(models.Model):
 
     def action_state_in_review(self):
         self.ensure_one()
+        partner = self.partner_id
+        if not partner:
+            raise ValidationError("Customer is missing!")
+        user = self.env.user
+        template = self.env.ref("kyc_payment_handling.email_template_project_review", raise_if_not_found=False)
+        if template:
+            template.send_mail(
+                self.id,
+                force_send=True,
+                email_values={'email_to': partner.email,'email_from': user.email or ''},
+            )
         self.state = "in_review"
         stage = self.env.ref(
             "kyc_payment_handling.project_project_stage_in_review",
@@ -202,6 +213,17 @@ class ProjectProject(models.Model):
 
     def action_state_reject(self):
         self.ensure_one()
+        partner = self.partner_id
+        if not partner:
+            raise ValidationError("Customer is missing!")
+        user = self.env.user
+        template = self.env.ref("kyc_payment_handling.email_template_project_reject", raise_if_not_found=False)
+        if template:
+            template.send_mail(
+                self.id,
+                force_send=True,
+                email_values={'email_to': partner.email,'email_from': user.email or ''},
+            )
         self.state = "reject"
         stage = self.env.ref(
             "kyc_payment_handling.project_project_stage_rejected",
@@ -210,7 +232,6 @@ class ProjectProject(models.Model):
         print("--------->>>>>Stage", stage)
         if stage:
             self.stage_id = stage.id
-
 
     @api.onchange('uae_id_number')
     def onchange_uae_id_number(self):
