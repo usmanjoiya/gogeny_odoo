@@ -43,6 +43,17 @@ class ProjectProject(models.Model):
 
     invoice_date = fields.Date(string="Invoice Date")
 
+    # CLAUDE - DID: Override unlink to archive document folders with sudo before deletion
+    # Fixes AccessError from documents_project's _archive_folder_on_projects_unlinked hook
+    def unlink(self):
+        documents = self.env['documents.document'].sudo().search([
+            ('project_ids', '!=', False),
+            ('project_ids', 'not any', [('id', 'not in', self.ids)])
+        ])
+        if documents:
+            documents.action_archive()
+        return super().unlink()
+
     def _apply_installment_product_invoice(self, invoice):
         """Create and attach installment product line on invoice."""
         for rec in self:

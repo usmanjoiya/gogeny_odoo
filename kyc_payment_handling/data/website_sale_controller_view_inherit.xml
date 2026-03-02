@@ -230,6 +230,57 @@
             </xpath>
         </template>
 
+        <template inherit_id="website_sale.product" id="product_start_now_btn" name="Start Now Button on Product Page">
+            <xpath expr="//div[@id='add_to_cart_wrap']" position="after">
+                <t t-if="payment_terms">
+                    <!-- No application yet: show Start Now -->
+                    <t t-if="not partner_payment_term">
+                        <div class="d-flex align-items-center mb-2 w-100">
+                            <a role="button"
+                               class="btn btn-primary w-100 text-center"
+                               t-att-href="'/apply/' + str(payment_terms[:1].id) + '/' + str(product.id)">
+                                <i class="fa fa-arrow-right me-2"/>
+                                Start Now
+                            </a>
+                        </div>
+                    </t>
+                    <!-- Application in progress -->
+                    <t t-if="partner_payment_term and partner_project_state in ('recieved', 'in_review', 'approved')">
+                        <div class="d-flex align-items-center mb-2 w-100">
+                            <a role="button"
+                               class="btn btn-primary w-100 text-center"
+                               t-att-href="'/shop/' + str(product.id)">
+                                <i class="fa fa-spinner me-2"/>
+                                Application Processing
+                            </a>
+                        </div>
+                    </t>
+                    <!-- Contract sent: Proceed to Checkout -->
+                    <t t-if="partner_payment_term and partner_project_state == 'contract_sent'">
+                        <div class="d-flex align-items-center mb-2 w-100">
+                            <a role="button"
+                               class="btn btn-primary w-100 text-center"
+                               t-att-href="'/checkout/' + str(product.id) + '/' + str(partner_payment_term) + '/' + str(partner_line_id or 0)">
+                                <i class="fa fa-check me-2"/>
+                                Proceed to Checkout
+                            </a>
+                        </div>
+                    </t>
+                    <!-- Rejected: Submit Again -->
+                    <t t-if="partner_payment_term and partner_project_state == 'reject'">
+                        <div class="d-flex align-items-center mb-2 w-100">
+                            <a role="button"
+                               class="btn btn-primary w-100 text-center"
+                               t-att-href="'/apply/' + str(partner_payment_term) + '/' + str(product.id)">
+                                <i class="fa fa-refresh me-2"/>
+                                Submit Application Again
+                            </a>
+                        </div>
+                    </t>
+                </t>
+            </xpath>
+        </template>
+
         <template inherit_id="website_sale.confirmation" id="website_sale_confirmation_downpayment">
 
             <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']"

@@ -469,4 +469,28 @@
         </xpath>
     </template> -->
 
+    <template id="application_thank_you_template" name="Application Submitted">
+        <t t-call="website.layout">
+            <div class="container py-5 text-center">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <i class="fa fa-check-circle text-success mb-3" style="font-size: 4rem;"/>
+                        <h2 class="mb-3">Application Submitted!</h2>
+                        <p class="lead text-muted mb-4">
+                            Thank you for submitting your application for
+                            <strong><t t-esc="product.name"/></strong>.
+                            Our team will review your documents and get back to you shortly.
+                        </p>
+                        <p class="text-muted mb-4">
+                            You can track your application status from the product page.
+                        </p>
+                        <a t-att-href="product.website_url" class="btn btn-primary">
+                            <i class="fa fa-arrow-left me-2"/>Back to Product
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
 </odoo>

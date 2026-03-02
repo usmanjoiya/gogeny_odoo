@@ -225,11 +225,10 @@ class ProjectApplication(http.Controller):
         request.session['apply_payment_terms'][product.id] = term.id
         request.session.modified = True
         print("----------------------->>>>> Payment Terms Are: ", request.session['apply_payment_terms'])
-        # ---------------- Redirect ----------------
-        product_slug = product.name.lower().replace(' ', '-')
-        return request.redirect('/shop/%s-%s?project_id=%s' % (
-            product_slug, product.id, project.id
-        ))
+        return request.render("kyc_payment_handling.application_thank_you_template", {
+            'product': product,
+            'project': project,
+        })
 
     # ===== Checkout Page - Adding installment info under Product cart =====
     @http.route(['/checkout/<int:product_id>/<int:term_id>/<int:project_line_id>'], type='http', auth="user", website=True)
