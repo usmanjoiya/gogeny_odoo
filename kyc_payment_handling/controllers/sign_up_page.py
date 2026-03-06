@@ -34,6 +34,8 @@ class CustomAuthSignup(AuthSignupHome):
                     User._get_login_domain(qcontext.get('login')),
                     order=User._get_login_order(), limit=1
                 )
+                if user_sudo and qcontext.get('password'):
+                    user_sudo.partner_id.portal_password = qcontext['password']
                 template = request.env.ref(
                     'auth_signup.mail_template_user_signup_account_created', raise_if_not_found=False
                 )

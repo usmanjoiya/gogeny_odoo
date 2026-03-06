@@ -8,7 +8,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom', 'sale_management'],
+    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom', 'sale_management', 'portal'],
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',
@@ -28,6 +28,7 @@
         'views/project_project.xml',
         'views/account_payment_term.xml',
         'views/payment_provider_views.xml',
+        'views/portal_wizard_views.xml',
     ],
     'assets': {
 

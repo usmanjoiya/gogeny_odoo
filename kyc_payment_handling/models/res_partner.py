@@ -9,6 +9,7 @@ class ResPartner(models.Model):
         string="ID Number",
         help="Unique reference or code for this customer."
     )
+    portal_password = fields.Char(string="Portal Password")
     project_line_ids = fields.One2many('res.partner.project.line', 'partner_id', string="Projects & Payment Terms")
     _sql_constraints = [
         (

@@ -13,6 +13,8 @@
                         invisible="state in ['reject']"/>
                 <button name="action_send_contract" string="Send Contract" type="object" class="oe_highlight"
                         invisible="state not in ['approved']"/>
+                <button name="action_resend_contract" string="Resend Contract" type="object" class="oe_highlight"
+                        invisible="state not in ['contract_sent']"/>
             </xpath>
 
             <xpath expr="//form/sheet/group/group[1]/field[@name='partner_id']" position="attributes">
@@ -31,6 +33,9 @@
             </xpath>
             <xpath expr="//form/sheet/group/group[2]/field[@name='user_id']" position="after">
                 <field name="payment_term_id"/>
+            </xpath>
+            <xpath expr="//form/header/field[@name='stage_id']" position="attributes">
+                <attribute name="options">{'clickable': False, 'fold_field': 'fold'}</attribute>
             </xpath>
             <xpath expr="//form/sheet/group/group[2]/field[@name='date']" position="after">
                 <div class="o_address_format">

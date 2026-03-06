@@ -43,17 +43,6 @@ class ProjectProject(models.Model):
 
     invoice_date = fields.Date(string="Invoice Date")
 
-    # CLAUDE - DID: Override unlink to archive document folders with sudo before deletion
-    # Fixes AccessError from documents_project's _archive_folder_on_projects_unlinked hook
-    def unlink(self):
-        documents = self.env['documents.document'].sudo().search([
-            ('project_ids', '!=', False),
-            ('project_ids', 'not any', [('id', 'not in', self.ids)])
-        ])
-        if documents:
-            documents.action_archive()
-        return super().unlink()
-
     def _apply_installment_product_invoice(self, invoice):
         """Create and attach installment product line on invoice."""
         for rec in self:
@@ -166,6 +155,24 @@ class ProjectProject(models.Model):
         invoice.button_cancel()
         invoice.sudo().unlink()
 
+    def action_resend_contract(self):
+        self.ensure_one()
+        template = self.env.ref("kyc_payment_handling.email_template_customer_contract", raise_if_not_found=False)
+        if not template:
+            raise ValidationError("Email template not found.")
+        attachment = self.env['ir.attachment'].search([
+            ('res_model', '=', 'project.project'),
+            ('res_id', '=', self.id),
+            ('mimetype', '=', 'application/pdf'),
+        ], order='id desc', limit=1)
+        if not attachment:
+            raise ValidationError("No contract PDF found. Please send the contract first.")
+        template.send_mail(
+            self.id,
+            force_send=True,
+            email_values={'attachment_ids': [attachment.id]}
+        )
+
     @api.constrains('bank_statement', 'salary_certificate', 'id_photo_front', 'id_photo_back')
     def _check_file_size(self):
         max_size = 20 * 1024 * 1024
@@ -271,4 +278,10 @@ class ProjectProject(models.Model):
                 if partner:
                     vals['partner_id'] = partner.id
         return super().write(vals)
+
+    def unlink(self):
+        self.env['res.partner.project.line'].sudo().search([
+            ('project_id', 'in', self.ids)
+        ]).unlink()
+        return super().unlink()
 

@@ -1,0 +1,16 @@
+<odoo>
+    <record id="portal_wizard_view_inherit" model="ir.ui.view">
+        <field name="name">portal.wizard.inherit.password</field>
+        <field name="model">portal.wizard</field>
+        <field name="inherit_id" ref="portal.wizard_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_ids']//list//field[@name='login_date']" position="after">
+                <field name="user_id" column_invisible="True"/>
+                <field name="portal_password" readonly="True" string="Password"/>
+                <button string="Change Password" name="action_change_password" type="object"
+                    class="btn-secondary"
+                    invisible="not is_portal or not user_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

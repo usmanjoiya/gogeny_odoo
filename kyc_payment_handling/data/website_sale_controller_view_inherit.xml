@@ -372,7 +372,7 @@
             </xpath>
         </template>
 
-        <template id="payment_form_inherit" inherit_id="payment.form" name="Payment Form - Filtered">
+        <!-- <template id="payment_form_inherit" inherit_id="payment.form" name="Payment Form - Filtered">
             <xpath expr="//t[@t-foreach='payment_methods_sudo']" position="replace">
                 <t t-foreach="payment_methods_sudo.filtered(lambda pm: pm.code != 'cod')" t-as="pm_sudo">
                     <li name="o_payment_option"
@@ -386,6 +386,6 @@
                     </li>
                 </t>
             </xpath>
-        </template>
+        </template> -->
     </data>
 </odoo>
