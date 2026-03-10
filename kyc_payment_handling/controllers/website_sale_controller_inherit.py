@@ -83,128 +83,86 @@ class WebsiteSaleInherit(WebsiteSale):
 
         # ----->>>>> PROJECT & SALE ORDER CONNECTION
         project_obj = request.env['project.project'].sudo()
-        matching_projects = project_obj.search([
+        matching_project = project_obj.search([
             ('partner_id', '=', order.partner_id.id),
             ('payment_term_id', '=', order.payment_term_id.id),
             ('sale_order_id', '=', False),
             ('product_id', 'in', order.order_line.mapped('product_id.product_tmpl_id').ids),
-        ])
+        ], limit=1, order='id desc')
 
-        print("\n\n\n-------->>> Matching Projects Found:", matching_projects)
-        for proj in matching_projects:
-            print(f"Matched Project: {proj.name}, Product: {proj.product_id.display_name}")
+        print("\n\n\n-------->>> Matching Project Found:", matching_project)
 
         tx_sudo = order.get_portal_last_transaction()
         provider_code = tx_sudo.provider_code if tx_sudo else None
-        print("\n\n💰 Provider Code: ", provider_code)
+        is_cod = provider_code == 'custom'
+        print("\n\n💰 Provider Code: ", provider_code, " | COD:", is_cod)
 
-        if provider_code == 'custom':
-            print("\n\n📦 COD order detected — skipping confirmation/invoice/payment creation.")
-            # Optionally, set a flag or state note for internal tracking
-            order.write({'note': "Cash on Delivery order — awaiting manual confirmation."})
+        if is_cod:
+            order.write({'note': "Cash on Delivery order."})
 
-            for proj in matching_projects:
-                print("\n\n\n--------------->>>>> MAtching Projs")
-                if not proj.sale_order_id:
-                    proj.sale_order_id = order.id
-                    print("\n\n\n--------------->>>>> MAtching Projs ID: ", proj.id)
-                    print("\n--------------->>>>> MAtching Projs Sale Order: ", proj.sale_order_id)
-            # --- Remove matching partner product line if approved ---
-            if order.partner_id and order.partner_id.project_line_ids:
-                print("-------------------->>>>> For COD Order Partner:", order.partner_id.name)
-
-                for so_line in order.order_line:
-                    print("------------->>>>> OL")
-                    for project in order.partner_id.project_line_ids:
-                        if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'contract_sent':
-                            print(f"---------------------------->>>>> Removing project line: {project}")
-                            project.unlink()
-                            
-            # Render standard confirmation page (without invoice logic)
-            values = self._prepare_shop_payment_confirmation_values(order)
-            values.update({
-                'cod_order': True,
-            })
-            
-            return request.render("website_sale.confirmation", values)
-        
-        if order and not order.state == 'sale':
+        # ----->>>>> 1. Confirm the order
+        if order.state != 'sale':
             order.action_confirm()
-        
         print("---------------->>>>> Order State: ", order.state)
 
-        # ----->>>>> GET SALE ORDER INVOICE
+        # ----->>>>> 2. Create invoice from Sale Order
         if not order.invoice_ids:
             invoice = order._create_invoices()
         else:
             invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
 
-        # ----->>>>> UPDATE SALE ORDER INVOICE DATE, UNLINK DUMMY INVOICE & ASSIGN ORIGINAL INVOICE TO PROJECT 
-        if invoice:
-            for proj in matching_projects:
-                if not proj.sale_order_id:
-                    proj.sale_order_id = order.id
-                if proj.invoice_date:
-                    invoice.invoice_date = proj.invoice_date
+        # ----->>>>> 3. Link SO and Invoice to Project
+        if matching_project:
+            # Set sale_line_id so sale_order_id auto-resolves via related field
+            matching_sol = order.order_line.filtered(
+                lambda l: l.product_id.product_tmpl_id.id == matching_project.product_id.id
+            )[:1]
+            if matching_sol:
+                matching_project.sale_line_id = matching_sol.id
+                print(f"✅ Linked project '{matching_project.name}' to SOL {matching_sol.id} (SO: {order.name})")
 
-                proj.write({'invoice_ref_id': invoice.id})
+            if invoice:
+                if matching_project.invoice_date:
+                    invoice.invoice_date = matching_project.invoice_date
+                matching_project.write({'invoice_ref_id': invoice.id})
+                print(f"✅ Linked project '{matching_project.name}' to Invoice {invoice.id}")
 
-                print(f"✅ Updated project '{proj.name}' — linked to new invoice {invoice.name} with date {invoice.invoice_date}")
-
-        # ----->>>>> OLD LOGIC CONTINUES FROM HERE
+        # ----->>>>> 4. Post the invoice
         if invoice and invoice.state == 'draft':
             invoice.action_post()
 
-        payment = request.env['account.payment'].sudo().search([
-            ('payment_transaction_id', '=', order.name)
-        ], limit=1)
+        # ----->>>>> 5. Reconcile payment (non-COD only)
+        if not is_cod and invoice and invoice.state == 'posted':
+            payment = request.env['account.payment'].sudo().search([
+                ('payment_transaction_id', '=', order.name)
+            ], limit=1)
 
-        print("---------------->>>>> Account Payment Record: ", payment)
+            print("---------------->>>>> Account Payment Record: ", payment)
 
-        print("---------------->>>>> Invoice State: ", invoice.state)
+            if payment:
+                inv_lines = invoice.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
+                pay_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
 
-        if invoice and invoice.state == 'posted' and payment:
-            print("---------------->>>>> Linking payment to invoice")
+                if inv_lines and pay_lines:
+                    (inv_lines + pay_lines).reconcile()
+                    print("---------------->>>>> Reconciled Payment %s with Invoice %s" % (payment.name, invoice.name))
+                else:
+                    print("---------------->>>>> No receivable lines found to reconcile.")
 
-            # Debug print all lines
-            print("------ Invoice Lines ------")
-            for l in invoice.line_ids:
-                print(l.id, l.name, l.account_id.name, l.account_id.account_type, l.account_id.internal_group)
-
-            print("------ Payment Move Lines ------")
-            for l in payment.move_id.line_ids:
-                print(l.id, l.name, l.account_id.name, l.account_id.account_type, l.account_id.internal_group)
-
-            # Find receivable lines by partner+account
-            inv_lines = invoice.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
-            pay_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
-
-            print("---------------->>>>> Invoice receivable lines:", inv_lines)
-            print("---------------->>>>> Payment receivable lines:", pay_lines)
-
-            if inv_lines and pay_lines:
-                lines_to_reconcile = inv_lines + pay_lines
-                lines_to_reconcile.reconcile()
-                print("---------------->>>>> Reconciled Payment %s with Invoice %s" % (payment.name, invoice.name))
-            else:
-                print("---------------->>>>> No receivable lines found to reconcile.")
-
-        # --- Remove matching partner product line if approved ---
+        # ----->>>>> 6. Remove matching partner project line
         if order.partner_id and order.partner_id.project_line_ids:
-            print("-------------------->>>>> Order Partner:", order.partner_id.name)
-
             for so_line in order.order_line:
-                print("------------->>>>> OL")
-                for project in order.partner_id.project_line_ids:
-                    if project.product_id.product_variant_id.id == so_line.product_id.id and project.payment_term_id.id == order.payment_term_id.id and project.state == 'contract_sent':
-                        print(f"---------------------------->>>>> Removing project line: {project}")
-                        project.unlink()
+                for project_line in order.partner_id.project_line_ids:
+                    if (project_line.product_id.product_variant_id.id == so_line.product_id.id
+                            and project_line.payment_term_id.id == order.payment_term_id.id
+                            and project_line.state == 'contract_sent'):
+                        project_line.unlink()
 
         values.update({
+            'cod_order': is_cod,
             'currency_symbol': order.currency_id.symbol,
             'downpayment_amount': values.get('downpayment_amount', order.amount_total),
         })
-        print("---------------->>>>> I AM OUT <<<<<----------------")
 
         return request.render("website_sale.confirmation", values)
 
