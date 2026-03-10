@@ -34,6 +34,8 @@ class ProjectProject(models.Model):
     customer_signature = fields.Binary(string="Customer Signature", attachment=True)
     customer_signature_filename = fields.Char(string="Customer Signature Filename")
 
+    last_update_status = fields.Selection(selection_add=[('no_task', 'No Task')], ondelete={'no_task': 'set default'})
+
     state = fields.Selection(
         [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
         string="Status", default="recieved")
@@ -42,6 +44,22 @@ class ProjectProject(models.Model):
     sale_order_id = fields.Many2one('sale.order', string="Sale Order Ref", store=True)
 
     invoice_date = fields.Date(string="Invoice Date")
+
+    partner_invoice_count = fields.Integer(
+        string="Previous Invoices",
+        compute='_compute_partner_invoice_count',
+    )
+
+    @api.depends('partner_id')
+    def _compute_partner_invoice_count(self):
+        for rec in self:
+            if rec.partner_id:
+                rec.partner_invoice_count = self.env['account.move'].search_count([
+                    ('partner_id', '=', rec.partner_id.id),
+                    ('move_type', '=', 'out_invoice'),
+                ])
+            else:
+                rec.partner_invoice_count = 0
 
     def _apply_installment_product_invoice(self, invoice):
         """Create and attach installment product line on invoice."""
@@ -271,6 +289,14 @@ class ProjectProject(models.Model):
                 
                 rec.partner_id.company_id = rec.company_id.id
 
+    @api.depends('last_update_status')
+    def _compute_last_update_color(self):
+        for project in self:
+            if project.last_update_status == 'no_task':
+                project.last_update_color = 0
+            else:
+                super(ProjectProject, project)._compute_last_update_color()
+
     def write(self, vals):
         for rec in self:
             if rec.uae_id_number:
@@ -284,4 +310,18 @@ class ProjectProject(models.Model):
             ('project_id', 'in', self.ids)
         ]).unlink()
         return super().unlink()
+
+
+class ProjectUpdate(models.Model):
+    _inherit = 'project.update'
+
+    status = fields.Selection(selection_add=[('no_task', 'No Task')], ondelete={'no_task': 'cascade'})
+
+    @api.depends('status')
+    def _compute_color(self):
+        for update in self:
+            if update.status == 'no_task':
+                update.color = 0
+            else:
+                super(ProjectUpdate, update)._compute_color()
 

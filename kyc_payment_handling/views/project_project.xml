@@ -79,4 +79,24 @@
             </xpath>
         </field>
     </record>
+
+    <record id="inherit_view_project" model="ir.ui.view">
+        <field name="name">inherit.project.project.list</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="string">Client Name</attribute>
+            </xpath>
+            <xpath expr="//field[@name='display_name']" position="attributes">
+                <attribute name="string">Product Name</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="after">
+                <field name="partner_invoice_count" string="Previous Invoices" optional="show"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

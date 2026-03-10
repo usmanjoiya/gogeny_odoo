@@ -234,9 +234,15 @@ class ProjectApplication(http.Controller):
     @http.route(['/checkout/<int:product_id>/<int:term_id>/<int:project_line_id>'], type='http', auth="user", website=True)
     def checkout_with_term(self, product_id, term_id, project_line_id, **kw):
         print("\n\n ------------>>>>> checkout_with_term <<<<<----------------- ")
+        partner = request.env.user.partner_id
+
+        # Validate project_line: exists, belongs to current user, correct state
+        project_line = request.env['res.partner.project.line'].sudo().browse(project_line_id)
+        if not project_line.exists() or project_line.partner_id.id != partner.id or project_line.state != 'contract_sent':
+            return request.redirect('/shop')
+
         # Get current sale order (cart)
         order = request.website.sale_get_order(force_create=True)
-        partner = request.env.user.partner_id
 
         # 🔹 Fix: Align SO company with partner company (if different)
         if partner.company_id and order.company_id != partner.company_id:

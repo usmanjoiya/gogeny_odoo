@@ -36,6 +36,9 @@
                 # 'kyc_payment_handling/static/src/js/kyc_file_size_validation.js',
                 'kyc_payment_handling/static/src/js/portal_invoice_payment.js',
                 ],
+            'web.assets_backend': [
+                'kyc_payment_handling/static/src/js/project_utils_patch.js',
+                ],
         },
 }
 
