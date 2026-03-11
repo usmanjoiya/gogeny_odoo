@@ -91,8 +91,11 @@
             <xpath expr="//field[@name='display_name']" position="attributes">
                 <attribute name="string">Product Name</attribute>
             </xpath>
+            <xpath expr="//field[@name='date_start']" position="after">
+                <field name="create_date" string="Application Date"/>
+            </xpath>
             <xpath expr="//field[@name='date_start']" position="attributes">
-                <attribute name="optional">show</attribute>
+                <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//field[@name='date_start']" position="after">
                 <field name="partner_invoice_count" string="Previous Invoices" optional="show"/>
