@@ -283,7 +283,7 @@
 
         <template inherit_id="website_sale.confirmation" id="website_sale_confirmation_downpayment">
 
-            <xpath expr="//td[@class='text-end pe-0' and @width='100']/strong[normalize-space(text())='Total:']"
+            <xpath expr="(//td[@class='text-end pe-0' and @width='100'])[1]/strong"
                    position="replace">
                 <t t-if="tx_sudo.sale_order_ids and tx_sudo.sale_order_ids[0].payment_term_id.line_ids">
                     <t t-set="down_percent"
