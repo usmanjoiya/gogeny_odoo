@@ -24,7 +24,7 @@ class SaleOrder(models.Model):
                     product_tmpl = self.env['product.template'].create({
                         'name': product_name,
                         'list_price': rec.payment_term_id.installment_amount,
-                        'type': 'service',
+                        'type': 'consu',
                         'taxes_id': [(5, 0, 0)],
                         'supplier_taxes_id': [(5, 0, 0)],
                         'installment_product': True,
