@@ -37,7 +37,7 @@ class ProjectProject(models.Model):
     last_update_status = fields.Selection(selection_add=[('no_task', 'No Task')], ondelete={'no_task': 'set default'})
 
     state = fields.Selection(
-        [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('reject', 'Rejected')],
+        [('recieved', 'Recieved'), ('in_review', 'In-Review'), ('approved', 'Approved'),  ('contract_sent', 'Contract Sent'), ('contract_completed', 'Contract Completed'), ('reject', 'Rejected')],
         string="Status", default="recieved")
     
     invoice_ref_id = fields.Many2one('account.move', string="Invoice Ref", store=True)
@@ -262,6 +262,16 @@ class ProjectProject(models.Model):
         if stage:
             self.stage_id = stage.id
 
+    def action_state_contract_completed(self):
+        self.ensure_one()
+        self.state = "contract_completed"
+        stage = self.env.ref(
+            "kyc_payment_handling.project_project_stage_contract_completed",
+            raise_if_not_found=False
+        )
+        if stage:
+            self.stage_id = stage.id
+
     def action_state_reject(self):
         self.ensure_one()
         partner = self.partner_id
@@ -318,7 +328,12 @@ class ProjectProject(models.Model):
                 partner = self.env['res.partner'].search([('customer_reference', '=', rec.uae_id_number)], limit=1)
                 if partner:
                     vals['partner_id'] = partner.id
-        return super().write(vals)
+        res = super().write(vals)
+        if 'sale_order_id' in vals or 'invoice_ref_id' in vals:
+            for rec in self:
+                if rec.state == 'contract_sent' and rec.sale_order_id and rec.invoice_ref_id:
+                    rec.action_state_contract_completed()
+        return res
 
     def unlink(self):
         self.env['res.partner.project.line'].sudo().search([

@@ -16,6 +16,10 @@
             <field name="name">Contract Sent</field>
         </record>
 
+        <record id="project_project_stage_contract_completed" model="project.project.stage">
+            <field name="name">Contract Completed</field>
+        </record>
+
         <record id="project_project_stage_rejected" model="project.project.stage">
             <field name="name">Rejected</field>
         </record>

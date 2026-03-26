@@ -15,6 +15,8 @@
                         invisible="state not in ['approved']"/>
                 <button name="action_resend_contract" string="Resend Contract" type="object" class="oe_highlight"
                         invisible="state not in ['contract_sent']"/>
+                <button name="action_state_contract_completed" string="Mark as Completed" type="object" class="oe_highlight"
+                        invisible="state not in ['contract_sent']"/>
             </xpath>
 
             <xpath expr="//form/sheet/group/group[1]/field[@name='partner_id']" position="attributes">

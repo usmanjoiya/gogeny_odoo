@@ -10,6 +10,7 @@
     <!-- Menu under Accounting -->
     <menuitem id="menu_installment_dashboard"
               name="Installments Dashboard"
+              parent="account.account_reports_legal_statements_menu"
               action="action_installment_dashboard_client"
               sequence="100"/>
 
