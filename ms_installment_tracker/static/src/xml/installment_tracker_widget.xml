@@ -104,7 +104,6 @@
                                 <th class="text-center">amount</th>
                                 <th class="text-center">Gregorian calendar</th>
                                 <th class="text-end">Type</th>
-                                <th class="text-center">Invoice</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,9 +122,6 @@
                                     </td>
                                     <td class="text-end align-middle" style="color: #3498db;">
                                         <t t-esc="line.name"/>
-                                    </td>
-                                    <td class="text-center align-middle text-muted" style="font-size: 0.85rem;">
-                                        <t t-esc="line.invoice_name"/>
                                     </td>
                                 </tr>
                             </t>

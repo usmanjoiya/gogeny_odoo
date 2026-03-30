@@ -8,13 +8,21 @@ class SaleOrder(models.Model):
 
     def _apply_installment_product(self):
         for rec in self:
-            print("------------------->>>>><<<<<------------------------")
             installment_lines = rec.order_line.filtered(
                 lambda l: l.product_id and l.product_id.product_tmpl_id.installment_product
             )
             rec.order_line -= installment_lines
 
             if rec.payment_term_id and rec.payment_term_id.installment_amount:
+                # Find 5% VAT tax for the company
+                vat_tax = self.env['account.tax'].search([
+                    ('amount', '=', 5),
+                    ('type_tax_use', '=', 'sale'),
+                    ('amount_type', '=', 'percent'),
+                    ('company_id', '=', rec.company_id.id),
+                ], limit=1)
+                tax_cmd = [(6, 0, vat_tax.ids)] if vat_tax else [(5, 0, 0)]
+
                 product_name = f"Installment - {rec.payment_term_id.name} ({rec.payment_term_id.id})"
 
                 product_tmpl = self.env['product.template'].search([
@@ -25,23 +33,15 @@ class SaleOrder(models.Model):
                         'name': product_name,
                         'list_price': rec.payment_term_id.installment_amount,
                         'type': 'consu',
-                        'taxes_id': [(5, 0, 0)],
+                        'taxes_id': tax_cmd,
                         'supplier_taxes_id': [(5, 0, 0)],
                         'installment_product': True,
                     })
-                    if product_tmpl.taxes_id:
-                        product_tmpl.taxes_id = [(5, 0, 0)]
-                    if product_tmpl.supplier_taxes_id:
-                        product_tmpl.supplier_taxes_id = [(5, 0, 0)]
                 else:
                     if product_tmpl.list_price != rec.payment_term_id.installment_amount:
                         product_tmpl.list_price = rec.payment_term_id.installment_amount
-                    if product_tmpl.taxes_id:
-                        product_tmpl.taxes_id = [(5, 0, 0)]
-                    if product_tmpl.supplier_taxes_id:
-                        product_tmpl.supplier_taxes_id = [(5, 0, 0)]
-
-                print("------------------->>>>>product_tmpl: ", product_tmpl)
+                    if vat_tax:
+                        product_tmpl.taxes_id = tax_cmd
 
                 product = product_tmpl.product_variant_id
                 if any(line.product_id.product_tmpl_id.id in rec.payment_term_id.product_ids.ids for line in rec.order_line):
@@ -50,7 +50,7 @@ class SaleOrder(models.Model):
                         'product_id': product.id,
                         'product_uom_qty': 1,
                         'price_unit': product.list_price,
-                        'tax_id': [(5, 0, 0)],
+                        'tax_id': tax_cmd,
                     })
 
     @api.model_create_multi

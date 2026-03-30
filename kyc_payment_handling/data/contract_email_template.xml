@@ -6,23 +6,28 @@
         <field name="subject">Contract Confirmation &amp; Installment Checkout</field>
         <field name="email_from">{{ object.user_id.email or '' }}</field>
         <field name="email_to">{{ object.partner_id.email }}</field>
-        <field name="body_html">
-            <![CDATA[
-                <p>Dear <t t-out="object.partner_id.name"/>,
-                <br/><br/>We are pleased to inform you that your product contract has been successfully confirmed.
-                <br/><br/>You may now proceed to checkout using the product link below to complete your purchase through our installment payment plan:</p>
-                <br/>
+        <field name="body_html"><![CDATA[
+            <div dir="rtl" style="font-family: Arial, sans-serif; line-height: 1.8;">
+                <p>عزيزي العميل،</p>
+                <p>نود إعلامك بأنه تم تأكيد عقد المنتج الخاص بك بنجاح.</p>
+                <p>يمكنك الآن إكمال الطلب من خلال الرابط التالي:</p>
+
                 <t t-set="base_url" t-value="env['ir.config_parameter'].sudo().get_param('web.base.url')"/>
                 <t t-set="partner_line" t-value="object.partner_id.project_line_ids.filtered(lambda l: l.project_id.id == object.id)[:1]"/>
 
-                <a t-att-href="base_url + '/checkout/' + str(object.product_id.id) + '/' + str(object.payment_term_id.id) + '/' + str(partner_line.id or 0)">
-                    Proceed to Checkout - <t t-esc="object.product_id.display_name"/>
-                </a>
-                <br/>
-                <p>Should you have any questions or require assistance with your installment schedule, please don’t hesitate to contact us.
-                <br/><br/>Best regards,<br/><t t-out="object.company_id.name"/></p>
-                ]]>
-        </field>
+                <p>
+                    <a t-att-href="base_url + '/checkout/' + str(object.product_id.id) + '/' + str(object.payment_term_id.id) + '/' + str(partner_line.id or 0)"
+                       style="color: #0066cc; font-weight: bold;">
+                        رابط الدفع – <t t-esc="object.product_id.display_name"/>
+                    </a>
+                </p>
+
+                <p>يرجى ملاحظة أنه يمكنك اختيار طريقة الدفع المناسبة لك، سواء <strong>الدفع عند الاستلام</strong> أو <strong>الدفع المباشر</strong>.<br/>
+                لكن يجب الضغط على الرابط وإتمام الطلب حتى يتم إرسال المندوب إليك.</p>
+
+                <p>في حال وجود أي استفسار، لا تتردد في التواصل معنا.</p>
+            </div>
+        ]]></field>
     </record>
 
     <record id="email_template_project_review" model="mail.template">

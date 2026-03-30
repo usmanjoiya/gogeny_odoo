@@ -5,51 +5,47 @@ class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
 
     @api.model
-    def get_partner_installment_data(self, partner_id):
-        """Return installment data for all invoices of a specific partner."""
+    def get_invoice_installment_data(self, move_id):
+        """Return installment data for a single invoice."""
         today = fields.Date.today()
 
-        if not partner_id:
+        if not move_id:
             return {
                 'late_amount': 0, 'late_count': 0,
                 'residual': 0, 'paid': 0, 'contract_value': 0,
                 'lines': [],
             }
 
-        # Find all posted customer invoices for this partner
-        invoices = self.env['account.move'].sudo().search([
-            ('partner_id', '=', partner_id),
-            ('move_type', '=', 'out_invoice'),
-            ('state', '=', 'posted'),
-        ])
-
-        if not invoices:
-            return {
-                'late_amount': 0, 'late_count': 0,
-                'residual': 0, 'paid': 0, 'contract_value': 0,
-                'lines': [],
-            }
-
-        # Get receivable payment term lines
+        # Get receivable payment term lines for this invoice
         move_lines = self.sudo().search([
-            ('move_id', 'in', invoices.ids),
+            ('move_id', '=', move_id),
             ('display_type', '=', 'payment_term'),
             ('account_id.account_type', '=', 'asset_receivable'),
         ], order='date_maturity asc')
 
-        # Group lines by invoice for indexing
-        lines_by_invoice = {}
-        for line in move_lines:
-            lines_by_invoice.setdefault(line.move_id.id, []).append(line)
+        if not move_lines:
+            return {
+                'late_amount': 0, 'late_count': 0,
+                'residual': 0, 'paid': 0, 'contract_value': 0,
+                'lines': [],
+            }
 
-        # Build line data
+        # Get payment term for profit calc
+        invoice = self.env['account.move'].sudo().browse(move_id)
+        payment_term = invoice.invoice_payment_term_id
+        installment_amount = 0.0
+        if payment_term and hasattr(payment_term, 'installment_amount'):
+            installment_amount = payment_term.installment_amount or 0.0
+
+        non_first_count = max(len(move_lines) - 1, 1)
+
         line_data = []
         late_amount = 0.0
         late_count = 0
         total_paid = 0.0
         contract_value = 0.0
 
-        for line in move_lines:
+        for i, line in enumerate(move_lines):
             amount = abs(line.balance)
             residual = abs(line.amount_residual)
             paid = amount - residual
@@ -66,22 +62,16 @@ class AccountMoveLine(models.Model):
                 status = 'unworthy'
                 status_label = 'Unworthy'
 
-            # Determine type label
-            inv_lines = lines_by_invoice.get(line.move_id.id, [])
-            line_ids = [l.id for l in inv_lines]
-            line_index = line_ids.index(line.id) if line.id in line_ids else 0
-            name = 'Batch #1' if line_index == 0 else f'Installment #{line_index + 1}'
+            # Type label
+            name = 'Batch #1' if i == 0 else f'Installment #{i + 1}'
 
-            # Profit from payment term installment_amount
+            # Profit
             profit = 0.0
-            payment_term = line.move_id.invoice_payment_term_id
-            if payment_term and hasattr(payment_term, 'installment_amount') and payment_term.installment_amount:
-                non_first_count = max(len(inv_lines) - 1, 1)
-                if line_index > 0:
-                    profit = payment_term.installment_amount / non_first_count
+            if installment_amount and i > 0:
+                profit = installment_amount / non_first_count
 
             currency = line.currency_id or line.company_currency_id
-            entry = {
+            line_data.append({
                 'id': line.id,
                 'status': status,
                 'status_label': status_label,
@@ -90,13 +80,10 @@ class AccountMoveLine(models.Model):
                 'amount': amount,
                 'due_date': str(due_date) if due_date else '',
                 'name': name,
-                'invoice_name': line.move_id.name or '',
                 'currency_symbol': currency.symbol or '',
                 'currency_position': currency.position or 'after',
-            }
-            line_data.append(entry)
+            })
 
-            # Stats
             contract_value += amount
             total_paid += paid
             if status == 'late':

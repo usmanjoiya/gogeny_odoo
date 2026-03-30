@@ -25,30 +25,23 @@ class InstallmentTrackerWidget extends Component {
         });
 
         onWillUpdateProps(async (nextProps) => {
-            const currentPartnerId = this._getPartnerId(this.props);
-            const nextPartnerId = this._getPartnerId(nextProps);
-            if (currentPartnerId !== nextPartnerId) {
+            const currentId = this.props.record.resId;
+            const nextId = nextProps.record.resId;
+            if (currentId !== nextId) {
                 await this.loadData(nextProps);
             }
         });
     }
 
-    _getPartnerId(props) {
-        const partner = props.record.data.partner_id;
-        if (!partner) return false;
-        if (Array.isArray(partner)) return partner[0];
-        if (typeof partner === "object" && partner.id) return partner.id;
-        return partner;
-    }
-
     async loadData(props) {
-        const partnerId = this._getPartnerId(props || this.props);
-        if (!partnerId) {
+        const record = (props || this.props).record;
+        const moveId = record.resId;
+        if (!moveId) {
             this.state.loaded = true;
             return;
         }
         const result = await this.orm.call(
-            "account.move.line", "get_partner_installment_data", [partnerId]
+            "account.move.line", "get_invoice_installment_data", [moveId]
         );
         this.state.lateAmount = result.late_amount;
         this.state.lateCount = result.late_count;

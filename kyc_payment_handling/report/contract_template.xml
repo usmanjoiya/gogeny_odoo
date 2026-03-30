@@ -144,7 +144,7 @@
                                         <tbody class="invoice_tbody">
                                             <!-- Table Headers -->
                                             <tr style="background-color: #f8f9fa;">
-                                                <th style="font-weight: bold;">Description</th>
+                                                <th style="font-weight: bold;">Product</th>
                                                 <th style="font-weight: bold;" class="text-end">Quantity</th>
                                                 <th style="font-weight: bold;" class="text-end">Unit Price</th>
                                                 <th style="font-weight: bold;" class="text-end">VAT %</th>
@@ -152,46 +152,40 @@
                                                 <th style="font-weight: bold;" class="text-end">Total</th>
                                             </tr>
 
-                                            <!-- Invoice Line Loop -->
-                                            <t t-foreach="o.invoice_ref_id.invoice_line_ids" t-as="line">
-                                                <tr style="vertical-align: middle;">
-                                                    <!-- Description + Markup % -->
-                                                    <td style="padding: 8px 12px;">
-                                                        <span t-esc="line.name or line.product_id.display_name or ' '"/>
-                                                    </td>
-
-                                                    <!-- Quantity -->
-                                                    <td class="text-end text-nowrap" style="padding: 8px 12px;">
-                                                        <span t-esc="'%.2f' % (line.quantity or 0.0)"/> 
-                                                        <span t-esc="line.product_uom_id.name or ''"/>
-                                                    </td>
-
-                                                    <!-- Unit Price -->
-                                                    <td class="text-end" style="padding: 8px 12px;">
-                                                        <span t-esc="'%.2f' % (line.price_unit or 0.0)"/>
-                                                    </td>
-
-                                                    <!-- VAT % -->
-                                                    <td class="text-end" style="padding: 8px 12px;">
-                                                        <t t-set="tax_percent"
-                                                        t-value="sum(t.amount for t in line.tax_ids) if line.tax_ids else 0.0"/>
-                                                        <span t-esc="'%.2f' % tax_percent"/>%
-                                                    </td>
-
-                                                    <!-- VAT Amount -->
-                                                    <td class="text-end" style="padding: 8px 12px;">
-                                                        <t t-set="vat_amount" t-value="(line.price_unit * tax_percent / 100.0) * line.quantity"/>
-                                                        <span t-esc="'%.2f' % vat_amount"/>
-                                                    </td>
-
-                                                    <!-- Total = Base + VAT + Markup -->
-                                                    <td class="text-end" style="padding: 8px 12px;">
-                                                        <t t-set="total_amount"
-                                                        t-value="(line.price_unit * line.quantity) + vat_amount"/>
-                                                        <span t-esc="'%.2f' % total_amount"/>
-                                                    </td>
-                                                </tr>
-                                            </t>
+                                            <!-- Single Product Line from Project -->
+                                            <t t-set="product_line" t-value="o.invoice_ref_id.invoice_line_ids.filtered(lambda l: l.product_id.product_tmpl_id.id == o.product_id.id)[:1]"/>
+                                            <t t-set="line_qty" t-value="product_line.quantity if product_line else 1.0"/>
+                                            <t t-set="line_tax_pct" t-value="sum(t.amount for t in product_line.tax_ids) if product_line and product_line.tax_ids else 0.0"/>
+                                            <t t-set="invoice_untaxed" t-value="o.invoice_ref_id.amount_untaxed"/>
+                                            <t t-set="invoice_tax" t-value="o.invoice_ref_id.amount_tax"/>
+                                            <t t-set="invoice_total" t-value="o.invoice_ref_id.amount_total"/>
+                                            <t t-set="unit_price" t-value="(invoice_total - invoice_tax) / line_qty if line_qty else 0.0"/>
+                                            <tr style="vertical-align: middle;">
+                                                <!-- Product -->
+                                                <td style="padding: 8px 12px;">
+                                                    <span t-esc="o.product_id.display_name or ' '"/>
+                                                </td>
+                                                <!-- Quantity -->
+                                                <td class="text-end" style="padding: 8px 12px;">
+                                                    <span t-esc="'%.2f' % line_qty"/>
+                                                </td>
+                                                <!-- Unit Price = (Total - VAT) / Quantity -->
+                                                <td class="text-end" style="padding: 8px 12px;">
+                                                    <span t-esc="'%.2f' % unit_price"/>
+                                                </td>
+                                                <!-- VAT % -->
+                                                <td class="text-end" style="padding: 8px 12px;">
+                                                    <span t-esc="'%.2f' % line_tax_pct"/>%
+                                                </td>
+                                                <!-- VAT Amount -->
+                                                <td class="text-end" style="padding: 8px 12px;">
+                                                    <span t-esc="'%.2f' % invoice_tax"/>
+                                                </td>
+                                                <!-- Total -->
+                                                <td class="text-end" style="padding: 8px 12px;">
+                                                    <span t-esc="'%.2f' % invoice_total"/>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
 
