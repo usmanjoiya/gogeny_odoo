@@ -29,6 +29,7 @@
         'views/account_payment_term.xml',
         'views/payment_provider_views.xml',
         'views/portal_wizard_views.xml',
+        'views/product_template_view.xml',
     ],
     'assets': {
 

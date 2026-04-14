@@ -126,3 +126,4 @@ class ProductTemplate(models.Model):
     _inherit = "product.template"
 
     installment_product = fields.Boolean(default=False)
+    product_blog_link = fields.Char(string="Blog Link")

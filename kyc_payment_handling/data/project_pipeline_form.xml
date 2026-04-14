@@ -93,11 +93,6 @@
                         </div>
                     </div>
 
-
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label">UAE ID Number</label>-->
-<!--                        <input type="text" name="uae_id_number" required="True" class="form-control"/>-->
-<!--                    </div>-->
                     <div class="mb-3">
                         <div class="row g-2">
                             <div class="col-md-6">
@@ -122,20 +117,22 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="mb-3">
                         <div class="row g-2">
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    Guaranteed Bank Cheque
-                                    <a class="ms-2 text-info" data-bs-toggle="collapse" href="#chequeSample" role="button"
-                                    aria-expanded="false" aria-controls="chequeSample">
-                                        <i class="bi bi-info-circle"></i>
-                                        View Sample
-                                    </a>
-                                </label>
-                                <input type="file" name="cheque_photo" required="True" class="form-control"/>
-                            </div>
+                            <t t-if="(product.list_price or 0) + (payment_term.installment_amount or 0) > 1000">
+                                <div class="col-md-6">
+                                    <label class="form-label">
+                                        Guaranteed Bank Cheque
+                                        <a class="ms-2 text-info" data-bs-toggle="collapse" href="#chequeSample" role="button"
+                                        aria-expanded="false" aria-controls="chequeSample">
+                                            <i class="bi bi-info-circle"></i>
+                                            View Sample
+                                        </a>
+                                    </label>
+                                    <input type="file" name="cheque_photo" required="True" class="form-control"/>
+                                </div>
+                            </t>
                             <div class="col-md-6">
                                 <label class="form-label">Signature</label>
                                 <div class="border rounded p-2 bg-light" style="height: 280px; width: 280px; position: relative;">

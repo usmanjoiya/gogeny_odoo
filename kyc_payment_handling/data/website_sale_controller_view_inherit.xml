@@ -372,6 +372,45 @@
             </xpath>
         </template>
 
+        <template id="product_custom_description_button" inherit_id="website_sale.product" >
+            <xpath expr="//div[@id='o_product_terms_and_share']" position="after">
+                <t t-if="product.product_blog_link">
+                    <div class="d-flex align-items-center mb-2 w-auto">
+                        <a role="button"
+                            class="btn btn-primary w-auto text-center"
+                            t-att-href="'/' + str(product.product_blog_link)"
+                            target="_blank">
+                            Description
+                        </a>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="auth_signup_login_inherit" inherit_id="auth_signup.login">
+            <xpath expr="//p[@class='mt-2 text-center']/a[@t-if='signup_enabled']" position="replace">
+                <!-- Don't have an account? button replaced -->
+            </xpath>
+        </template>
+
+        <template id="web_login_inherit_custom" inherit_id="web.login">
+
+            <xpath expr="//button[@type='submit' and contains(@class,'btn-primary')]" position="after">
+                <button type="button"
+                t-if="signup_enabled"
+                class="btn mt-2"
+                style="
+                    background-color: #fd1c14;
+                    color: white;
+                    font-weight: 500;
+                    border: none;
+                "
+                onclick="window.location.href='/web/signup' + window.location.search">
+            Sign Up
+        </button>
+            </xpath>
+        </template>
+
         <!-- <template id="payment_form_inherit" inherit_id="payment.form" name="Payment Form - Filtered">
             <xpath expr="//t[@t-foreach='payment_methods_sudo']" position="replace">
                 <t t-foreach="payment_methods_sudo.filtered(lambda pm: pm.code != 'cod')" t-as="pm_sudo">
