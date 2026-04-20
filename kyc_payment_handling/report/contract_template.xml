@@ -155,11 +155,14 @@
                                             <!-- Single Product Line from Project -->
                                             <t t-set="product_line" t-value="o.invoice_ref_id.invoice_line_ids.filtered(lambda l: l.product_id.product_tmpl_id.id == o.product_id.id)[:1]"/>
                                             <t t-set="line_qty" t-value="product_line.quantity if product_line else 1.0"/>
-                                            <t t-set="line_tax_pct" t-value="sum(t.amount for t in product_line.tax_ids) if product_line and product_line.tax_ids else 0.0"/>
                                             <t t-set="invoice_untaxed" t-value="o.invoice_ref_id.amount_untaxed"/>
-                                            <t t-set="invoice_tax" t-value="o.invoice_ref_id.amount_tax"/>
-                                            <t t-set="invoice_total" t-value="o.invoice_ref_id.amount_total"/>
-                                            <t t-set="unit_price" t-value="(invoice_total - invoice_tax) / line_qty if line_qty else 0.0"/>
+                                            <!-- VAT %: use the product line's own taxes if any; else fall back to 5% -->
+                                            <t t-set="line_tax_pct" t-value="sum(t.amount for t in product_line.tax_ids) if product_line and product_line.tax_ids else 5.0"/>
+                                            <!-- VAT Amount: trust the invoice's actual tax if > 0; else compute line_tax_pct % of the untaxed base -->
+                                            <t t-set="invoice_tax" t-value="o.invoice_ref_id.amount_tax if o.invoice_ref_id.amount_tax else (invoice_untaxed * line_tax_pct / 100.0)"/>
+                                            <!-- Total and unit price derived consistently from the (possibly fallback) tax -->
+                                            <t t-set="invoice_total" t-value="invoice_untaxed + invoice_tax"/>
+                                            <t t-set="unit_price" t-value="invoice_untaxed / line_qty if line_qty else 0.0"/>
                                             <tr style="vertical-align: middle;">
                                                 <!-- Product -->
                                                 <td style="padding: 8px 12px;">
