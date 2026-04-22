@@ -230,8 +230,8 @@
             <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
             <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
             <!-- Extract ids -->
-            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
-            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <t t-set="term_id" t-value="line_terms.get('term_id') if isinstance(line_terms, dict) else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if isinstance(line_terms, dict) else False"/>
             <!-- Show payment term if exists -->
             <t t-if="term_id">
                 <li class="list-group-item px-0 bg-transparent text-reset">
@@ -244,8 +244,8 @@
             <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
             <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
             <!-- Extract ids -->
-            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
-            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <t t-set="term_id" t-value="line_terms.get('term_id') if isinstance(line_terms, dict) else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if isinstance(line_terms, dict) else False"/>
             <t t-if="term_id">
                 <t t-set="got_any_line_term" t-value="True"/>
             </t>
@@ -358,8 +358,8 @@
             <t t-set="cart_terms" t-value="request.session.get('apply_payment_terms', {})"/>
             <t t-set="line_terms" t-value="cart_terms.get(str(line.product_id.product_tmpl_id.id))"/>
             <!-- Extract ids -->
-            <t t-set="term_id" t-value="line_terms.get('term_id') if line_terms else False"/>
-            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if line_terms else False"/>
+            <t t-set="term_id" t-value="line_terms.get('term_id') if isinstance(line_terms, dict) else False"/>
+            <t t-set="project_line_id" t-value="line_terms.get('project_line_id') if isinstance(line_terms, dict) else False"/>
             <t t-if="term_id">
                 <t t-set="got_any_line_term" t-value="True"/>
             </t>

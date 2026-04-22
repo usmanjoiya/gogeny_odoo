@@ -11,6 +11,26 @@ try:
 except ImportError:
     WebsiteSale = object
 
+try:
+    from odoo.addons.website_sale.controllers.delivery import Delivery
+except ImportError:
+    Delivery = object
+
+
+class DeliveryInherit(Delivery):
+    """When the JS refreshes totals after picking a carrier, return the
+    state-matched delivery amount in `amount_delivery` so the `#order_delivery`
+    td shows our computed value — not the raw carrier rate."""
+
+    def _order_summary_values(self, order, **kwargs):
+        values = super()._order_summary_values(order, **kwargs)
+        Monetary = request.env['ir.qweb.field.monetary']
+        values['amount_delivery'] = Monetary.value_to_html(
+            order.state_matched_delivery_amount,
+            {'display_currency': order.currency_id},
+        )
+        return values
+
 
 class WebsiteSaleInherit(WebsiteSale):
     @http.route(['/shop/<model("product.template"):product>'], type='http', auth="public", website=True, sitemap=True)
@@ -101,19 +121,24 @@ class WebsiteSaleInherit(WebsiteSale):
             order.write({'note': "Cash on Delivery order."})
 
         # ----->>>>> 1. Confirm the order
+        # (We do NOT modify the is_delivery SO line; _create_split_invoices builds
+        # the delivery invoice directly from carrier + state_matched_delivery_amount
+        # so amount_total stays clean on the confirmation display.)
         if order.state != 'sale':
             order.action_confirm()
         print("---------------->>>>> Order State: ", order.state)
 
-        # ----->>>>> 2. Create invoice from Sale Order
+        # ----->>>>> 3. Create the installment invoice from the Sale Order
+        # (Delivery invoice is NOT created here anymore — admin clicks the
+        # "Delivery Invoice" button on the sale.order to produce it manually.)
         if not order.invoice_ids:
-            invoice = order._create_invoices()
+            invs = order._create_split_invoices()
+            installment_invoice = invs['installment_invoice']
         else:
-            invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
+            installment_invoice = order.invoice_ids.filtered(lambda inv: inv.state == 'draft')[:1]
 
-        # ----->>>>> 3. Link SO and Invoice to Project
+        # ----->>>>> 4. Link SO and Installment invoice to Project
         if matching_project:
-            # Set sale_line_id so sale_order_id auto-resolves via related field
             matching_sol = order.order_line.filtered(
                 lambda l: l.product_id.product_tmpl_id.id == matching_project.product_id.id
             )[:1]
@@ -121,18 +146,18 @@ class WebsiteSaleInherit(WebsiteSale):
                 matching_project.sale_line_id = matching_sol.id
                 print(f"✅ Linked project '{matching_project.name}' to SOL {matching_sol.id} (SO: {order.name})")
 
-            if invoice:
+            if installment_invoice:
                 if matching_project.invoice_date:
-                    invoice.invoice_date = matching_project.invoice_date
-                matching_project.write({'invoice_ref_id': invoice.id})
-                print(f"✅ Linked project '{matching_project.name}' to Invoice {invoice.id}")
+                    installment_invoice.invoice_date = matching_project.invoice_date
+                matching_project.write({'invoice_ref_id': installment_invoice.id})
+                print(f"✅ Linked project '{matching_project.name}' to Invoice {installment_invoice.id}")
 
-        # ----->>>>> 4. Post the invoice
-        if invoice and invoice.state == 'draft':
-            invoice.action_post()
+        # ----->>>>> 5. Post the installment invoice
+        if installment_invoice and installment_invoice.state == 'draft':
+            installment_invoice.action_post()
 
-        # ----->>>>> 5. Reconcile payment (non-COD only)
-        if not is_cod and invoice and invoice.state == 'posted':
+        # ----->>>>> 6. Reconcile payment against the installment invoice ONLY (non-COD)
+        if not is_cod and installment_invoice and installment_invoice.state == 'posted':
             payment = request.env['account.payment'].sudo().search([
                 ('payment_transaction_id', '=', order.name)
             ], limit=1)
@@ -140,12 +165,12 @@ class WebsiteSaleInherit(WebsiteSale):
             print("---------------->>>>> Account Payment Record: ", payment)
 
             if payment:
-                inv_lines = invoice.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
+                inv_lines = installment_invoice.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
                 pay_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.account_type == 'asset_receivable' and not l.reconciled)
 
                 if inv_lines and pay_lines:
                     (inv_lines + pay_lines).reconcile()
-                    print("---------------->>>>> Reconciled Payment %s with Invoice %s" % (payment.name, invoice.name))
+                    print("---------------->>>>> Reconciled Payment %s with Invoice %s" % (payment.name, installment_invoice.name))
                 else:
                     print("---------------->>>>> No receivable lines found to reconcile.")
 
@@ -164,7 +189,22 @@ class WebsiteSaleInherit(WebsiteSale):
             'downpayment_amount': values.get('downpayment_amount', order.amount_total),
         })
 
-        return request.render("website_sale.confirmation", values)
+        # Render the template NOW (while the is_delivery SO line is still 0) so
+        # the confirmation page shows clean totals. Then update the SO delivery
+        # line, and ONLY THEN build the delivery invoice from that updated line
+        # (so _prepare_invoice_line reads the state-matched price, not 0).
+        response = request.render("website_sale.confirmation", values)
+        response.flatten()
+        order._apply_state_based_delivery_price()
+
+        # Create + post the delivery invoice AFTER the SO line has the correct
+        # price. Don't raise if there's no delivery line or it's already
+        # invoiced — just skip quietly.
+        delivery_invoice = order._create_delivery_invoice(raise_if_empty=False)
+        if delivery_invoice and delivery_invoice.state == 'draft':
+            delivery_invoice.action_post()
+
+        return response
 
     @http.route('/shop/payment/validate', type='http', auth="public", website=True, sitemap=False)
     def shop_payment_validate(self, sale_order_id=None, **post):

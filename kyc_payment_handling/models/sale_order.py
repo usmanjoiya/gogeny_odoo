@@ -1,10 +1,162 @@
-from odoo import api, fields, models, SUPERUSER_ID
+from odoo import _, api, fields, models, SUPERUSER_ID
+from odoo.exceptions import UserError
 import logging
 
 _logger = logging.getLogger(__name__)
+_DELIVERY_RATE_LOG = logging.getLogger("kyc_payment_handling.delivery_rate")
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    state_matched_delivery_amount = fields.Monetary(
+        compute='_compute_state_matched_delivery_amount',
+        currency_field='currency_id',
+        string="State-Matched Delivery (display only)",
+        help="Display-only: sum of delivery_rate_ids.amount from each non-delivery "
+             "product whose rate matches the partner_shipping_id country + state. "
+             "Does not affect amount_total, amount_delivery, any line price_unit, "
+             "the payment transaction amount, or invoicing.",
+    )
+
+    @api.depends(
+        'order_line.product_id.product_tmpl_id.delivery_rate_ids',
+        'order_line.product_id.product_tmpl_id.delivery_rate_ids.amount',
+        'order_line.product_id.product_tmpl_id.delivery_rate_ids.country_id',
+        'order_line.product_id.product_tmpl_id.delivery_rate_ids.state_id',
+        'partner_invoice_id.country_id',
+        'partner_invoice_id.state_id',
+    )
+    def _compute_state_matched_delivery_amount(self):
+        for order in self:
+            # Source = partner_invoice_id: the billing address the customer
+            # just submitted on /shop/address. partner_shipping_id can be a
+            # stale anonymous child partner reused by Odoo's express-checkout
+            # flow, which gave the wrong state earlier.
+            country = order.partner_invoice_id.country_id
+            state = order.partner_invoice_id.state_id
+            _DELIVERY_RATE_LOG.info(
+                "[SO %s] partner_invoice=%s country=%s(id=%s) state=%s(id=%s)",
+                order.name or order.id,
+                order.partner_invoice_id.display_name,
+                country.name, country.id,
+                state.name, state.id,
+            )
+            # No shipping address yet -> no meaningful match, show 0
+            if not country or not state:
+                _DELIVERY_RATE_LOG.info("[SO %s] no country/state -> total=0", order.name or order.id)
+                order.state_matched_delivery_amount = 0.0
+                continue
+            total = 0.0
+            seen_tmpl_ids = set()
+            for line in order.order_line:
+                if line.is_delivery:
+                    continue
+                tmpl = line.product_id.product_tmpl_id
+                if not tmpl or tmpl.id in seen_tmpl_ids:
+                    continue
+                seen_tmpl_ids.add(tmpl.id)
+                _DELIVERY_RATE_LOG.info(
+                    "  product=%s rates=%s",
+                    tmpl.display_name,
+                    [(r.name, r.country_id.name, r.state_id.name, r.amount) for r in tmpl.delivery_rate_ids],
+                )
+                matched = False
+                for rate in tmpl.delivery_rate_ids:
+                    match = rate.country_id == country and rate.state_id == state
+                    _DELIVERY_RATE_LOG.info(
+                        "    rate=%s rate.country=%s(id=%s) rate.state=%s(id=%s) match=%s amount=%s",
+                        rate.name,
+                        rate.country_id.name, rate.country_id.id,
+                        rate.state_id.name, rate.state_id.id,
+                        match, rate.amount,
+                    )
+                    if match:
+                        total += rate.amount
+                        matched = True
+                        break
+                if not matched:
+                    _DELIVERY_RATE_LOG.info("    -> product contributes 0 (no matching rate)")
+            _DELIVERY_RATE_LOG.info("[SO %s] FINAL state_matched_delivery_amount=%s", order.name or order.id, total)
+            order.state_matched_delivery_amount = total
+
+    def _apply_state_based_delivery_price(self):
+        """Write the state-matched delivery amount onto the SO's is_delivery
+        line(s) so the backend sale.order view reflects the real price the
+        customer was billed. Called AFTER the confirmation template has been
+        rendered, so the website display stays clean."""
+        for order in self:
+            delivery_lines = order.order_line.filtered('is_delivery')
+            if not delivery_lines:
+                continue
+            delivery_lines.write({'price_unit': order.state_matched_delivery_amount})
+
+    def _create_split_invoices(self):
+        """Create the installment invoice from every non-delivery SO line
+        (payment term = order.payment_term_id). The delivery invoice is NOT
+        auto-created anymore — it's triggered manually from the sale order
+        form via `action_create_delivery_invoice`.
+        """
+        self.ensure_one()
+
+        invoiceable = self._get_invoiceable_lines(final=True)
+        other_lines = invoiceable.filtered(lambda l: not l.is_delivery)
+
+        base_vals = self._prepare_invoice()
+        AccountMove = self.env['account.move'].sudo()
+
+        installment_inv = self.env['account.move']
+        if other_lines:
+            vals = dict(base_vals)
+            vals['invoice_payment_term_id'] = self.payment_term_id.id if self.payment_term_id else False
+            vals['invoice_line_ids'] = [
+                (0, 0, line._prepare_invoice_line()) for line in other_lines
+            ]
+            installment_inv = AccountMove.create(vals)
+
+        return {
+            'delivery_invoice': self.env['account.move'],
+            'installment_invoice': installment_inv,
+        }
+
+    def _create_delivery_invoice(self, raise_if_empty=True):
+        """Create and return an `account.move` for the is_delivery SO line(s),
+        payment term = empty. Returns an empty recordset (or raises, depending
+        on `raise_if_empty`) if the order has no delivery line or it's already
+        fully invoiced. Intended to be called from both the admin button and
+        the website confirmation controller."""
+        self.ensure_one()
+        delivery_lines = self.order_line.filtered('is_delivery')
+        if not delivery_lines:
+            if raise_if_empty:
+                raise UserError(_("This order has no delivery line."))
+            return self.env['account.move']
+
+        invoiceable = delivery_lines.filtered(lambda l: l.qty_to_invoice > 0)
+        if not invoiceable:
+            if raise_if_empty:
+                raise UserError(_("The delivery line is already fully invoiced."))
+            return self.env['account.move']
+
+        base_vals = self._prepare_invoice()
+        base_vals['invoice_payment_term_id'] = False  # empty payment term on delivery invoice
+        base_vals['invoice_line_ids'] = [
+            (0, 0, line._prepare_invoice_line()) for line in invoiceable
+        ]
+        return self.env['account.move'].sudo().create(base_vals)
+
+    def action_create_delivery_invoice(self):
+        """Button action: create the delivery invoice (raising if nothing to
+        invoice) and open it in a form view."""
+        self.ensure_one()
+        invoice = self._create_delivery_invoice(raise_if_empty=True)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Delivery Invoice'),
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def _apply_installment_product(self):
         for rec in self:
@@ -127,3 +279,10 @@ class ProductTemplate(models.Model):
 
     installment_product = fields.Boolean(default=False)
     product_blog_link = fields.Char(string="Blog Link")
+    delivery_rate_ids = fields.Many2many(
+        "kyc.delivery.rate",
+        "product_template_delivery_rate_rel",
+        "product_tmpl_id",
+        "delivery_rate_id",
+        string="Delivery Rates",
+    )

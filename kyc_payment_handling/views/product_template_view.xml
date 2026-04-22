@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='barcode']" position="after">
                 <field name="product_blog_link"/>
+                <field name="delivery_rate_ids" widget="many2many_tags" options="{'no_quick_create': True}"/>
             </xpath>
         </field>
     </record>

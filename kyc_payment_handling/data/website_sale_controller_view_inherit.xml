@@ -397,17 +397,26 @@
 
             <xpath expr="//button[@type='submit' and contains(@class,'btn-primary')]" position="after">
                 <button type="button"
-                t-if="signup_enabled"
-                class="btn mt-2"
-                style="
-                    background-color: #fd1c14;
-                    color: white;
-                    font-weight: 500;
-                    border: none;
-                "
-                onclick="window.location.href='/web/signup' + window.location.search">
-            Sign Up
-        </button>
+                    t-if="signup_enabled"
+                    class="btn mt-2"
+                    style="
+                        background-color: #fd1c14;
+                        color: white;
+                        font-weight: 500;
+                        border: none;
+                    "
+                    onclick="window.location.href='/web/signup' + window.location.search">
+                    Sign Up
+                </button>
+            </xpath>
+        </template>
+
+        <template id="recent_products_view" name="Recently Viewed Products" inherit_id="website_sale.alternative_products">
+            <xpath expr="//div[@id='oe_structure_website_sale_recommended_products']" position="after">
+                <section id="recent_products_section" class="container mt-5 pt-4 d-none">
+                    <h3 class="mb-4">Recently Viewed Products</h3>
+                    <div class="row" id="recent_products_container"/>
+                </section>
             </xpath>
         </template>
 

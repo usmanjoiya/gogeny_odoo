@@ -8,7 +8,7 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom', 'payment_stripe', 'sale_management', 'portal'],
+    'depends': ['base', 'website', 'account', 'website_sale', 'project', 'web_editor', 'payment', 'payment_custom', 'payment_stripe', 'sale_management', 'portal', 'purchase'],
     'data': [
         # 'security/security.xml',
         'security/ir.model.access.csv',
@@ -30,6 +30,7 @@
         'views/payment_provider_views.xml',
         'views/portal_wizard_views.xml',
         'views/product_template_view.xml',
+        'views/delivery_rate_views.xml',
     ],
     'assets': {
 
@@ -37,6 +38,7 @@
                 # 'kyc_payment_handling/static/src/js/kyc_file_size_validation.js',
                 'kyc_payment_handling/static/src/js/portal_invoice_payment.js',
                 'kyc_payment_handling/static/src/js/stripe_options_patch.js',
+                'kyc_payment_handling/static/src/js/recent_products.js',
                 ],
             'web.assets_backend': [
                 'kyc_payment_handling/static/src/js/project_utils_patch.js',

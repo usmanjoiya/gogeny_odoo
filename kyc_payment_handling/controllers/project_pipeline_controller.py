@@ -213,7 +213,7 @@ class ProjectApplication(http.Controller):
                 print(f"---------------------------->>>>> Removing project line: {line}")
                 line.unlink()
         # ---------------- Link Project to Partner (new One2many line) ----------------
-        request.env['res.partner.project.line'].sudo().create({
+        project_line = request.env['res.partner.project.line'].sudo().create({
             'partner_id': partner.id,
             'project_id': project.id,
             'product_id': product.id,
@@ -221,8 +221,13 @@ class ProjectApplication(http.Controller):
         })
 
         # ---------------- Store Session Terms ----------------
+        # Keep the same shape as `checkout_with_term` and the `cart_lines`
+        # template: {str(product_id): {'term_id': ..., 'project_line_id': ...}}.
         request.session.setdefault('apply_payment_terms', {})
-        request.session['apply_payment_terms'][product.id] = term.id
+        request.session['apply_payment_terms'][str(product.id)] = {
+            'term_id': term.id,
+            'project_line_id': project_line.id,
+        }
         request.session.modified = True
         print("----------------------->>>>> Payment Terms Are: ", request.session['apply_payment_terms'])
         return request.render("kyc_payment_handling.application_thank_you_template", {

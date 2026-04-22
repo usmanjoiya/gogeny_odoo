@@ -272,6 +272,14 @@ class ProjectProject(models.Model):
         if stage:
             self.stage_id = stage.id
 
+        # Remove the matching Projects & Payment Plans line from the partner
+        if self.partner_id:
+            matching_lines = self.partner_id.project_line_ids.filtered(
+                lambda l: l.project_id.id == self.id
+            )
+            if matching_lines:
+                matching_lines.sudo().unlink()
+
     def action_state_reject(self):
         self.ensure_one()
         partner = self.partner_id

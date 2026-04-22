@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_kyc_delivery_rate_list" model="ir.ui.view">
+        <field name="name">kyc.delivery.rate.list</field>
+        <field name="model">kyc.delivery.rate</field>
+        <field name="arch" type="xml">
+            <list string="Delivery Rates" editable="bottom">
+                <field name="name"/>
+                <field name="country_id" options="{'no_create': True}"/>
+                <field name="state_id" options="{'no_create': True}"/>
+                <field name="amount"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_kyc_delivery_rate_form" model="ir.ui.view">
+        <field name="name">kyc.delivery.rate.form</field>
+        <field name="model">kyc.delivery.rate</field>
+        <field name="arch" type="xml">
+            <form string="Delivery Rate">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="country_id" options="{'no_create': True}"/>
+                            <field name="state_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_kyc_delivery_rate" model="ir.actions.act_window">
+        <field name="name">Delivery Rates</field>
+        <field name="res_model">kyc.delivery.rate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_kyc_delivery_rate_sales"
+              name="Delivery Rates"
+              parent="sale.menu_sale_config"
+              action="action_kyc_delivery_rate"
+              sequence="50"/>
+
+    <menuitem id="menu_kyc_delivery_rate_purchase"
+              name="Delivery Rates"
+              parent="purchase.menu_purchase_config"
+              action="action_kyc_delivery_rate"
+              sequence="50"/>
+
+    <!--
+        Display-only: retarget the existing amount span in #order_delivery so it
+        reads our state-matched field instead of `amount_delivery`. The original
+        `t-att-class` binding (d-none when no carrier) is kept, so on /shop/cart
+        before a carrier is picked the "-" placeholder still shows — only the
+        amount value, when shown, comes from our field. Purely cosmetic; no
+        effect on amount_total / amount_delivery / line prices / invoices.
+    -->
+    <template id="website_sale_total_state_matched_delivery"
+              inherit_id="website_sale.total"
+              name="Show state-matched delivery amount (display only)">
+        <xpath expr="//tr[@id='order_delivery']//span[@t-out='website_sale_order.amount_delivery']"
+               position="attributes">
+            <attribute name="t-out">website_sale_order.state_matched_delivery_amount</attribute>
+        </xpath>
+    </template>
+
+    <!--
+        Manual "Delivery Invoice" button on the sale.order form. Creates a
+        separate invoice for the delivery line, with payment term = empty.
+        The installment invoice keeps being auto-created at /shop/confirmation.
+    -->
+    <record id="kyc_sale_order_delivery_invoice_button" model="ir.ui.view">
+        <field name="name">sale.order.form.delivery-invoice-button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_confirm']" position="after">
+                <button name="action_create_delivery_invoice"
+                        string="Delivery Invoice"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'sale'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
