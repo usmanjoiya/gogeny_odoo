@@ -61,19 +61,31 @@ class ProjectProject(models.Model):
             else:
                 rec.partner_invoice_count = 0
 
+    def _get_or_create_vat_tax(self, company):
+        """Return the company's 5% sale VAT tax; create one if missing."""
+        vat_tax = self.env['account.tax'].search([
+            ('amount', '=', 5),
+            ('type_tax_use', '=', 'sale'),
+            ('amount_type', '=', 'percent'),
+            ('company_id', '=', company.id),
+        ], limit=1)
+        if not vat_tax:
+            vat_tax = self.env['account.tax'].sudo().create({
+                'name': 'VAT 5%',
+                'amount': 5.0,
+                'amount_type': 'percent',
+                'type_tax_use': 'sale',
+                'company_id': company.id,
+            })
+        return vat_tax
+
     def _apply_installment_product_invoice(self, invoice):
         """Create and attach installment product line on invoice."""
         for rec in self:
             if not rec.payment_term_id or not rec.payment_term_id.installment_amount:
                 return
 
-            # Find 5% VAT tax for the company
-            vat_tax = self.env['account.tax'].search([
-                ('amount', '=', 5),
-                ('type_tax_use', '=', 'sale'),
-                ('amount_type', '=', 'percent'),
-                ('company_id', '=', rec.partner_id.company_id.id),
-            ], limit=1)
+            vat_tax = rec._get_or_create_vat_tax(rec.company_id)
 
             product_name = f"Installment - {rec.payment_term_id.name} ({rec.payment_term_id.id})"
 
@@ -83,15 +95,14 @@ class ProjectProject(models.Model):
                     'name': product_name,
                     'list_price': rec.payment_term_id.installment_amount,
                     'type': 'consu',
-                    'taxes_id': [(6, 0, vat_tax.ids)] if vat_tax else [(5, 0, 0)],
+                    'taxes_id': [(6, 0, vat_tax.ids)],
                     'supplier_taxes_id': [(5, 0, 0)],
                     'installment_product': True,
                 })
             else:
                 if product_tmpl.list_price != rec.payment_term_id.installment_amount:
                     product_tmpl.list_price = rec.payment_term_id.installment_amount
-                if vat_tax:
-                    product_tmpl.taxes_id = [(6, 0, vat_tax.ids)]
+                product_tmpl.taxes_id = [(6, 0, vat_tax.ids)]
 
             product = product_tmpl.product_variant_id
 
@@ -103,7 +114,7 @@ class ProjectProject(models.Model):
                     'quantity': 1,
                     'price_unit': product.list_price,
                     'name': product.name,
-                    'tax_ids': [(6, 0, vat_tax.ids)] if vat_tax else [],
+                    'tax_ids': [(6, 0, vat_tax.ids)],
                 })
 
     def action_send_contract(self):
@@ -118,34 +129,28 @@ class ProjectProject(models.Model):
         if not self.company_id:
             raise ValidationError("Please provide 'Company' before sending contract.")
 
-        # Find 5% VAT tax for the company
-        vat_tax = self.env['account.tax'].search([
-            ('amount', '=', 5),
-            ('type_tax_use', '=', 'sale'),
-            ('amount_type', '=', 'percent'),
-            ('company_id', '=', self.partner_id.company_id.id),
-        ], limit=1)
+        vat_tax = self._get_or_create_vat_tax(self.company_id)
 
         invoice_vals = {
             'partner_id': self.partner_id.id,
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
             'invoice_payment_term_id': self.payment_term_id.id,
-            'company_id': self.partner_id.company_id.id,
+            'company_id': self.company_id.id,
             'invoice_line_ids': [
                 (0, 0, {
                     'product_id': self.product_id.product_variant_id.id,
                     'quantity': 1,
                     'price_unit': self.product_id.list_price,
                     'name': self.product_id.product_variant_id.name,
-                    'tax_ids': [(6, 0, vat_tax.ids)] if vat_tax else [],
+                    'tax_ids': [(6, 0, vat_tax.ids)],
                 })
             ],
         }
 
-        invoice = self.env['account.move'].create(invoice_vals)
+        invoice = self.env['account.move'].with_company(self.company_id).create(invoice_vals)
 
-        self._apply_installment_product_invoice(invoice)
+        self.with_company(self.company_id)._apply_installment_product_invoice(invoice)
 
         invoice.action_post()
 
