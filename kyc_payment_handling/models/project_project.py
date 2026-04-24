@@ -63,7 +63,9 @@ class ProjectProject(models.Model):
 
     def _get_or_create_vat_tax(self, company):
         """Return the company's 5% sale VAT tax; create one if missing."""
+        tax_name = f'VAT 5% [{company.name}]'
         vat_tax = self.env['account.tax'].search([
+            ('name', '=', tax_name),
             ('amount', '=', 5),
             ('type_tax_use', '=', 'sale'),
             ('amount_type', '=', 'percent'),
@@ -71,7 +73,7 @@ class ProjectProject(models.Model):
         ], limit=1)
         if not vat_tax:
             vat_tax = self.env['account.tax'].sudo().create({
-                'name': 'VAT 5%',
+                'name': tax_name,
                 'amount': 5.0,
                 'amount_type': 'percent',
                 'type_tax_use': 'sale',
