@@ -2,6 +2,7 @@
 
 from . import res_partner
 from . import res_users
+from . import ir_http
 from . import project_project
 from . import payment_transaction
 from . import account_payment_terms
