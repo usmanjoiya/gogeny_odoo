@@ -21,6 +21,7 @@
         'data/website_sale_controller_view_inherit.xml',
         'data/portal_invoice_payment.xml',
         'data/contract_email_template.xml',
+        'data/ensure_main_company_cron.xml',
 
         'report/contract_template.xml',
 
