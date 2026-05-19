@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from markupsafe import Markup
 import base64
 import re
 
@@ -180,6 +181,22 @@ class ProjectProject(models.Model):
                 self.id,
                 force_send=True,
                 email_values={'attachment_ids': [attachment.id]}
+            )
+
+            # Post the same email into the chatter, but with the payment link
+            # shown as the exact raw URL in plain text (email keeps it masked).
+            rendered_body = template._render_field('body_html', [self.id])[self.id]
+            rendered_subject = template._render_field('subject', [self.id])[self.id]
+            chatter_body = re.sub(
+                r'<a\b[^>]*\bhref="([^"]*)"[^>]*>.*?</a>',
+                lambda m: m.group(1),
+                rendered_body,
+                flags=re.DOTALL,
+            )
+            self.message_post(
+                body=Markup(chatter_body),
+                subject=rendered_subject,
+                subtype_xmlid='mail.mt_note',
             )
 
             self.state = "contract_sent"
