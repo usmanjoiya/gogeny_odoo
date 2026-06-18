@@ -346,14 +346,12 @@
                                     </div>
                                 </t>
 
-                                <div style="clear: both;"></div>
-
                                 <!-- ================= TERMS AND CONDITIONS (3 RTL columns via table, pages 3 & 4) ================= -->
                                 <div class="terms-block" style="page-break-after: always;">
-                                    <p class="terms-title">عقد بيع وتقسيط أجهزة إلكترونية</p>
                                     <table class="terms-table" dir="rtl">
                                         <tr>
                                             <td class="terms-col">
+                                            <p style="font-weight: bold;">عقد بيع وتقسيط أجهزة إلكترونية</p>
                                             <p>أُبرم هذا العقد في دولة الإمارات العربية المتحدة بين كل من:</p>
                                             <p class="clause">أولاً: الطرف الأول (البائع)</p>
                                             <p>شركة قوجني لتجارة الأجهزة الإلكترونية ذ.م.م</p>
