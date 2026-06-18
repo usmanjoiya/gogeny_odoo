@@ -7,19 +7,19 @@
 
                         <!-- Keep the Customer Info + Documents block compact so it always fits on page 1 -->
                         <style>
-                            .first-page-block { page-break-after: always; overflow: hidden; max-height: 980px; }
+                            .first-page-block { page-break-after: always; }
                             .first-page-block .customer-info-section table { margin-bottom: 4px !important; }
                             .first-page-block .customer-info-section tr { height: 30px !important; }
                             .first-page-block .customer-info-section td { padding: 4px 12px !important; }
-                            .first-page-block img { max-height: 150px !important; max-width: 150px !important; height: auto !important; width: auto !important; }
+                            .first-page-block img { max-height: 110px !important; max-width: 110px !important; height: auto !important; width: auto !important; }
                             /* Invoice + Installment: clamp to page 2 only, never spill to page 3 (shrinks/clips like page 1) */
                             .invoice-installment-block { page-break-after: always; overflow: hidden; max-height: 980px; }
                             .invoice-installment-block table { margin-bottom: 6px !important; }
                             .invoice-installment-block th, .invoice-installment-block td { padding: 2px 6px !important; font-size: 11px !important; line-height: 1.15 !important; }
                             .invoice-installment-block tr { height: auto !important; }
                             .invoice-installment-block h5 { font-size: 13px !important; margin: 6px 0 4px !important; }
-                            /* Terms &amp; Conditions: 3-column table, clamped to one page each (clamp prevents wkhtmltopdf overflow-overlap) */
-                            .terms-block { overflow: hidden; max-height: 980px; }
+                            /* Terms &amp; Conditions: 3-column table; block A page-breaks to put block B on next page (no clamp: clamp made wkhtmltopdf reserve an empty page) */
+                            .terms-block { }
                             .terms-title { text-align: center; font-weight: bold; font-size: 14px; margin: 0 0 8px 0; direction: rtl; }
                             .terms-table { width: 100%; table-layout: fixed; border-collapse: collapse; direction: rtl; }
                             .terms-col { width: 33.33%; vertical-align: top; padding: 0 6px; border-left: 1px solid #ccc;
