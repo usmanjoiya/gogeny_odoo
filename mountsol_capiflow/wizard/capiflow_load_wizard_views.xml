@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_capiflow_load_wizard_form" model="ir.ui.view">
+        <field name="name">capiflow.load.wizard.form</field>
+        <field name="model">capiflow.load.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Load Invoices">
+                <field name="bundle_id" invisible="1"/>
+                <div class="alert alert-info" role="status">
+                    Select the criteria below to pull matching <b>posted customer invoices</b>
+                    into this bundle. Leave a field empty to ignore it. Existing invoices
+                    in the bundle are skipped.
+                </div>
+                <group>
+                    <group string="Filters">
+                        <field name="partner_ids" widget="many2many_tags"
+                               string="Customers"
+                               placeholder="All customers..."/>
+                        <field name="payment_term_id"
+                               string="Payment Term"
+                               placeholder="Any payment term..."/>
+                        <field name="only_open" string="Only With Amount Due"/>
+                    </group>
+                    <group string="Invoice Date Range">
+                        <field name="date_from" string="Invoice Date From"/>
+                        <field name="date_to" string="Invoice Date To"/>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Load" name="action_load" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_capiflow_bundle_user,capiflow.bundle.user,model_capiflow_bundle,account.group_account_invoice,1,1,1,1
+access_capiflow_bundle_line_user,capiflow.bundle.line.user,model_capiflow_bundle_line,account.group_account_invoice,1,1,1,1
+access_capiflow_load_wizard_user,capiflow.load.wizard.user,model_capiflow_load_wizard,account.group_account_invoice,1,1,1,1

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_capiflow" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.capiflow</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='invoicing_settings']" position="after">
+                <block title="Capiflow" id="capiflow_settings">
+                    <setting string="Default Rate"
+                             help="Default expected-default rate applied to new bundles.">
+                        <field name="capiflow_default_rate"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

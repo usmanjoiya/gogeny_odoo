@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_capiflow_bundle" model="ir.sequence">
+        <field name="name">Capiflow Bundle</field>
+        <field name="code">capiflow.bundle</field>
+        <field name="prefix">BUNDLE/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

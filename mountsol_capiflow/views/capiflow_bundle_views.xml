@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List -->
+    <record id="view_capiflow_bundle_list" model="ir.ui.view">
+        <field name="name">capiflow.bundle.list</field>
+        <field name="model">capiflow.bundle</field>
+        <field name="arch" type="xml">
+            <list string="Bundles">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="invoice_count"/>
+                <field name="total_contract_value"/>
+                <field name="total_paid"/>
+                <field name="total_residual"/>
+                <field name="expected_net_return"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="view_capiflow_bundle_form" model="ir.ui.view">
+        <field name="name">capiflow.bundle.form</field>
+        <field name="model">capiflow.bundle</field>
+        <field name="arch" type="xml">
+            <form string="Bundle">
+                <header>
+                    <button name="action_load_invoices" type="object"
+                            string="Load Invoices" class="btn-secondary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_export_xlsx" type="object"
+                            string="Export to Excel" class="btn-primary"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_confirm" type="object"
+                            string="Confirm" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_draft" type="object"
+                            string="Set to Draft" class="btn-secondary"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <field name="title" placeholder="Bundle name..."/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="invoice_count"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Invoices" name="invoices">
+                            <field name="line_ids" readonly="state == 'confirmed'">
+                                <list editable="bottom">
+                                    <field name="move_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="cost"/>
+                                    <field name="inst_amount"/>
+                                    <field name="paid"/>
+                                    <field name="profit"/>
+                                    <field name="total_due"/>
+                                    <field name="late_amount"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_late"/>
+                                <field name="total_residual"/>
+                                <field name="total_paid"/>
+                                <field name="total_contract_value"/>
+                            </group>
+                        </page>
+                        <page string="Financials" name="financials">
+                            <group>
+                                <group string="Cost &amp; Tokens">
+                                    <field name="total_cost"/>
+                                    <field name="capiflow_markup"/>
+                                    <field name="total_tokens"/>
+                                </group>
+                                <group string="Expected Outcome">
+                                    <field name="default_rate"/>
+                                    <label for="expected_return"/>
+                                    <div>
+                                        <field name="expected_return" class="oe_inline"/>
+                                        (<field name="expected_return_ratio" widget="percentage" class="oe_inline"/>)
+                                    </div>
+                                    <label for="expected_default"/>
+                                    <div>
+                                        <field name="expected_default" class="oe_inline"/>
+                                        (<field name="expected_default_ratio" widget="percentage" class="oe_inline"/>)
+                                    </div>
+                                    <label for="expected_net_return"/>
+                                    <div>
+                                        <field name="expected_net_return" class="oe_inline"/>
+                                        (<field name="expected_net_return_ratio" widget="percentage" class="oe_inline"/>)
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_capiflow_bundle_search" model="ir.ui.view">
+        <field name="name">capiflow.bundle.search</field>
+        <field name="model">capiflow.bundle</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="title"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_capiflow_bundle" model="ir.actions.act_window">
+        <field name="name">Bundles</field>
+        <field name="res_model">capiflow.bundle</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first Capiflow bundle</p>
+            <p>Group customer invoices into a bundle, review the portfolio figures and export it to Excel.</p>
+        </field>
+    </record>
+</odoo>
