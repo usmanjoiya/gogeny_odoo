@@ -76,8 +76,11 @@ class CapiflowBundleLine(models.Model):
             ('account_id.account_type', '=', 'asset_receivable'),
         ], order='date_maturity asc')
 
-        # Cost auto-comes from the invoice itself (dummy/business figure).
-        cost = abs(move.amount_untaxed_signed or move.amount_untaxed or 0.0)
+        # Cost = product purchase price (product's Cost field) x qty, per invoice line.
+        cost = sum(
+            l.quantity * l.product_id.standard_price
+            for l in move.invoice_line_ids if l.product_id
+        )
         payment_term = move.invoice_payment_term_id
         inst_markup = getattr(payment_term, 'installment_amount', 0.0) or 0.0
 
